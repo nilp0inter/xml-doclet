@@ -7,6 +7,7 @@ plugins {
     id 'signing'
 
     // https://github.com/GradleUp/jaxb2
+    // https://plugins.gradle.org/plugin/com.github.gradlecommunity.jaxb2
     id("com.github.gradlecommunity.jaxb2") version "3.1.0"
 
     id "com.github.spotbugs" version "latest.release"
@@ -58,7 +59,7 @@ dependencies {
     api 'javax.activation:javax.activation-api:1.2.0'
 
     // default JAXB2 libs added by the com.github.gradlecommunity.jaxb2 plugin (https://github.com/GradleUp/jaxb2)
-    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-runtime:2.0.12' // 1.11.1 fails build
+    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-runtime:2.0.12' // 1.11.1 fails build (current version is 2.0.12)
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-ant:1.11.1'
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics:1.11.1'
 
