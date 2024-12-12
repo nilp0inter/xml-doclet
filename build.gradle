@@ -6,6 +6,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
 
+    // https://github.com/GradleUp/jaxb2
     id("com.github.gradlecommunity.jaxb2") version "3.1.0"
 
     id "com.github.spotbugs" version "latest.release"
