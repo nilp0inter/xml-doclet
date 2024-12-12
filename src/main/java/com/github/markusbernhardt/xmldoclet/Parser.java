@@ -23,27 +23,17 @@ import com.github.markusbernhardt.xmldoclet.xjc.TagInfo;
 import com.github.markusbernhardt.xmldoclet.xjc.TypeInfo;
 import com.github.markusbernhardt.xmldoclet.xjc.TypeParameter;
 import com.github.markusbernhardt.xmldoclet.xjc.Wildcard;
-import com.sun.javadoc.AnnotationDesc;
-import com.sun.javadoc.AnnotationTypeDoc;
-import com.sun.javadoc.AnnotationTypeElementDoc;
-import com.sun.javadoc.AnnotationValue;
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.ConstructorDoc;
-import com.sun.javadoc.FieldDoc;
-import com.sun.javadoc.MethodDoc;
-import com.sun.javadoc.PackageDoc;
-import com.sun.javadoc.Parameter;
-import com.sun.javadoc.ParameterizedType;
-import com.sun.javadoc.ProgramElementDoc;
-import com.sun.javadoc.RootDoc;
-import com.sun.javadoc.Tag;
-import com.sun.javadoc.Type;
-import com.sun.javadoc.TypeVariable;
-import com.sun.javadoc.WildcardType;
+import jdk.javadoc.doclet.DocletEnvironment;
+
+import javax.lang.model.element.*;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
+import javax.lang.model.type.WildcardType;
+
 
 /**
  * The main parser class. It scans the given Doclet document root and creates the XML tree.
- * 
+ *
  * @author markus
  */
 public class Parser {
@@ -56,14 +46,14 @@ public class Parser {
 
     /**
      * The entry point into parsing the javadoc.
-     * 
-     * @param rootDoc The RootDoc intstance obtained via the doclet API
+     *
+     * @param env the operating environment of a single invocation of the doclet
      * @return The root node, containing everything parsed from javadoc doclet
      */
-    public Root parseRootDoc(RootDoc rootDoc) {
+    public Root parseRootDoc(final DocletEnvironment env) {
         Root rootNode = objectFactory.createRoot();
 
-        for (ClassDoc classDoc : rootDoc.classes()) {
+        for (ClassDoc classDoc : env.classes()) {
             PackageDoc packageDoc = classDoc.containingPackage();
 
             Package packageNode = packages.get(packageDoc.name());
@@ -105,11 +95,11 @@ public class Parser {
 
     /**
      * Parse an annotation.
-     * 
+     *
      * @param annotationTypeDoc A AnnotationTypeDoc instance
      * @return the annotation node
      */
-    protected Annotation parseAnnotationTypeDoc(AnnotationTypeDoc annotationTypeDoc) {
+    protected Annotation parseAnnotationTypeDoc(final TypeElement annotationTypeDoc) {
         Annotation annotationNode = objectFactory.createAnnotation();
         annotationNode.setName(annotationTypeDoc.name());
         annotationNode.setQualified(annotationTypeDoc.qualifiedName());
@@ -120,12 +110,12 @@ public class Parser {
         annotationNode.setIncluded(annotationTypeDoc.isIncluded());
         annotationNode.setScope(parseScope(annotationTypeDoc));
 
-        for (AnnotationTypeElementDoc annotationTypeElementDoc : annotationTypeDoc.elements()) {
+        for (ExecutableElement annotationTypeElementDoc : annotationTypeDoc.elements()) {
             annotationNode.getElement()
                     .add(parseAnnotationTypeElementDoc(annotationTypeElementDoc));
         }
 
-        for (AnnotationDesc annotationDesc : annotationTypeDoc.annotations()) {
+        for (AnnotationMirror annotationDesc : annotationTypeDoc.annotations()) {
             annotationNode.getAnnotation()
                     .add(parseAnnotationDesc(annotationDesc, annotationTypeDoc.qualifiedName()));
         }
@@ -139,12 +129,11 @@ public class Parser {
 
     /**
      * Parse the elements of an annotation
-     * 
+     *
      * @param annotationTypeElementDoc A AnnotationTypeElementDoc instance
      * @return the annotation element node
      */
-    protected AnnotationElement parseAnnotationTypeElementDoc(
-            AnnotationTypeElementDoc annotationTypeElementDoc) {
+    protected AnnotationElement parseAnnotationTypeElementDoc(final ExecutableElement annotationTypeElementDoc) {
         AnnotationElement annotationElementNode = objectFactory.createAnnotationElement();
         annotationElementNode.setName(annotationTypeElementDoc.name());
         annotationElementNode.setQualified(annotationTypeElementDoc.qualifiedName());
@@ -160,12 +149,12 @@ public class Parser {
 
     /**
      * Parses annotation instances of an annotable program element
-     * 
+     *
      * @param annotationDesc annotationDesc
      * @param programElement programElement
      * @return representation of annotations
      */
-    protected AnnotationInstance parseAnnotationDesc(AnnotationDesc annotationDesc,
+    protected AnnotationInstance parseAnnotationDesc(final AnnotationMirror annotationDesc,
             String programElement) {
         AnnotationInstance annotationInstanceNode = objectFactory.createAnnotationInstance();
 
@@ -179,66 +168,61 @@ public class Parser {
             LOGGER.severe("Add to the classpath the class/jar that defines this annotation.");
         }
 
-        for (AnnotationDesc.ElementValuePair elementValuesPair : annotationDesc.elementValues()) {
+        for (final AnnotationValue elementValuesPair : annotationDesc.elementValues()) {
             AnnotationArgument annotationArgumentNode = objectFactory.createAnnotationArgument();
             annotationArgumentNode.setName(elementValuesPair.element().name());
 
-            Type annotationArgumentType = elementValuesPair.element().returnType();
+            final TypeMirror annotationArgumentType = elementValuesPair.element().returnType();
             annotationArgumentNode.setType(parseTypeInfo(annotationArgumentType));
             annotationArgumentNode.setPrimitive(annotationArgumentType.isPrimitive());
             annotationArgumentNode.setArray(annotationArgumentType.dimension().length() > 0);
 
             Object objValue = elementValuesPair.value().value();
-            if (objValue instanceof AnnotationValue[]) {
-                for (AnnotationValue annotationValue : (AnnotationValue[]) objValue) {
-                    if (annotationValue.value() instanceof AnnotationDesc) {
-                        AnnotationDesc annoDesc = (AnnotationDesc) annotationValue.value();
-                        annotationArgumentNode.getAnnotation()
-                                .add(parseAnnotationDesc(annoDesc, programElement));
-                    } else {
-                        annotationArgumentNode.getValue().add(annotationValue.value().toString());
+            switch (objValue) {
+                case AnnotationValue[] annotationValues -> {
+                    for (AnnotationValue annotationValue : annotationValues) {
+                        if (annotationValue.value() instanceof AnnotationMirror annoDesc)
+                            annotationArgumentNode.getAnnotation().add(parseAnnotationDesc(annoDesc, programElement));
+                        else annotationArgumentNode.getValue().add(annotationValue.value().toString());
                     }
                 }
-            } else if (objValue instanceof FieldDoc) {
-                annotationArgumentNode.getValue().add(((FieldDoc) objValue).name());
-            } else if (objValue instanceof ClassDoc) {
-                annotationArgumentNode.getValue().add(((ClassDoc) objValue).qualifiedTypeName());
-            } else {
-                annotationArgumentNode.getValue().add(objValue.toString());
+                case VariableElement fieldDoc -> annotationArgumentNode.getValue().add(fieldDoc.name());
+                case TypeElement classDoc -> annotationArgumentNode.getValue().add(classDoc.qualifiedTypeName());
+                case null, default -> annotationArgumentNode.getValue().add(objValue.toString());
             }
+
             annotationInstanceNode.getArgument().add(annotationArgumentNode);
         }
 
         return annotationInstanceNode;
     }
 
-    protected Enum parseEnum(ClassDoc classDoc) {
+    protected Enum parseEnum(final TypeElement classDoc) {
         Enum enumNode = objectFactory.createEnum();
         enumNode.setName(classDoc.name());
         enumNode.setQualified(classDoc.qualifiedName());
         String comment = classDoc.commentText();
-        if (comment.length() > 0) {
+        if (!comment.isEmpty()) {
             enumNode.setComment(comment);
         }
         enumNode.setIncluded(classDoc.isIncluded());
         enumNode.setScope(parseScope(classDoc));
 
-        Type superClassType = classDoc.superclassType();
+        TypeMirror superClassType = classDoc.superclassType();
         if (superClassType != null) {
             enumNode.setClazz(parseTypeInfo(superClassType));
         }
 
-        for (Type interfaceType : classDoc.interfaceTypes()) {
+        for (final TypeMirror interfaceType : classDoc.interfaceTypes()) {
             enumNode.getInterface().add(parseTypeInfo(interfaceType));
         }
 
-        for (FieldDoc field : classDoc.enumConstants()) {
+        for (final VariableElement field : classDoc.enumConstants()) {
             enumNode.getConstant().add(parseEnumConstant(field));
         }
 
-        for (AnnotationDesc annotationDesc : classDoc.annotations()) {
-            enumNode.getAnnotation()
-                    .add(parseAnnotationDesc(annotationDesc, classDoc.qualifiedName()));
+        for (AnnotationMirror annotationDesc : classDoc.annotations()) {
+            enumNode.getAnnotation().add(parseAnnotationDesc(annotationDesc, classDoc.qualifiedName()));
         }
 
         for (Tag tag : classDoc.tags()) {
@@ -250,11 +234,11 @@ public class Parser {
 
     /**
      * Parses an enum type definition
-     * 
+     *
      * @param fieldDoc
      * @return
      */
-    protected EnumConstant parseEnumConstant(FieldDoc fieldDoc) {
+    protected EnumConstant parseEnumConstant(final VariableElement fieldDoc) {
         EnumConstant enumConstant = objectFactory.createEnumConstant();
         enumConstant.setName(fieldDoc.name());
         String comment = fieldDoc.commentText();
@@ -262,9 +246,8 @@ public class Parser {
             enumConstant.setComment(comment);
         }
 
-        for (AnnotationDesc annotationDesc : fieldDoc.annotations()) {
-            enumConstant.getAnnotation()
-                    .add(parseAnnotationDesc(annotationDesc, fieldDoc.qualifiedName()));
+        for (final AnnotationMirror annotationDesc : fieldDoc.annotations()) {
+            enumConstant.getAnnotation().add(parseAnnotationDesc(annotationDesc, fieldDoc.qualifiedName()));
         }
 
         for (Tag tag : fieldDoc.tags()) {
@@ -274,31 +257,30 @@ public class Parser {
         return enumConstant;
     }
 
-    protected Interface parseInterface(ClassDoc classDoc) {
-
+    protected Interface parseInterface(final TypeElement classDoc) {
         Interface interfaceNode = objectFactory.createInterface();
         interfaceNode.setName(classDoc.name());
         interfaceNode.setQualified(classDoc.qualifiedName());
         String comment = classDoc.commentText();
-        if (comment.length() > 0) {
+        if (!comment.isEmpty()) {
             interfaceNode.setComment(comment);
         }
         interfaceNode.setIncluded(classDoc.isIncluded());
         interfaceNode.setScope(parseScope(classDoc));
 
-        for (TypeVariable typeVariable : classDoc.typeParameters()) {
+        for (final TypeVariable typeVariable : classDoc.typeParameters()) {
             interfaceNode.getGeneric().add(parseTypeParameter(typeVariable));
         }
 
-        for (Type interfaceType : classDoc.interfaceTypes()) {
+        for (final TypeMirror interfaceType : classDoc.interfaceTypes()) {
             interfaceNode.getInterface().add(parseTypeInfo(interfaceType));
         }
 
-        for (MethodDoc method : classDoc.methods()) {
+        for (final ExecutableElement method : classDoc.methods()) {
             interfaceNode.getMethod().add(parseMethod(method));
         }
 
-        for (AnnotationDesc annotationDesc : classDoc.annotations()) {
+        for (final AnnotationMirror annotationDesc : classDoc.annotations()) {
             interfaceNode.getAnnotation()
                     .add(parseAnnotationDesc(annotationDesc, classDoc.qualifiedName()));
         }
@@ -307,15 +289,14 @@ public class Parser {
             interfaceNode.getTag().add(parseTag(tag));
         }
 
-        for (FieldDoc field : classDoc.fields()) {
+        for (final VariableElement field : classDoc.fields()) {
             interfaceNode.getField().add(parseField(field));
         }
 
         return interfaceNode;
     }
 
-    protected Class parseClass(ClassDoc classDoc) {
-
+    protected Class parseClass(final TypeElement classDoc) {
         Class classNode = objectFactory.createClass();
         classNode.setName(classDoc.name());
         classNode.setQualified(classDoc.qualifiedName());
@@ -335,29 +316,29 @@ public class Parser {
             classNode.getGeneric().add(parseTypeParameter(typeVariable));
         }
 
-        Type superClassType = classDoc.superclassType();
+        final TypeMirror superClassType = classDoc.superclassType();
         if (superClassType != null) {
             classNode.setClazz(parseTypeInfo(superClassType));
         }
 
-        for (Type interfaceType : classDoc.interfaceTypes()) {
+        for (final TypeMirror interfaceType : classDoc.interfaceTypes()) {
             classNode.getInterface().add(parseTypeInfo(interfaceType));
         }
 
-        for (MethodDoc method : classDoc.methods()) {
+        for (final ExecutableElement method : classDoc.methods()) {
             classNode.getMethod().add(parseMethod(method));
         }
 
-        for (AnnotationDesc annotationDesc : classDoc.annotations()) {
+        for (final AnnotationMirror annotationDesc : classDoc.annotations()) {
             classNode.getAnnotation()
                     .add(parseAnnotationDesc(annotationDesc, classDoc.qualifiedName()));
         }
 
-        for (ConstructorDoc constructor : classDoc.constructors()) {
+        for (final ExecutableElement constructor : classDoc.constructors()) {
             classNode.getConstructor().add(parseConstructor(constructor));
         }
 
-        for (FieldDoc field : classDoc.fields()) {
+        for (final VariableElement field : classDoc.fields()) {
             classNode.getField().add(parseField(field));
         }
 
@@ -368,7 +349,7 @@ public class Parser {
         return classNode;
     }
 
-    protected Constructor parseConstructor(ConstructorDoc constructorDoc) {
+    protected Constructor parseConstructor(final ExecutableElement constructorDoc) {
         Constructor constructorNode = objectFactory.createConstructor();
 
         constructorNode.setName(constructorDoc.name());
@@ -386,15 +367,15 @@ public class Parser {
         constructorNode.setVarArgs(constructorDoc.isVarArgs());
         constructorNode.setSignature(constructorDoc.signature());
 
-        for (Parameter parameter : constructorDoc.parameters()) {
+        for (final VariableElement parameter : constructorDoc.parameters()) {
             constructorNode.getParameter().add(parseMethodParameter(parameter));
         }
 
-        for (Type exceptionType : constructorDoc.thrownExceptionTypes()) {
+        for (final TypeMirror exceptionType : constructorDoc.thrownExceptionTypes()) {
             constructorNode.getException().add(parseTypeInfo(exceptionType));
         }
 
-        for (AnnotationDesc annotationDesc : constructorDoc.annotations()) {
+        for (final AnnotationMirror annotationDesc : constructorDoc.annotations()) {
             constructorNode.getAnnotation()
                     .add(parseAnnotationDesc(annotationDesc, constructorDoc.qualifiedName()));
         }
@@ -406,7 +387,7 @@ public class Parser {
         return constructorNode;
     }
 
-    protected Method parseMethod(MethodDoc methodDoc) {
+    protected Method parseMethod(final ExecutableElement methodDoc) {
         Method methodNode = objectFactory.createMethod();
 
         methodNode.setName(methodDoc.name());
@@ -426,15 +407,15 @@ public class Parser {
         methodNode.setSignature(methodDoc.signature());
         methodNode.setReturn(parseTypeInfo(methodDoc.returnType()));
 
-        for (Parameter parameter : methodDoc.parameters()) {
+        for (final VariableElement parameter : methodDoc.parameters()) {
             methodNode.getParameter().add(parseMethodParameter(parameter));
         }
 
-        for (Type exceptionType : methodDoc.thrownExceptionTypes()) {
+        for (final TypeMirror exceptionType : methodDoc.thrownExceptionTypes()) {
             methodNode.getException().add(parseTypeInfo(exceptionType));
         }
 
-        for (AnnotationDesc annotationDesc : methodDoc.annotations()) {
+        for (final AnnotationMirror annotationDesc : methodDoc.annotations()) {
             methodNode.getAnnotation()
                     .add(parseAnnotationDesc(annotationDesc, methodDoc.qualifiedName()));
         }
@@ -446,26 +427,25 @@ public class Parser {
         return methodNode;
     }
 
-    protected MethodParameter parseMethodParameter(Parameter parameter) {
+    protected MethodParameter parseMethodParameter(final VariableElement parameter) {
         MethodParameter parameterMethodNode = objectFactory.createMethodParameter();
         parameterMethodNode.setName(parameter.name());
         parameterMethodNode.setType(parseTypeInfo(parameter.type()));
 
-        for (AnnotationDesc annotationDesc : parameter.annotations()) {
-            parameterMethodNode.getAnnotation()
-                    .add(parseAnnotationDesc(annotationDesc, parameter.typeName()));
+        for (final AnnotationMirror annotationDesc : parameter.annotations()) {
+            parameterMethodNode.getAnnotation().add(parseAnnotationDesc(annotationDesc, parameter.typeName()));
         }
 
         return parameterMethodNode;
     }
 
-    protected Field parseField(FieldDoc fieldDoc) {
+    protected Field parseField(final VariableElement fieldDoc) {
         Field fieldNode = objectFactory.createField();
         fieldNode.setType(parseTypeInfo(fieldDoc.type()));
         fieldNode.setName(fieldDoc.name());
         fieldNode.setQualified(fieldDoc.qualifiedName());
         String comment = fieldDoc.commentText();
-        if (comment.length() > 0) {
+        if (!comment.isEmpty()) {
             fieldNode.setComment(comment);
         }
         fieldNode.setScope(parseScope(fieldDoc));
@@ -475,9 +455,8 @@ public class Parser {
         fieldNode.setTransient(fieldDoc.isTransient());
         fieldNode.setConstant(fieldDoc.constantValueExpression());
 
-        for (AnnotationDesc annotationDesc : fieldDoc.annotations()) {
-            fieldNode.getAnnotation()
-                    .add(parseAnnotationDesc(annotationDesc, fieldDoc.qualifiedName()));
+        for (final AnnotationMirror annotationDesc : fieldDoc.annotations()) {
+            fieldNode.getAnnotation().add(parseAnnotationDesc(annotationDesc, fieldDoc.qualifiedName()));
         }
 
         for (Tag tag : fieldDoc.tags()) {
@@ -487,7 +466,7 @@ public class Parser {
         return fieldNode;
     }
 
-    protected TypeInfo parseTypeInfo(Type type) {
+    protected TypeInfo parseTypeInfo(final TypeMirror type) {
         TypeInfo typeInfoNode = objectFactory.createTypeInfo();
         typeInfoNode.setQualified(type.qualifiedTypeName());
         String dimension = type.dimension();
@@ -510,14 +489,14 @@ public class Parser {
         return typeInfoNode;
     }
 
-    protected Wildcard parseWildcard(WildcardType wildcard) {
+    protected Wildcard parseWildcard(final WildcardType wildcard) {
         Wildcard wildcardNode = objectFactory.createWildcard();
 
-        for (Type extendType : wildcard.extendsBounds()) {
+        for (final TypeMirror extendType : wildcard.extendsBounds()) {
             wildcardNode.getExtendsBound().add(parseTypeInfo(extendType));
         }
 
-        for (Type superType : wildcard.superBounds()) {
+        for (final TypeMirror superType : wildcard.superBounds()) {
             wildcardNode.getSuperBound().add(parseTypeInfo(superType));
         }
 
@@ -526,15 +505,15 @@ public class Parser {
 
     /**
      * Parse type variables for generics
-     * 
+     *
      * @param typeVariable
      * @return
      */
-    protected TypeParameter parseTypeParameter(TypeVariable typeVariable) {
+    protected TypeParameter parseTypeParameter(final TypeVariable typeVariable) {
         TypeParameter typeParameter = objectFactory.createTypeParameter();
         typeParameter.setName(typeVariable.typeName());
 
-        for (Type bound : typeVariable.bounds()) {
+        for (final TypeMirror bound : typeVariable.bounds()) {
             typeParameter.getBound().add(bound.qualifiedTypeName());
         }
 
@@ -550,11 +529,11 @@ public class Parser {
 
     /**
      * Returns string representation of scope
-     * 
+     *
      * @param doc
      * @return
      */
-    protected String parseScope(ProgramElementDoc doc) {
+    protected String parseScope(final Element doc) {
         if (doc.isPrivate()) {
             return "private";
         } else if (doc.isProtected()) {
@@ -562,6 +541,7 @@ public class Parser {
         } else if (doc.isPublic()) {
             return "public";
         }
+
         return "";
     }
 }
