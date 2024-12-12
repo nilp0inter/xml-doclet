@@ -5,7 +5,7 @@ A doclet to output javadoc as XML
 
 This library provides a doclet to output the javadoc comments from Java source code to a XML or a Restructured Text (*.rst) document.
 
-All modern JDKs 11, 17 and 21 are supported via `languageVersion.set(JavaLanguageVersion.of(11)` enforcing JavaDoc 11.
+All modern JDKs 11, 17 and 21 are supported.
 
 Planned support for Markdown (*.md), Docbook XML and ASCII Doctor (*.adoc). Sponsors or Contributors are most welcome.
 
@@ -31,9 +31,8 @@ configurations {
 }
 
 java {
-    // needed for XML-Doclet to work (since Doclet changed again with Java 13)
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
