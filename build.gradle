@@ -226,7 +226,7 @@ jaxb2 {
         basePackage = 'com.github.markusbernhardt.xmldoclet.xjc'
         schema = 'src/main/xjc/javadoc.xsd'
         encoding = 'UTF-8'
-        generatedSourcesDir = "${project.buildDir}/generated/sources/java/main/xjc"
+        generatedSourcesDir = "${project.layout.buildDirectory}/generated/sources/java/main/xjc"
         additionalArgs = '-extension'
       }
     }
