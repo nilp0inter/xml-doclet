@@ -333,7 +333,7 @@ tasks.register('upload') {
     doLast {
         ssh.run {
             session(remotes.webServer) {
-                def versionStable = getVersion(false)
+                def versionStable = tasks.named('versionTask').get().getVersion(false)
                 execute "mkdir -p download/${project.name}-${versionStable}"
                 for (File file: fileTree(include:['*.jar'], dir:"${project.buildDir}/libs").collect()) {
                     put from: file, into: "download/${project.name}-${versionStable}"
