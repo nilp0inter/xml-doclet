@@ -1,10 +1,10 @@
-/target
-/build
-/out
-/.settings
-/.classpath
-/.project
-/.gradle
-/.idea
-/CHANGELOG.md
+target/
+build/
+out/
+.settings
+.classpath
+.project
+.gradle
+.idea
+CHANGELOG.md
 
