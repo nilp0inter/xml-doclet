@@ -56,6 +56,8 @@ dependencies {
     api 'commons-cli:commons-cli:1.9.0'
     api 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
 
+    jaxb2 'org.glassfish.jaxb:jaxb-xjc:4.0.5'
+
     // We need to export this as API explicitly and fix the Versions
     // or else the Doclet will silently(!) not generate the output
     api 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
@@ -217,6 +219,7 @@ shadowJar {
 }
 
 jaxb2 {
+    // JAXB XJC: JAXB Binding Compiler
     xjc {
       'xmldoclet-classes' {
         basePackage = 'com.github.markusbernhardt.xmldoclet.xjc'
