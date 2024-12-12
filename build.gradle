@@ -51,15 +51,16 @@ dependencies {
     api 'commons-cli:commons-cli:1.9.0'
     api 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
 
-    jaxb2 'org.glassfish.jaxb:jaxb-xjc:4.0.5'
 
     // We need to export this as API explicitly and fix the Versions
     // or else the Doclet will silently(!) not generate the output
     api 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
     api 'javax.activation:javax.activation-api:1.2.0'
 
+    jaxb2 'org.glassfish.jaxb:jaxb-xjc:4.0.5'
     jaxb2 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
     jaxb2 'javax.activation:javax.activation-api:1.2.0'
+
     testImplementation 'org.slf4j:slf4j-simple:2.0.16'
     testImplementation 'junit:junit:+'
 
