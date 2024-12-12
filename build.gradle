@@ -57,6 +57,11 @@ dependencies {
     api 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
     api 'javax.activation:javax.activation-api:1.2.0'
 
+    // default JAXB2 libs added by the com.github.gradlecommunity.jaxb2 plugin (https://github.com/GradleUp/jaxb2)
+    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-runtime:2.0.12' // 1.11.1 fails build
+    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-ant:1.11.1'
+    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics:1.11.1'
+
     jaxb2 'org.glassfish.jaxb:jaxb-xjc:4.0.5'
     jaxb2 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
     jaxb2 'javax.activation:javax.activation-api:1.2.0'
