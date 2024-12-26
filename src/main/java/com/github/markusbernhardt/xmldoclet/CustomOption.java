@@ -1,6 +1,9 @@
 package com.github.markusbernhardt.xmldoclet;
 
 import jdk.javadoc.doclet.Doclet;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -13,11 +16,13 @@ public class CustomOption implements Doclet.Option {
     private final String parameters;
 
     /**
-     * Creates a Custom {@link Doclet.Option} based on a {@link org.apache.commons.cli.Option} instance.
+     * Creates a Custom {@link Doclet.Option} based on a {@link org.apache.commons.cli.Option}
+     * instance.
+     *
      * @param cliOption Apache Commons CLI Option instance
      * @return the created {@link CustomOption}
      */
-    public static CustomOption of(org.apache.commons.cli.Option cliOption){
+    public static CustomOption of(org.apache.commons.cli.Option cliOption) {
         return new CustomOption(
                 cliOption.getArgs(),
                 cliOption.getDescription(),
@@ -25,13 +30,11 @@ public class CustomOption implements Doclet.Option {
                 cliOption.getArgName());
     }
 
-    public CustomOption(
-        final int argumentCount, final String description,
-        final List<String> names, final String parameters)
-    {
+    public CustomOption(final int argumentCount, final String description,
+            final List<String> names, final String parameters) {
         this.argumentCount = argumentCount;
         this.description = description;
-        this.names = names;
+        this.names = new ArrayList<>(names);
         this.parameters = parameters;
     }
 
@@ -52,8 +55,8 @@ public class CustomOption implements Doclet.Option {
 
     @Override
     public List<String> getNames() {
-        //return List.of("-customOption");
-        return names;
+        // return List.of("-customOption");
+        return Collections.unmodifiableList(names);
     }
 
     @Override
