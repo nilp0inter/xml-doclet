@@ -323,12 +323,8 @@ remotes {
 tasks.register('upload') {
     doFirst {
         if (findProperty("${project.name}.host") == null) {
-            println(
-                """
-                Property \"${project.name}.host\' not found.
-                Please define \"${project.name}.host\" in the Gradle configuration (e. g. \$HOME/.gradle/gradle.properties.
-                """
-            )
+            println('Property "${project.name}.host" not found.')
+            println('Please define "${project.name}.host" in the Gradle configuration (e. g. $HOME/.gradle/gradle.properties.')
         }
     }
     doLast {
