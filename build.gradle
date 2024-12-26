@@ -1,26 +1,26 @@
 import se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
 
 plugins {
-    id 'java-library'
-    id 'com.github.johnrengelman.shadow' version 'latest.release'
-    id 'maven-publish'
-    id 'signing'
+    id "java-library"
+    id "com.github.johnrengelman.shadow" version "latest.release"
+    id "maven-publish"
+    id "signing"
 
     // https://github.com/GradleUp/jaxb2
     // https://plugins.gradle.org/plugin/com.github.gradlecommunity.jaxb2
-    id("com.github.gradlecommunity.jaxb2") version "3.1.0"
+    id "com.github.gradlecommunity.jaxb2" version "3.1.0"
 
     id "com.github.spotbugs" version "latest.release"
     id "com.diffplug.spotless" version "latest.release"
-    id 'pmd'
-    id 'checkstyle'
+    id "pmd"
+    id "checkstyle"
 
     // Since we deal with XML libraries, we better scan for vulnerabilities
-    id 'org.owasp.dependencycheck' version "latest.release"
+    id "org.owasp.dependencycheck" version "latest.release"
     id 'org.sonatype.gradle.plugins.scan' version "latest.release"
 
     id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "latest.release"
-    id 'org.hidetake.ssh' version "latest.release"
+    id "org.hidetake.ssh" version "latest.release"
 }
 
 configurations {
@@ -323,7 +323,7 @@ tasks.register('upload') {
     doFirst {
         if (findProperty("${project.name}.host") == null) {
             println(
-                    """
+                """
                 Property \"${project.name}.host\' not found.
                 Please define \"${project.name}.host\" in the Gradle configuration (e. g. \$HOME/.gradle/gradle.properties.
                 """
