@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.manticore-projects.tools</groupId>
     <artifactId>xml-doclet</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
     <description>Doclet for writing XML file (instead of JavaDoc HTML)</description>
     <url>https://github.com/manticore-projects/xml-doclet</url>
 
