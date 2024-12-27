@@ -1,6 +1,9 @@
 package com.github.markusbernhardt.xmldoclet;
 
 import com.github.markusbernhardt.xmldoclet.xjc.Root;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import jdk.javadoc.doclet.Doclet;
 import jdk.javadoc.doclet.DocletEnvironment;
 import jdk.javadoc.doclet.Reporter;
@@ -8,11 +11,6 @@ import net.sf.saxon.s9api.*;
 import org.apache.commons.cli.*;
 
 import javax.lang.model.SourceVersion;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.transform.Source;
-import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.nio.charset.Charset;
@@ -132,7 +130,7 @@ public class XmlDoclet implements Doclet {
             XsltCompiler compiler = processor.newXsltCompiler();
 
             // Set the ClassLoader for the compiler to load resources from the classpath
-            compiler.setURIResolver(new ClasspathResourceURIResolver());
+            compiler.setResourceResolver(new ClasspathResourceURIResolver());
 
             // Create a XsltExecutable from the XSLT input stream
             XsltExecutable xsltExecutable = compiler.compile(new StreamSource(xsltInputStream));
@@ -152,17 +150,6 @@ public class XmlDoclet implements Doclet {
 
             // Transform the XML
             transformer.transform();
-        }
-    }
-
-    // ClasspathResourceURIResolver class for resolving resources from the classpath
-    private static class ClasspathResourceURIResolver implements URIResolver {
-        public Source resolve(String href, String base) {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(href);
-            if (inputStream != null) {
-                return new StreamSource(inputStream);
-            }
-            return null;
         }
     }
 
