@@ -1,14 +1,11 @@
 package com.github.markusbernhardt.xmldoclet;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.util.*;
+import com.github.markusbernhardt.xmldoclet.xjc.Root;
+import jdk.javadoc.doclet.Doclet;
+import jdk.javadoc.doclet.DocletEnvironment;
+import jdk.javadoc.doclet.Reporter;
+import net.sf.saxon.s9api.*;
+import org.apache.commons.cli.*;
 
 import javax.lang.model.SourceVersion;
 import javax.xml.bind.JAXBContext;
@@ -17,27 +14,11 @@ import javax.xml.bind.Marshaller;
 import javax.xml.transform.Source;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
-
-import jdk.javadoc.doclet.DocletEnvironment;
-import jdk.javadoc.doclet.Reporter;
-import org.apache.commons.cli.BasicParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-
-import com.github.markusbernhardt.xmldoclet.xjc.Root;
-
-import jdk.javadoc.doclet.Doclet;
-
-import net.sf.saxon.s9api.*;
-
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.*;
 import java.util.logging.Level;
-
-import static java.util.stream.Collectors.toSet;
+import java.util.logging.Logger;
 
 /**
  * Doclet class.
@@ -52,8 +33,7 @@ import static java.util.stream.Collectors.toSet;
  * TODO: Promissing (there is a PR for JDK 21): https://github.com/qaware/xsd2java-gradle-plugin
  */
 public class XmlDoclet implements Doclet {
-    private final static java.util.logging.Logger LOGGER =
-            java.util.logging.Logger.getLogger(XmlDoclet.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(XmlDoclet.class.getName());
 
     public static final String RESTRUCTURED_XSL = "/com/manticore/xsl/restructured.xsl";
     public static final String MARKDOWN_XSL = "/com/manticore/xsl/markdown.xsl";
@@ -64,107 +44,25 @@ public class XmlDoclet implements Doclet {
     static Root root;
 
     /**
-     * The Options instance to parse command line strings.
+     * The Options instance to parse command line strings,
+     * that defines the supported XMLDoclet {@link #options}.
      */
-    public final static Options CLI_OPTIONS;
+    public final Options cliOptions;
 
-    static {
-        CLI_OPTIONS = new Options();
+    /**
+     * Set of supported Doclet options,
+     * generated from the Apache Commons CLI Options.
+     * @see #cliOptions
+     */
+    private final Set<CustomOption> options;
 
-        OptionBuilder.withArgName("directory");
-        OptionBuilder.isRequired(false);
-        OptionBuilder.hasArg();
-        OptionBuilder.withDescription("Destination directory for output file.\nDefault: .");
-        CLI_OPTIONS.addOption(OptionBuilder.create("d"));
-
-        OptionBuilder.withArgName("encoding");
-        OptionBuilder.isRequired(false);
-        OptionBuilder.hasArg();
-        OptionBuilder.withDescription("Encoding of the output file.\nDefault: UTF8");
-        CLI_OPTIONS.addOption(OptionBuilder.create("docencoding"));
-
-        OptionBuilder.withArgName("dryrun");
-        OptionBuilder.isRequired(false);
-        OptionBuilder.hasArgs(0);
-        OptionBuilder
-                .withDescription("Parse javadoc, but don't write output file.\nDefault: false");
-        CLI_OPTIONS.addOption(OptionBuilder.create("dryrun"));
-
-        OptionBuilder.withArgName("rst");
-        OptionBuilder.isRequired(false);
-        OptionBuilder.hasArgs(0);
-        OptionBuilder
-                .withDescription(
-                        "Transform the XML into a Restructured Text file (*.rst).\nDefault: false");
-        CLI_OPTIONS.addOption(OptionBuilder.create("rst"));
-
-        OptionBuilder.withArgName("md");
-        OptionBuilder.isRequired(false);
-        OptionBuilder.hasArgs(0);
-        OptionBuilder
-                .withDescription("Transform the XML into a Markdown file (*.md).\nDefault: false");
-        CLI_OPTIONS.addOption(OptionBuilder.create("md"));
-
-        OptionBuilder.withArgName("docbook");
-        OptionBuilder.isRequired(false);
-        OptionBuilder.hasArgs(0);
-        OptionBuilder
-                .withDescription(
-                        "Transform the XML into a DocBook file (*.db.xml).\nDefault: false");
-        CLI_OPTIONS.addOption(OptionBuilder.create("docbook"));
-
-        OptionBuilder.withArgName("adoc");
-        OptionBuilder.isRequired(false);
-        OptionBuilder.hasArgs(0);
-        OptionBuilder
-                .withDescription(
-                        "Transform the XML into an Ascii Doctor file (*.adoc).\nDefault: false");
-        CLI_OPTIONS.addOption(OptionBuilder.create("adoc"));
-
-        OptionBuilder.withArgName("filename");
-        OptionBuilder.isRequired(false);
-        OptionBuilder.hasArgs(1);
-        OptionBuilder.withDescription("Name of the output file.\nDefault: javadoc.xml");
-        CLI_OPTIONS.addOption(OptionBuilder.create("filename"));
-
-        OptionBuilder.withArgName("basePackage");
-        OptionBuilder.isRequired(false);
-        OptionBuilder.hasArgs(1);
-        OptionBuilder.withDescription("Name of the base package.\n");
-        CLI_OPTIONS.addOption(OptionBuilder.create("basePackage"));
-
-        OptionBuilder.withArgName("doctitle");
-        OptionBuilder.isRequired(false);
-        OptionBuilder.hasArgs(1);
-        OptionBuilder.withDescription("Document Title\n");
-        CLI_OPTIONS.addOption(OptionBuilder.create("doctitle"));
-
-        OptionBuilder.withArgName("windowtitle");
-        OptionBuilder.isRequired(false);
-        OptionBuilder.hasArgs(1);
-        OptionBuilder.withDescription("Window Title\n");
-        CLI_OPTIONS.addOption(OptionBuilder.create("windowtitle"));
-
-        OptionBuilder.withArgName("noTimestamp");
-        OptionBuilder.isRequired(false);
-        OptionBuilder.hasArgs(0);
-        OptionBuilder.withDescription("No Timestamp.\n");
-        CLI_OPTIONS.addOption(OptionBuilder.create("notimestamp"));
-
-        // withFloatingToc
-        OptionBuilder.withArgName("withFloatingToc");
-        OptionBuilder.isRequired(false);
-        OptionBuilder.hasArgs(0);
-        OptionBuilder.withDescription("Renders a Floating TOC on the right side.\n");
-        CLI_OPTIONS.addOption(OptionBuilder.create("withFloatingToc"));
-    }
-
-    private final Set<Doclet.Option> options;
     private Reporter reporter;
     private PrintWriter stdout;
 
     public XmlDoclet() {
-        this.options = CLI_OPTIONS.getOptions().stream().map(CustomOption::of).collect(toSet());
+        final var supportedOptions = new SupportedOptions();
+        this.cliOptions = supportedOptions.get();
+        this.options = supportedOptions.toDocletOptions();
     }
 
     /**
@@ -218,7 +116,7 @@ public class XmlDoclet implements Doclet {
     }
 
     @Override
-    public Set<? extends Option> getSupportedOptions() {
+    public Set<? extends CustomOption> getSupportedOptions() {
         return options;
     }
 
@@ -239,17 +137,25 @@ public class XmlDoclet implements Doclet {
      */
     @Override
     public boolean run(final DocletEnvironment env) {
-        CommandLine commandLine = parseCommandLine(env.getOptions());
-        Parser parser = new Parser();
-        root = parser.parseRootDoc(env);
+        final var commandLine = parseCommandLine(getOptionsMatrix());
+        root = new Parser().parseRootDoc(env);
         save(commandLine, root);
         return true;
     }
 
-    public static void transform(InputStream xsltInputStream, File xmlFile, File outFile,
-            Map<String, String> parameters)
-            throws IOException, SaxonApiException {
+    /**
+     * {@return the two-dimensional array of options}
+     * Each line in the matrix represents a single option and its parameters.
+     */
+    private String[][] getOptionsMatrix() {
+        return getSupportedOptions().stream().map(CustomOption::getParameterArray).toArray(String[][]::new);
+    }
 
+    public static void transform(
+            final InputStream xsltInputStream,
+            final File xmlFile, final File outFile,
+            final Map<String, String> parameters)
+            throws IOException, SaxonApiException {
         try (InputStream xmlInputStream = new FileInputStream(xmlFile);
                 OutputStream output = new FileOutputStream(outFile);) {
             // Create a Saxon Processor
@@ -305,30 +211,30 @@ public class XmlDoclet implements Doclet {
      * @param commandLine the parsed command line arguments
      * @param root the document root
      */
-    public static void save(CommandLine commandLine, Root root) {
+    public static void save(final CommandLine commandLine, final Root root) {
         if (commandLine.hasOption("dryrun")) {
             return;
         }
 
-        String filename = commandLine.hasOption("filename")
+        final String filename = commandLine.hasOption("filename")
                 ? commandLine.getOptionValue("filename")
                 : "javadoc.xml";
 
-        String basename = filename.toLowerCase().endsWith(".xml")
+        final String basename = filename.toLowerCase().endsWith(".xml")
                 ? filename.substring(0, filename.length() - ".xml".length())
                 : filename;
 
-        File xmlFile = commandLine.hasOption("d")
+        final File xmlFile = commandLine.hasOption("d")
                 ? new File(commandLine.getOptionValue("d"), filename)
                 : new File(filename);
 
         try (
-                FileOutputStream fileOutputStream = new FileOutputStream(xmlFile);
-                BufferedOutputStream bufferedOutputStream =
-                        new BufferedOutputStream(fileOutputStream);) {
-            JAXBContext contextObj = JAXBContext.newInstance(Root.class);
+            var fileOutputStream = new FileOutputStream(xmlFile);
+            var bufferedOutputStream = new BufferedOutputStream(fileOutputStream)
+        ) {
+            final var contextObj = JAXBContext.newInstance(Root.class);
 
-            Marshaller marshaller = contextObj.createMarshaller();
+            final var marshaller = contextObj.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             if (commandLine.hasOption("docencoding")) {
                 marshaller.setProperty(Marshaller.JAXB_ENCODING,
@@ -342,19 +248,16 @@ public class XmlDoclet implements Doclet {
 
             LOGGER.info("Wrote XML to: " + xmlFile.getAbsolutePath());
 
-            HashMap<String, String> parameters = new HashMap<>();
-            for (Option o : commandLine.getOptions()) {
-                if (o.getValue() != null) {
-                    parameters.put(o.getArgName(), o.getValue());
-                } else {
-                    parameters.put(o.getArgName(), "true");
-                }
+            final Map<String, String> parameters = new HashMap<>();
+            for (final var option : commandLine.getOptions()) {
+                if (option.getValue() == null)
+                    parameters.put(option.getArgName(), "true");
+                else parameters.put(option.getArgName(), option.getValue());
             }
 
             if (commandLine.hasOption("rst")) {
                 File outFile = new File(xmlFile.getParent(), basename + ".rst");
-                try (InputStream inputStream =
-                        XmlDoclet.class.getResourceAsStream(RESTRUCTURED_XSL);) {
+                try (final var inputStream = XmlDoclet.class.getResourceAsStream(RESTRUCTURED_XSL);) {
                     transform(inputStream, xmlFile, outFile, parameters);
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, "Failed to write Restructured Text", ex);
@@ -363,9 +266,8 @@ public class XmlDoclet implements Doclet {
             }
 
             if (commandLine.hasOption("md")) {
-                File outFile = new File(xmlFile.getParent(), basename + ".md");
-                try (InputStream inputStream =
-                        XmlDoclet.class.getResourceAsStream(MARKDOWN_XSL);) {
+                final var outFile = new File(xmlFile.getParent(), basename + ".md");
+                try (final var inputStream = XmlDoclet.class.getResourceAsStream(MARKDOWN_XSL);) {
                     transform(inputStream, xmlFile, outFile, parameters);
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, "Failed to write Markdown", ex);
@@ -403,37 +305,25 @@ public class XmlDoclet implements Doclet {
     /**
      * Parse the given options.
      *
-     * @param optionsArrayArray The two dimensional array of options.
+     * @param optionsMatrix The two-dimensional array of options.
      * @return the parsed command line arguments.
      */
-    public static CommandLine parseCommandLine(String[][] optionsArrayArray) {
+    public CommandLine parseCommandLine(final String[][] optionsMatrix) {
         try {
-            List<String> argumentList = new ArrayList<String>();
-            for (String[] optionsArray : optionsArrayArray) {
+            final List<String> argumentList = new ArrayList<>();
+            for (final String[] optionsArray : optionsMatrix) {
                 argumentList.addAll(Arrays.asList(optionsArray));
             }
 
-            CommandLineParser commandLineParser = new BasicParser() {
-                @Override
-                protected void processOption(final String arg,
-                        @SuppressWarnings("rawtypes") final ListIterator iter)
-                        throws ParseException {
-                    boolean hasOption = getOptions().hasOption(arg);
-                    if (hasOption) {
-                        super.processOption(arg, iter);
-                    }
-                }
-            };
-            CommandLine commandLine =
-                    commandLineParser.parse(CLI_OPTIONS, argumentList.toArray(new String[] {}));
-            return commandLine;
-        } catch (ParseException e) {
-            PrintWriter printWriter = new PrintWriter(System.out, true, Charset.defaultCharset());
-            HelpFormatter helpFormatter = new HelpFormatter();
+            final CommandLineParser commandLineParser = new DefaultParser();
+            return commandLineParser.parse(cliOptions, argumentList.toArray(String[]::new), true);
+        } catch (final ParseException e) {
+            final var printWriter = new PrintWriter(System.out, true, Charset.defaultCharset());
+            final var helpFormatter = new HelpFormatter();
             helpFormatter.printHelp(printWriter, 74,
-                                    "javadoc -doclet " + XmlDoclet.class.getName() + " [options]",
-                                    null, CLI_OPTIONS, 1, 3, null, false);
-            return null;
+                                    "javadoc -doclet %s [options]".formatted(XmlDoclet.class.getName()),
+                                    null, cliOptions, 1, 3, null, false);
+            return CommandLine.builder().build();
         }
     }
 }

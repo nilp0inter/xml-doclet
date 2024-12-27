@@ -1,9 +1,5 @@
 package com.github.markusbernhardt.xmldoclet;
 
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.logging.Logger;
-
 import com.github.markusbernhardt.xmldoclet.xjc.Annotation;
 import com.github.markusbernhardt.xmldoclet.xjc.AnnotationArgument;
 import com.github.markusbernhardt.xmldoclet.xjc.AnnotationElement;
@@ -23,12 +19,20 @@ import com.github.markusbernhardt.xmldoclet.xjc.TagInfo;
 import com.github.markusbernhardt.xmldoclet.xjc.TypeInfo;
 import com.github.markusbernhardt.xmldoclet.xjc.TypeParameter;
 import com.github.markusbernhardt.xmldoclet.xjc.Wildcard;
+import com.sun.source.doctree.DocTree;
+import com.sun.source.util.DocTrees;
 import jdk.javadoc.doclet.DocletEnvironment;
 
 import javax.lang.model.element.*;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.WildcardType;
+import javax.lang.model.util.ElementFilter;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.logging.Logger;
 
 
 /**
@@ -43,6 +47,35 @@ public class Parser {
     protected Map<String, Package> packages = new TreeMap<String, Package>();
 
     protected ObjectFactory objectFactory = new ObjectFactory();
+    private DocTrees docTrees;
+
+    public Set<TypeElement> getClasses(final DocletEnvironment env) {
+        Set<? extends Element> elements = env.getIncludedElements();
+        return ElementFilter.typesIn(elements);
+    }
+
+    private String getJavaDoc(final Element element){
+        final var docCommentTree = docTrees.getDocCommentTree(element);
+        return docCommentTree == null ? "" : docCommentTree.getFullBody().toString();
+    }
+
+
+    /**
+     * {@return the package element of the class}
+     * @param classElement class to get its package
+     */
+    public PackageElement getPackageElement(final TypeElement classElement) {
+        return (PackageElement) classElement.getEnclosingElement();
+    }
+
+    /**
+     * {@return the tags inside a JavaDoc comment}
+     * @param element the Java element to get its JavaDoc tags
+     */
+    public List<? extends DocTree> getTags(final Element element) {
+        final var docCommentTree = docTrees.getDocCommentTree(element);
+        return docCommentTree == null ? List.of() : docCommentTree.getBlockTags();
+    }
 
     /**
      * The entry point into parsing the javadoc.
@@ -51,15 +84,16 @@ public class Parser {
      * @return The root node, containing everything parsed from javadoc doclet
      */
     public Root parseRootDoc(final DocletEnvironment env) {
-        Root rootNode = objectFactory.createRoot();
+        this.docTrees = env.getDocTrees();
+        final Root rootNode = objectFactory.createRoot();
 
-        for (ClassDoc classDoc : env.classes()) {
-            PackageDoc packageDoc = classDoc.containingPackage();
+        for (final TypeElement classDoc : getClasses(env)) {
+            final PackageElement packageDoc = getPackageElement(classDoc);
 
-            Package packageNode = packages.get(packageDoc.name());
+            final Package packageNode = packages.get(packageDoc.getQualifiedName().toString());
             if (packageNode == null) {
                 packageNode = parsePackage(packageDoc);
-                packages.put(packageDoc.name(), packageNode);
+                packages.put(packageDoc.getQualifiedName().toString(), packageNode);
                 rootNode.getPackage().add(packageNode);
             }
 
@@ -78,15 +112,15 @@ public class Parser {
         return rootNode;
     }
 
-    protected Package parsePackage(PackageDoc packageDoc) {
-        Package packageNode = objectFactory.createPackage();
-        packageNode.setName(packageDoc.name());
-        String comment = packageDoc.commentText();
-        if (comment.length() > 0) {
+    protected Package parsePackage(final PackageElement packageDoc) {
+        final Package packageNode = objectFactory.createPackage();
+        packageNode.setName(packageDoc.getQualifiedName().toString());
+        final String comment = getJavaDoc(packageDoc);
+        if (!comment.isEmpty()) {
             packageNode.setComment(comment);
         }
 
-        for (Tag tag : packageDoc.tags()) {
+        for (final DocTree tag : getTags(packageDoc)) {
             packageNode.getTag().add(parseTag(tag));
         }
 
@@ -520,25 +554,23 @@ public class Parser {
         return typeParameter;
     }
 
-    protected TagInfo parseTag(Tag tagDoc) {
-        TagInfo tagNode = objectFactory.createTagInfo();
-        tagNode.setName(tagDoc.kind());
-        tagNode.setText(tagDoc.text());
+    protected TagInfo parseTag(final DocTree tagDoc) {
+        final TagInfo tagNode = objectFactory.createTagInfo();
+        tagNode.setName(tagDoc.getKind().tagName);
+        tagNode.setText(tagDoc.toString());
         return tagNode;
     }
 
     /**
-     * Returns string representation of scope
-     *
-     * @param doc
-     * @return
+     * {@return string representation of the element scope}
+     * @param doc the element to get its scope
      */
     protected String parseScope(final Element doc) {
-        if (doc.isPrivate()) {
+        if (doc.getModifiers().contains(Modifier.PRIVATE)) {
             return "private";
-        } else if (doc.isProtected()) {
+        } else if (doc.getModifiers().contains(Modifier.PROTECTED)) {
             return "protected";
-        } else if (doc.isPublic()) {
+        } else if (doc.getModifiers().contains(Modifier.PUBLIC)) {
             return "public";
         }
 

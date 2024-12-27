@@ -64,6 +64,14 @@ public class CustomOption implements Doclet.Option {
         return parameters;
     }
 
+    /**
+     * Gets the list of parameters as an array of strings.
+     * @see #getParameters()
+     */
+    public String[] getParameterArray() {
+        return parameters.split(" ");
+    }
+
     @Override
     public boolean process(final String option, final List<String> arguments) {
         throw new UnsupportedOperationException("Not supported yet.");
