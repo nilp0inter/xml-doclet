@@ -5,6 +5,13 @@ out/
 .classpath
 .project
 .gradle
-.idea
 CHANGELOG.md
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# MacOS
+.DS_Store
+
 
