@@ -55,6 +55,7 @@
             <artifactId>commons-cli</artifactId>
             <version>1.9.0</version>
         </dependency>
+
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
@@ -70,6 +71,7 @@
             <artifactId>javax.activation-api</artifactId>
             <version>1.2.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
@@ -217,7 +219,7 @@
                 <configuration>
                     <schemaDirectory>${project.basedir}/src/main/resources</schemaDirectory>
                     <generatePackage>com.github.markusbernhardt.xmldoclet</generatePackage>
-                    <generateDirectory>${project.basedir}/src/main/java</generateDirectory>
+                    <generateDirectory>${project.build.directory}/generated-sources</generateDirectory>
                 </configuration>
             </plugin>
         </plugins>

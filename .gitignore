@@ -16,24 +16,5 @@ CHANGELOG.md
 
 # Files generated from the parsing of the javadoc.xsd using the JAXB maven plugin
 sun-jaxb.episode
-src/main/java/com/github/markusbernhardt/xmldoclet/Annotation.java
-src/main/java/com/github/markusbernhardt/xmldoclet/AnnotationArgument.java
-src/main/java/com/github/markusbernhardt/xmldoclet/AnnotationElement.java
-src/main/java/com/github/markusbernhardt/xmldoclet/AnnotationInstance.java
-src/main/java/com/github/markusbernhardt/xmldoclet/Class.java
-src/main/java/com/github/markusbernhardt/xmldoclet/Constructor.java
-src/main/java/com/github/markusbernhardt/xmldoclet/Enum.java
-src/main/java/com/github/markusbernhardt/xmldoclet/EnumConstant.java
-src/main/java/com/github/markusbernhardt/xmldoclet/Field.java
-src/main/java/com/github/markusbernhardt/xmldoclet/Interface.java
-src/main/java/com/github/markusbernhardt/xmldoclet/Method.java
-src/main/java/com/github/markusbernhardt/xmldoclet/MethodParameter.java
-src/main/java/com/github/markusbernhardt/xmldoclet/ObjectFactory.java
-src/main/java/com/github/markusbernhardt/xmldoclet/Package.java
-src/main/java/com/github/markusbernhardt/xmldoclet/Root.java
-src/main/java/com/github/markusbernhardt/xmldoclet/TagInfo.java
-src/main/java/com/github/markusbernhardt/xmldoclet/TypeInfo.java
-src/main/java/com/github/markusbernhardt/xmldoclet/TypeParameter.java
-src/main/java/com/github/markusbernhardt/xmldoclet/Wildcard.java
 
 
