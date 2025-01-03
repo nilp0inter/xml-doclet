@@ -18,16 +18,12 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Doclet class.
- *
- * @author markus
- * @see <a href=
- *      "https://docs.oracle.com/en/java/javase/21/docs/api/jdk.javadoc/jdk/javadoc/doclet/package-summary.html">Doclet
- *      API</a>
- * @see <a href="https://openjdk.org/groups/compiler/using-new-doclet.html">Using the new JDK 9
- *      Doclet API (refined in JDK 13)</a>
- */
+/// Doclet class.
+///
+/// - [Doclet API](https://docs.oracle.com/en/java/javase/21/docs/api/jdk.javadoc/jdk/javadoc/doclet/package-summary.html)
+/// - [Using the new JDK 9 Doclet API (refined in JDK 13)](https://openjdk.org/groups/compiler/using-new-doclet.html)
+///
+/// @author markus
 public class XmlDoclet implements Doclet {
     private static final Logger LOGGER = Logger.getLogger(XmlDoclet.class.getName());
 
