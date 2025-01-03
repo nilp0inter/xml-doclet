@@ -1,22 +1,24 @@
 package com.github.markusbernhardt.xmldoclet;
 
 import javax.lang.model.element.*;
-import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.*;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
  * @author Manoel Campos
  */
 public class TypeUtils {
-    private final Types typeUtils;
-    private final Elements elementUtils;
+    private final Types types;
+    private final Elements elements;
 
-    public TypeUtils(final Types typeUtils, final Elements elementUtils) {
-        this.typeUtils = typeUtils;
-        this.elementUtils = elementUtils;
+    public TypeUtils(final Types types, final Elements elements) {
+        this.types = types;
+        this.elements = elements;
     }
 
     public static String getMethodSignature(final ExecutableElement methodDoc) {
@@ -57,24 +59,92 @@ public class TypeUtils {
         return ElementFilter.methodsIn(classElement.getEnclosedElements());
     }
 
+    /**
+     * {@return a type as WildcardType if it is such a type, or null otherwise}
+     * @param typeMirror the type to get it as a wildcard type
+     */
+    public static WildcardType getWildcardType(final TypeMirror typeMirror) {
+        if (typeMirror.getKind() == TypeKind.WILDCARD) {
+            return (WildcardType) typeMirror;
+        }
+
+        return null;
+    }
+
+    /**
+     * {@return a type as ParameterizedType if it is such a type, or null otherwise}
+     * @param typeMirror the type to get it as a wildcard type
+     */
+    public static ParameterizedType getParameterizedType(TypeMirror typeMirror) {
+        if (typeMirror instanceof DeclaredType declaredType) {
+            if (!declaredType.getTypeArguments().isEmpty()) {
+                return (ParameterizedType) declaredType;
+            }
+        }
+
+        return null;
+    }
+
+    public static boolean isArray(final TypeMirror typeMirror) {
+        return typeMirror.getKind() == TypeKind.ARRAY;
+    }
+
+    /**
+     * {@return the dimension of type that represents an array, or an empty string if the type is not an array}
+     * @param typeMirror the array type to get its dimension
+     */
+    public static String getArrayDimension(TypeMirror typeMirror) {
+        int dimension = -1;
+        while (typeMirror.getKind() == TypeKind.ARRAY) {
+            dimension++;
+            typeMirror = ((ArrayType) typeMirror).getComponentType();
+        }
+        return dimension == -1 ? "" : String.valueOf(dimension+1);
+    }
+
+    /**
+     * {@return a TypeMirror for a given Type instance}
+     * @param type the {@link Type} instance to get a {@link TypeMirror}
+     */
+    public TypeMirror getTypeMirror(final Type type) {
+        if (type instanceof java.lang.Class<?>) {
+            return elements.getTypeElement(((java.lang.Class<?>) type).getCanonicalName()).asType();
+        }
+
+        throw new IllegalArgumentException("Unsupported type: " + type);
+    }
+
+    /**
+     * Gets the enum constants from a TypeElement that represents an enum type.
+     *
+     * @param enumTypeElement the TypeElement representing the enum type
+     * @return a list of VariableElement representing the enum constants
+     */
+    public static List<VariableElement> getEnumConstants(final TypeElement enumTypeElement) {
+        return ElementFilter.fieldsIn(enumTypeElement.getEnclosedElements())
+                            .stream()
+                            .filter(field -> field.getKind() == ElementKind.ENUM_CONSTANT)
+                            .toList();
+    }
+
     public boolean isException(final TypeElement typeElement) {
-        final TypeMirror exceptionType = elementUtils.getTypeElement("java.lang.Exception").asType();
-        return typeUtils.isSubtype(typeElement.asType(), exceptionType);
+        final TypeMirror exceptionType = elements.getTypeElement("java.lang.Exception").asType();
+        return types.isSubtype(typeElement.asType(), exceptionType);
     }
 
     public boolean isError(final TypeElement typeElement) {
-        final TypeMirror errorType = elementUtils.getTypeElement("java.lang.Error").asType();
-        return typeUtils.isSubtype(typeElement.asType(), errorType);
+        final TypeMirror errorType = elements.getTypeElement("java.lang.Error").asType();
+        return types.isSubtype(typeElement.asType(), errorType);
     }
 
     public boolean isSerializable(final TypeElement typeElement) {
-        final TypeMirror serializableType = elementUtils.getTypeElement("java.io.Serializable").asType();
-        return typeUtils.isSubtype(typeElement.asType(), serializableType);
+        final TypeMirror serializableType = elements.getTypeElement("java.io.Serializable").asType();
+        return types.isSubtype(typeElement.asType(), serializableType);
     }
 
     public boolean isExternalizable(final TypeElement typeElement) {
-        final TypeMirror serializableType = elementUtils.getTypeElement("java.io.Externalizable").asType();
-        return typeUtils.isSubtype(typeElement.asType(), serializableType);
+        final TypeMirror serializableType = elements.getTypeElement("java.io.Externalizable").asType();
+        return types.isSubtype(typeElement.asType(), serializableType);
     }
 
 }

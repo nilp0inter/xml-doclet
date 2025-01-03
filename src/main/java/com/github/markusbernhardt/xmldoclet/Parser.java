@@ -129,7 +129,7 @@ public class Parser {
     }
 
     /**
-     * Parse an annotation's JavaDoc.
+     * Parse the JavaDoc of an annotation type.
      *
      * @param annotationTypeDoc A AnnotationTypeDoc instance
      * @return the annotation node
@@ -148,7 +148,7 @@ public class Parser {
 
         annotationNode.setScope(parseScope(annotationTypeDoc));
 
-        for (final ExecutableElement annotationTypeElementDoc : annotationTypeDoc.elements()) {
+        for (final ExecutableElement annotationTypeElementDoc : getMethods(annotationTypeDoc)) {
             final var annotationElement = parseAnnotationTypeElementDoc(annotationTypeElementDoc);
             annotationNode.getElement().add(annotationElement);
         }
@@ -204,27 +204,28 @@ public class Parser {
             LOGGER.severe("Add to the classpath the class/jar that defines this annotation.");
         }
 
-        for (final AnnotationValue elementValuesPair : annotationDesc.elementValues()) {
+        for (final var elementValuesPair : annotationDesc.getElementValues().entrySet()) {
             final AnnotationArgument annotationArgumentNode = objectFactory.createAnnotationArgument();
-            annotationArgumentNode.setName(elementValuesPair.element().name());
+            annotationArgumentNode.setName(elementValuesPair.getKey().getSimpleName().toString());
 
-            final TypeMirror annotationArgumentType = elementValuesPair.element().returnType();
+            final TypeMirror annotationArgumentType = elementValuesPair.getKey().asType();
             annotationArgumentNode.setType(parseTypeInfo(annotationArgumentType));
             annotationArgumentNode.setPrimitive(annotationArgumentType.getKind().isPrimitive());
-            annotationArgumentNode.setArray(annotationArgumentType.dimension().length() > 0);
+            annotationArgumentNode.setArray(isArray(annotationArgumentType));
 
-            final Object objValue = elementValuesPair.value().value();
+            final Object objValue = elementValuesPair.getValue();
             switch (objValue) {
                 case AnnotationValue[] annotationValues -> {
-                    for (AnnotationValue annotationValue : annotationValues) {
-                        if (annotationValue.value() instanceof AnnotationMirror annoDesc)
+                    for (final AnnotationValue annotationValue : annotationValues) {
+                        if (annotationValue.getValue() instanceof AnnotationMirror annoDesc)
                             annotationArgumentNode.getAnnotation().add(parseAnnotationDesc(annoDesc, programElement));
-                        else annotationArgumentNode.getValue().add(annotationValue.value().toString());
+                        else annotationArgumentNode.getValue().add(annotationValue.getValue().toString());
                     }
                 }
                 case VariableElement fieldDoc -> annotationArgumentNode.getValue().add(fieldDoc.getSimpleName().toString());
                 case TypeElement classDoc -> annotationArgumentNode.getValue().add(classDoc.getQualifiedName().toString());
-                case null, default -> annotationArgumentNode.getValue().add(objValue.toString());
+                case null -> {}
+                default -> annotationArgumentNode.getValue().add(objValue.toString());
             }
 
             annotationInstanceNode.getArgument().add(annotationArgumentNode);
@@ -256,7 +257,7 @@ public class Parser {
             enumNode.getInterface().add(parseTypeInfo(interfaceType));
         }
 
-        for (final VariableElement field : classDoc.enumConstants()) {
+        for (final VariableElement field : getEnumConstants(classDoc)) {
             enumNode.getConstant().add(parseEnumConstant(field));
         }
 
@@ -521,21 +522,21 @@ public class Parser {
     protected TypeInfo parseTypeInfo(final TypeMirror type) {
         final TypeInfo typeInfoNode = objectFactory.createTypeInfo();
         typeInfoNode.setQualified(type.toString());
-        final String dimension = type.dimension();
+        final String dimension = getArrayDimension(type);
         if (!dimension.isEmpty()) {
             typeInfoNode.setDimension(dimension);
         }
 
-        final WildcardType wildcard = type.asWildcardType();
+        final WildcardType wildcard = getWildcardType(type);
         if (wildcard != null) {
             typeInfoNode.setWildcard(parseWildcard(wildcard));
         }
 
-        final ParameterizedType parameterized = type.asParameterizedType();
+        final ParameterizedType parameterized = getParameterizedType(type);
 
         if (parameterized != null) {
             for (final Type typeArgument : parameterized.getActualTypeArguments()) {
-                typeInfoNode.getGeneric().add(parseTypeInfo(typeArgument));
+                typeInfoNode.getGeneric().add(parseTypeInfo(typeUtils.getTypeMirror(typeArgument)));
             }
         }
 
