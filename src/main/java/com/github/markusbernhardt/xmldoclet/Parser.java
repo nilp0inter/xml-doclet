@@ -33,8 +33,7 @@ public class Parser {
     private final static Logger LOGGER = Logger.getLogger(Parser.class.getName());
 
     /**
-     * A map where each key is a package name and each value is an object containing a package's
-     * JavaDoc.
+     * A map where each key is a package name and each value is an object containing a package's JavaDoc.
      */
     protected Map<String, Package> packages = new TreeMap<>();
 

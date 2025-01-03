@@ -16,8 +16,7 @@ public class CustomOption implements Doclet.Option {
     private final String parameters;
 
     /**
-     * Creates a Custom {@link Doclet.Option} based on a {@link org.apache.commons.cli.Option}
-     * instance.
+     * Creates a Custom {@link Doclet.Option} based on a {@link org.apache.commons.cli.Option} instance.
      *
      * @param cliOption Apache Commons CLI Option instance
      * @return the created {@link CustomOption}

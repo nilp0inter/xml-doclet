@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 /// Doclet class.
 ///
-/// - [Doclet API](https://docs.oracle.com/en/java/javase/21/docs/api/jdk.javadoc/jdk/javadoc/doclet/package-summary.html)
+/// - [Doclet](https://docs.oracle.com/en/java/javase/21/docs/api/jdk.javadoc/jdk/javadoc/doclet/package-summary.html)
 /// - [Using the new JDK 9 Doclet API (refined in JDK 13)](https://openjdk.org/groups/compiler/using-new-doclet.html)
 ///
 /// @author markus
@@ -36,8 +36,7 @@ public class XmlDoclet implements Doclet {
     private Root root;
 
     /**
-     * The Options instance to parse command line strings, that defines the supported XMLDoclet
-     * {@link #options}.
+     * The Options instance to parse command line strings, that defines the supported XMLDoclet {@link #options}.
      */
     public final Options cliOptions;
 
@@ -96,8 +95,8 @@ public class XmlDoclet implements Doclet {
     }
 
     /**
-     * {@return the two-dimensional array of options} Each line in the matrix represents a single
-     * option and its parameters.
+     * {@return the two-dimensional array of options}
+     * Each line in the matrix represents a single option and its parameters.
      */
     private String[][] getOptionsMatrix() {
         return getSupportedOptions().stream().map(CustomOption::getParameterArray)

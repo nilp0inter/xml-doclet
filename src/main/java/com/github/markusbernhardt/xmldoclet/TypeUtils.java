@@ -96,8 +96,7 @@ public class TypeUtils {
     }
 
     /**
-     * {@return the dimension of type that represents an array, or an empty string if the type is
-     * not an array}
+     * {@return the dimension of type that represents an array, or an empty string if the type is not an array}
      * 
      * @param typeMirror the array type to get its dimension
      */
