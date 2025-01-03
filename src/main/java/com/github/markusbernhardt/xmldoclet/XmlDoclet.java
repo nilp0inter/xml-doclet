@@ -109,7 +109,7 @@ public class XmlDoclet implements Doclet {
             throws IOException, SaxonApiException {
         try (var xmlInputStream = new FileInputStream(xmlFile); var output = new FileOutputStream(outFile)) {
             // Create a Saxon Processor
-            final Processor processor = new Processor(false);
+            final var processor = new Processor(false);
 
             // Create a DocumentBuilder
             final DocumentBuilder docBuilder = processor.newDocumentBuilder();
@@ -131,7 +131,7 @@ public class XmlDoclet implements Doclet {
             transformer.setInitialContextNode(xmlDoc);
 
             // Set the result destination
-            Serializer serializer = processor.newSerializer(output);
+            final var serializer = processor.newSerializer(output);
             transformer.setDestination(serializer);
 
             for (final Map.Entry<String, String> parameter : parameters.entrySet()) {
