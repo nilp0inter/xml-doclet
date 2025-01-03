@@ -97,7 +97,7 @@ public class XmlDoclet implements Doclet {
     @Override
     public boolean run(final DocletEnvironment env) {
         final var commandLine = parseCommandLine(getOptionsMatrix());
-        root = new Parser().parseRootDoc(env);
+        root = new Parser(env).parseRootDoc();
         save(commandLine, root);
         return true;
     }
