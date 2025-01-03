@@ -218,7 +218,7 @@
                 </executions>
                 <configuration>
                     <schemaDirectory>${project.basedir}/src/main/resources</schemaDirectory>
-                    <generatePackage>com.github.markusbernhardt.xmldoclet</generatePackage>
+                    <generatePackage>com.github.markusbernhardt.xmldoclet.xjc</generatePackage>
                     <generateDirectory>${project.build.directory}/generated-sources</generateDirectory>
                 </configuration>
             </plugin>
