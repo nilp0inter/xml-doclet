@@ -27,6 +27,7 @@ public class TypeUtils {
 
     /**
      * Checks if an element has a given modifier
+     * 
      * @param element the element to check
      * @param modifier the modifier we are looking for in the element
      * @return true if the modifier is present in the element declaration, false otherwise
@@ -37,6 +38,7 @@ public class TypeUtils {
 
     /**
      * {@return the list of fields from a given class element}
+     * 
      * @param classElement the class to get its fields
      */
     public static List<VariableElement> getFields(final TypeElement classElement) {
@@ -45,6 +47,7 @@ public class TypeUtils {
 
     /**
      * {@return the list of constructors from a given class element}
+     * 
      * @param classElement the class to get its constructors
      */
     public static List<ExecutableElement> getConstructors(final TypeElement classElement) {
@@ -53,6 +56,7 @@ public class TypeUtils {
 
     /**
      * {@return the list of methods from a given class element}
+     * 
      * @param classElement the class to get its methods
      */
     public static List<ExecutableElement> getMethods(final TypeElement classElement) {
@@ -61,6 +65,7 @@ public class TypeUtils {
 
     /**
      * {@return a type as WildcardType if it is such a type, or null otherwise}
+     * 
      * @param typeMirror the type to get it as a wildcard type
      */
     public static WildcardType getWildcardType(final TypeMirror typeMirror) {
@@ -73,6 +78,7 @@ public class TypeUtils {
 
     /**
      * {@return a type as ParameterizedType if it is such a type, or null otherwise}
+     * 
      * @param typeMirror the type to get it as a wildcard type
      */
     public static ParameterizedType getParameterizedType(TypeMirror typeMirror) {
@@ -90,7 +96,9 @@ public class TypeUtils {
     }
 
     /**
-     * {@return the dimension of type that represents an array, or an empty string if the type is not an array}
+     * {@return the dimension of type that represents an array, or an empty string if the type is
+     * not an array}
+     * 
      * @param typeMirror the array type to get its dimension
      */
     public static String getArrayDimension(final TypeMirror typeMirror) {
@@ -100,11 +108,12 @@ public class TypeUtils {
             dimension++;
             type = ((ArrayType) type).getComponentType();
         }
-        return dimension == -1 ? "" : String.valueOf(dimension+1);
+        return dimension == -1 ? "" : String.valueOf(dimension + 1);
     }
 
     /**
      * {@return a TypeMirror for a given Type instance}
+     * 
      * @param type the {@link Type} instance to get a {@link TypeMirror}
      */
     public TypeMirror getTypeMirror(final Type type) {
@@ -123,9 +132,9 @@ public class TypeUtils {
      */
     public static List<VariableElement> getEnumConstants(final TypeElement enumTypeElement) {
         return ElementFilter.fieldsIn(enumTypeElement.getEnclosedElements())
-                            .stream()
-                            .filter(field -> field.getKind() == ElementKind.ENUM_CONSTANT)
-                            .toList();
+                .stream()
+                .filter(field -> field.getKind() == ElementKind.ENUM_CONSTANT)
+                .toList();
     }
 
     public boolean isException(final TypeElement typeElement) {
@@ -139,12 +148,14 @@ public class TypeUtils {
     }
 
     public boolean isSerializable(final TypeElement typeElement) {
-        final TypeMirror serializableType = elements.getTypeElement("java.io.Serializable").asType();
+        final TypeMirror serializableType =
+                elements.getTypeElement("java.io.Serializable").asType();
         return types.isSubtype(typeElement.asType(), serializableType);
     }
 
     public boolean isExternalizable(final TypeElement typeElement) {
-        final TypeMirror serializableType = elements.getTypeElement("java.io.Externalizable").asType();
+        final TypeMirror serializableType =
+                elements.getTypeElement("java.io.Externalizable").asType();
         return types.isSubtype(typeElement.asType(), serializableType);
     }
 

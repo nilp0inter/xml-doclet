@@ -33,7 +33,8 @@ public class Parser {
     private final static Logger LOGGER = Logger.getLogger(Parser.class.getName());
 
     /**
-     * A map where each key is a package name and each value is an object containing a package's JavaDoc.
+     * A map where each key is a package name and each value is an object containing a package's
+     * JavaDoc.
      */
     protected Map<String, Package> packages = new TreeMap<>();
 
@@ -60,13 +61,14 @@ public class Parser {
         return ElementFilter.typesIn(elements);
     }
 
-    private String getJavaDoc(final Element element){
+    private String getJavaDoc(final Element element) {
         final var docCommentTree = docTrees.getDocCommentTree(element);
         return docCommentTree == null ? "" : docCommentTree.getFullBody().toString();
     }
 
     /**
      * {@return the tags inside a JavaDoc comment}
+     * 
      * @param element the Java element to get its JavaDoc tags
      */
     public List<? extends DocTree> getTags(final Element element) {
@@ -86,7 +88,8 @@ public class Parser {
             final Package packageNode = getPackage(rootNode, classDoc);
 
             switch (classDoc.getKind()) {
-                case ANNOTATION_TYPE -> packageNode.getAnnotation().add(parseAnnotationTypeDoc(classDoc));
+                case ANNOTATION_TYPE ->
+                    packageNode.getAnnotation().add(parseAnnotationTypeDoc(classDoc));
                 case ENUM -> packageNode.getEnum().add(parseEnum(classDoc));
                 case INTERFACE -> packageNode.getInterface().add(parseInterface(classDoc));
                 default -> packageNode.getClazz().add(parseClass(classDoc));
@@ -98,6 +101,7 @@ public class Parser {
 
     /**
      * {@return the package node for the given class element}
+     * 
      * @param rootNode
      * @param classElement class to get its package
      */
@@ -144,7 +148,7 @@ public class Parser {
         }
 
         // TODO: What does isIncluded() mean?
-        //annotationNode.setIncluded(annotationTypeDoc.isIncluded());
+        // annotationNode.setIncluded(annotationTypeDoc.isIncluded());
 
         annotationNode.setScope(parseScope(annotationTypeDoc));
 
@@ -154,7 +158,8 @@ public class Parser {
         }
 
         for (final AnnotationMirror annotationDesc : annotationTypeDoc.getAnnotationMirrors()) {
-            final var annotationInstance = parseAnnotationDesc(annotationDesc, annotationTypeDoc.getQualifiedName());
+            final var annotationInstance =
+                    parseAnnotationDesc(annotationDesc, annotationTypeDoc.getQualifiedName());
             annotationNode.getAnnotation().add(annotationInstance);
         }
 
@@ -171,7 +176,8 @@ public class Parser {
      * @param annotationTypeElementDoc A AnnotationTypeElementDoc instance
      * @return the annotation element node
      */
-    protected AnnotationElement parseAnnotationTypeElementDoc(final ExecutableElement annotationTypeElementDoc) {
+    protected AnnotationElement parseAnnotationTypeElementDoc(
+            final ExecutableElement annotationTypeElementDoc) {
         final AnnotationElement annotationElementNode = objectFactory.createAnnotationElement();
         annotationElementNode.setName(annotationTypeElementDoc.getSimpleName().toString());
         annotationElementNode.setQualified(annotationTypeElementDoc.getSimpleName().toString());
@@ -192,20 +198,24 @@ public class Parser {
      * @param programElement the name of a program element to parse
      * @return representation of annotations
      */
-    protected AnnotationInstance parseAnnotationDesc(final AnnotationMirror annotationDesc, final Name programElement) {
+    protected AnnotationInstance parseAnnotationDesc(final AnnotationMirror annotationDesc,
+            final Name programElement) {
         final AnnotationInstance annotationInstanceNode = objectFactory.createAnnotationInstance();
 
         try {
             final var annotTypeInfo = annotationDesc.getAnnotationType();
             annotationInstanceNode.setName(annotTypeInfo.asElement().getSimpleName().toString());
-            annotationInstanceNode.setQualified(annotTypeInfo.asElement().getSimpleName().toString());
+            annotationInstanceNode
+                    .setQualified(annotTypeInfo.asElement().getSimpleName().toString());
         } catch (ClassCastException castException) {
-            LOGGER.severe("Unable to obtain type data about an annotation found on: " + programElement);
+            LOGGER.severe(
+                    "Unable to obtain type data about an annotation found on: " + programElement);
             LOGGER.severe("Add to the classpath the class/jar that defines this annotation.");
         }
 
         for (final var elementValuesPair : annotationDesc.getElementValues().entrySet()) {
-            final AnnotationArgument annotationArgumentNode = objectFactory.createAnnotationArgument();
+            final AnnotationArgument annotationArgumentNode =
+                    objectFactory.createAnnotationArgument();
             annotationArgumentNode.setName(elementValuesPair.getKey().getSimpleName().toString());
 
             final TypeMirror annotationArgumentType = elementValuesPair.getKey().asType();
@@ -218,15 +228,20 @@ public class Parser {
                 case AnnotationValue[] annotationValues -> {
                     for (final AnnotationValue annotationValue : annotationValues) {
                         if (annotationValue.getValue() instanceof AnnotationMirror annoDesc) {
-                            annotationArgumentNode.getAnnotation().add(parseAnnotationDesc(annoDesc, programElement));
+                            annotationArgumentNode.getAnnotation()
+                                    .add(parseAnnotationDesc(annoDesc, programElement));
                         } else {
-                            annotationArgumentNode.getValue().add(annotationValue.getValue().toString());
+                            annotationArgumentNode.getValue()
+                                    .add(annotationValue.getValue().toString());
                         }
                     }
                 }
-                case VariableElement fieldDoc -> annotationArgumentNode.getValue().add(fieldDoc.getSimpleName().toString());
-                case TypeElement classDoc -> annotationArgumentNode.getValue().add(classDoc.getQualifiedName().toString());
-                case null -> {}
+                case VariableElement fieldDoc ->
+                    annotationArgumentNode.getValue().add(fieldDoc.getSimpleName().toString());
+                case TypeElement classDoc ->
+                    annotationArgumentNode.getValue().add(classDoc.getQualifiedName().toString());
+                case null -> {
+                }
                 default -> annotationArgumentNode.getValue().add(objValue.toString());
             }
 
@@ -246,7 +261,7 @@ public class Parser {
         }
 
         // TODO: What does isIncluded() mean?
-        //enumNode.setIncluded(classDoc.isIncluded());
+        // enumNode.setIncluded(classDoc.isIncluded());
 
         enumNode.setScope(parseScope(classDoc));
 
@@ -264,7 +279,8 @@ public class Parser {
         }
 
         for (final AnnotationMirror annotationDesc : classDoc.getAnnotationMirrors()) {
-            enumNode.getAnnotation().add(parseAnnotationDesc(annotationDesc, classDoc.getQualifiedName()));
+            enumNode.getAnnotation()
+                    .add(parseAnnotationDesc(annotationDesc, classDoc.getQualifiedName()));
         }
 
         for (final DocTree tag : getTags(classDoc)) {
@@ -289,7 +305,8 @@ public class Parser {
         }
 
         for (final AnnotationMirror annotationDesc : fieldDoc.getAnnotationMirrors()) {
-            enumConstant.getAnnotation().add(parseAnnotationDesc(annotationDesc, fieldDoc.getSimpleName()));
+            enumConstant.getAnnotation()
+                    .add(parseAnnotationDesc(annotationDesc, fieldDoc.getSimpleName()));
         }
 
         for (final DocTree tag : getTags(fieldDoc)) {
@@ -309,7 +326,7 @@ public class Parser {
         }
 
         // TODO: What does isIncluded() mean?
-        //interfaceNode.setIncluded(classDoc.isIncluded());
+        // interfaceNode.setIncluded(classDoc.isIncluded());
 
         interfaceNode.setScope(parseScope(classDoc));
 
@@ -355,7 +372,7 @@ public class Parser {
         classNode.setExternalizable(typeUtils.isExternalizable(classDoc));
 
         // TODO: What does isIncluded() mean?
-        //classNode.setIncluded(classDoc.isIncluded());
+        // classNode.setIncluded(classDoc.isIncluded());
 
         classNode.setSerializable(typeUtils.isSerializable(classDoc));
         classNode.setScope(parseScope(classDoc));
@@ -378,7 +395,8 @@ public class Parser {
         }
 
         for (final AnnotationMirror annotationDesc : classDoc.getAnnotationMirrors()) {
-            final var annotationInstance = parseAnnotationDesc(annotationDesc, classDoc.getQualifiedName());
+            final var annotationInstance =
+                    parseAnnotationDesc(annotationDesc, classDoc.getQualifiedName());
             classNode.getAnnotation().add(annotationInstance);
         }
 
@@ -409,7 +427,7 @@ public class Parser {
         constructorNode.setScope(parseScope(constructorDoc));
 
         // TODO: What does isIncluded() mean?
-        //constructorNode.setIncluded(constructorDoc.isIncluded());
+        // constructorNode.setIncluded(constructorDoc.isIncluded());
 
         constructorNode.setFinal(hasModifier(constructorDoc, Modifier.FINAL));
         constructorNode.setNative(hasModifier(constructorDoc, Modifier.NATIVE));
@@ -427,7 +445,8 @@ public class Parser {
         }
 
         for (final AnnotationMirror annotationDesc : constructorDoc.getAnnotationMirrors()) {
-            final var annotationInstance = parseAnnotationDesc(annotationDesc, constructorDoc.getSimpleName());
+            final var annotationInstance =
+                    parseAnnotationDesc(annotationDesc, constructorDoc.getSimpleName());
             constructorNode.getAnnotation().add(annotationInstance);
         }
 
@@ -451,7 +470,7 @@ public class Parser {
         methodNode.setAbstract(hasModifier(methodDoc, Modifier.ABSTRACT));
 
         // TODO: What does isIncluded() mean?
-        //methodNode.setIncluded(methodDoc.isIncluded());
+        // methodNode.setIncluded(methodDoc.isIncluded());
 
         methodNode.setFinal(hasModifier(methodDoc, Modifier.FINAL));
         methodNode.setNative(hasModifier(methodDoc, Modifier.NATIVE));
@@ -470,7 +489,8 @@ public class Parser {
         }
 
         for (final AnnotationMirror annotationDesc : methodDoc.getAnnotationMirrors()) {
-            final var annotationInstance = parseAnnotationDesc(annotationDesc, methodDoc.getSimpleName());
+            final var annotationInstance =
+                    parseAnnotationDesc(annotationDesc, methodDoc.getSimpleName());
             methodNode.getAnnotation().add(annotationInstance);
         }
 
@@ -487,7 +507,8 @@ public class Parser {
         parameterMethodNode.setType(parseTypeInfo(parameter.asType()));
 
         for (final AnnotationMirror annotationDesc : parameter.getAnnotationMirrors()) {
-            final var annotationInstance = parseAnnotationDesc(annotationDesc, parameter.getSimpleName());
+            final var annotationInstance =
+                    parseAnnotationDesc(annotationDesc, parameter.getSimpleName());
             parameterMethodNode.getAnnotation().add(annotationInstance);
         }
 
@@ -511,7 +532,8 @@ public class Parser {
         fieldNode.setConstant(requireNonNullElse(fieldDoc.getConstantValue(), "").toString());
 
         for (final AnnotationMirror annotationDesc : fieldDoc.getAnnotationMirrors()) {
-            fieldNode.getAnnotation().add(parseAnnotationDesc(annotationDesc, fieldDoc.getSimpleName()));
+            fieldNode.getAnnotation()
+                    .add(parseAnnotationDesc(annotationDesc, fieldDoc.getSimpleName()));
         }
 
         for (final DocTree tag : getTags(fieldDoc)) {
@@ -587,6 +609,7 @@ public class Parser {
 
     /**
      * {@return string representation of the element scope}
+     * 
      * @param doc the element to get its scope
      */
     protected String parseScope(final Element doc) {

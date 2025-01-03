@@ -22,13 +22,18 @@ import java.util.logging.Logger;
  * Doclet class.
  *
  * @author markus
- * @see <a href="https://docs.oracle.com/en/java/javase/21/docs/api/jdk.javadoc/jdk/javadoc/doclet/package-summary.html">Doclet API</a>
- * @see <a href="https://openjdk.org/groups/compiler/using-new-doclet.html">Using the new JDK 9 Doclet API (refined in JDK 13)</a>
- * TODO: <a href="https://chatgpt.com/c/675c3ead-dbc8-800a-bac5-46df2b61bef3">JDK 13 Doclet API migration</a>
- * TODO: <a href="https://stackoverflow.com/questions/77082583/migrating-to-java-17-how-to-get-gradle-to-generate-java-classes-from-xsd">JAXB XJC Gradle JDK 17</a>
- * TODO: https://stackoverflow.com/questions/70423036/cxf-codegen-plugin-in-gradle
- * TODO: https://www.baeldung.com/gradle-build-to-maven-pom
- * TODO: Promissing (there is a PR for JDK 21): https://github.com/qaware/xsd2java-gradle-plugin
+ * @see <a href=
+ *      "https://docs.oracle.com/en/java/javase/21/docs/api/jdk.javadoc/jdk/javadoc/doclet/package-summary.html">Doclet
+ *      API</a>
+ * @see <a href="https://openjdk.org/groups/compiler/using-new-doclet.html">Using the new JDK 9
+ *      Doclet API (refined in JDK 13)</a> TODO:
+ *      <a href="https://chatgpt.com/c/675c3ead-dbc8-800a-bac5-46df2b61bef3">JDK 13 Doclet API
+ *      migration</a> TODO: <a href=
+ *      "https://stackoverflow.com/questions/77082583/migrating-to-java-17-how-to-get-gradle-to-generate-java-classes-from-xsd">JAXB
+ *      XJC Gradle JDK 17</a> TODO:
+ *      https://stackoverflow.com/questions/70423036/cxf-codegen-plugin-in-gradle TODO:
+ *      https://www.baeldung.com/gradle-build-to-maven-pom TODO: Promissing (there is a PR for JDK
+ *      21): https://github.com/qaware/xsd2java-gradle-plugin
  */
 public class XmlDoclet implements Doclet {
     private static final Logger LOGGER = Logger.getLogger(XmlDoclet.class.getName());
@@ -42,14 +47,14 @@ public class XmlDoclet implements Doclet {
     private Root root;
 
     /**
-     * The Options instance to parse command line strings,
-     * that defines the supported XMLDoclet {@link #options}.
+     * The Options instance to parse command line strings, that defines the supported XMLDoclet
+     * {@link #options}.
      */
     public final Options cliOptions;
 
     /**
-     * Set of supported Doclet options,
-     * generated from the Apache Commons CLI Options.
+     * Set of supported Doclet options, generated from the Apache Commons CLI Options.
+     * 
      * @see #cliOptions
      */
     private final Set<CustomOption> options;
@@ -85,8 +90,7 @@ public class XmlDoclet implements Doclet {
     }
 
     /**
-     * Processes the JavaDoc documentation.
-     * This method is required for all doclets.
+     * Processes the JavaDoc documentation. This method is required for all doclets.
      *
      * @see Doclet#run(DocletEnvironment)
      *
@@ -103,11 +107,12 @@ public class XmlDoclet implements Doclet {
     }
 
     /**
-     * {@return the two-dimensional array of options}
-     * Each line in the matrix represents a single option and its parameters.
+     * {@return the two-dimensional array of options} Each line in the matrix represents a single
+     * option and its parameters.
      */
     private String[][] getOptionsMatrix() {
-        return getSupportedOptions().stream().map(CustomOption::getParameterArray).toArray(String[][]::new);
+        return getSupportedOptions().stream().map(CustomOption::getParameterArray)
+                .toArray(String[][]::new);
     }
 
     public static void transform(
@@ -177,9 +182,8 @@ public class XmlDoclet implements Doclet {
                 : new File(filename);
 
         try (
-            var fileOutputStream = new FileOutputStream(xmlFile);
-            var bufferedOutputStream = new BufferedOutputStream(fileOutputStream)
-        ) {
+                var fileOutputStream = new FileOutputStream(xmlFile);
+                var bufferedOutputStream = new BufferedOutputStream(fileOutputStream)) {
             final var contextObj = JAXBContext.newInstance(Root.class);
 
             final var marshaller = contextObj.createMarshaller();
@@ -207,7 +211,8 @@ public class XmlDoclet implements Doclet {
 
             if (commandLine.hasOption("rst")) {
                 File outFile = new File(xmlFile.getParent(), basename + ".rst");
-                try (final var inputStream = XmlDoclet.class.getResourceAsStream(RESTRUCTURED_XSL);) {
+                try (final var inputStream =
+                        XmlDoclet.class.getResourceAsStream(RESTRUCTURED_XSL);) {
                     transform(inputStream, xmlFile, outFile, parameters);
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, "Failed to write Restructured Text", ex);
@@ -256,8 +261,8 @@ public class XmlDoclet implements Doclet {
             final var printWriter = new PrintWriter(System.out, true, Charset.defaultCharset());
             final var helpFormatter = new HelpFormatter();
             helpFormatter.printHelp(printWriter, 74,
-                                    "javadoc -doclet %s [options]".formatted(XmlDoclet.class.getName()),
-                                    null, cliOptions, 1, 3, null, false);
+                    "javadoc -doclet %s [options]".formatted(XmlDoclet.class.getName()),
+                    null, cliOptions, 1, 3, null, false);
             return CommandLine.builder().build();
         }
     }

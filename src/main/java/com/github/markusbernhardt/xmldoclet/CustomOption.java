@@ -66,6 +66,7 @@ public class CustomOption implements Doclet.Option {
 
     /**
      * Gets the list of parameters as an array of strings.
+     * 
      * @see #getParameters()
      */
     public String[] getParameterArray() {
