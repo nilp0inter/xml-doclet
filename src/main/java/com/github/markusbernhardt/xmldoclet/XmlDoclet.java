@@ -186,7 +186,7 @@ public class XmlDoclet implements Doclet {
 
             LOGGER.info("Wrote XML to: " + xmlFile.getAbsolutePath());
 
-            final Map<String, String> parameters = new HashMap<>();
+            final var parameters = new HashMap<String, String>();
             for (final var option : commandLine.getOptions()) {
                 if (option.getValue() == null) {
                     parameters.put(option.getArgName(), "true");
