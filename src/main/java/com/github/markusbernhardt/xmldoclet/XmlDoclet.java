@@ -99,8 +99,7 @@ public class XmlDoclet implements Doclet {
      * Each line in the matrix represents a single option and its parameters.
      */
     private String[][] getOptionsMatrix() {
-        return getSupportedOptions().stream().map(CustomOption::getParameterArray)
-                .toArray(String[][]::new);
+        return getSupportedOptions().stream().map(CustomOption::getParameterArray).toArray(String[][]::new);
     }
 
     public static void transform(
@@ -108,26 +107,25 @@ public class XmlDoclet implements Doclet {
             final File xmlFile, final File outFile,
             final Map<String, String> parameters)
             throws IOException, SaxonApiException {
-        try (InputStream xmlInputStream = new FileInputStream(xmlFile);
-                OutputStream output = new FileOutputStream(outFile);) {
+        try (var xmlInputStream = new FileInputStream(xmlFile); var output = new FileOutputStream(outFile)) {
             // Create a Saxon Processor
-            Processor processor = new Processor(false);
+            final Processor processor = new Processor(false);
 
             // Create a DocumentBuilder
-            DocumentBuilder docBuilder = processor.newDocumentBuilder();
+            final DocumentBuilder docBuilder = processor.newDocumentBuilder();
 
             // Parse the XML input
-            XdmNode xmlDoc = docBuilder.build(new StreamSource(xmlInputStream));
+            final XdmNode xmlDoc = docBuilder.build(new StreamSource(xmlInputStream));
 
             // Create a XsltCompiler
-            XsltCompiler compiler = processor.newXsltCompiler();
+            final XsltCompiler compiler = processor.newXsltCompiler();
 
             // Set the ClassLoader for the compiler to load resources from the classpath
             compiler.setResourceResolver(new ClasspathResourceURIResolver());
 
             // Create a XsltExecutable from the XSLT input stream
-            XsltExecutable xsltExecutable = compiler.compile(new StreamSource(xsltInputStream));
-            XsltTransformer transformer = xsltExecutable.load();
+            final XsltExecutable xsltExecutable = compiler.compile(new StreamSource(xsltInputStream));
+            final XsltTransformer transformer = xsltExecutable.load();
 
             // Set the source document
             transformer.setInitialContextNode(xmlDoc);
@@ -136,9 +134,10 @@ public class XmlDoclet implements Doclet {
             Serializer serializer = processor.newSerializer(output);
             transformer.setDestination(serializer);
 
-            for (Map.Entry<String, String> parameter : parameters.entrySet()) {
-                transformer.setParameter(new QName(parameter.getKey()),
-                        new XdmAtomicValue(parameter.getValue()));
+            for (final Map.Entry<String, String> parameter : parameters.entrySet()) {
+                final var name = new QName(parameter.getKey());
+                final var values = new XdmAtomicValue(parameter.getValue());
+                transformer.setParameter(name, values);
             }
 
             // Transform the XML
@@ -181,7 +180,6 @@ public class XmlDoclet implements Doclet {
                         commandLine.getOptionValue("docencoding"));
             }
 
-
             marshaller.marshal(root, bufferedOutputStream);
             bufferedOutputStream.flush();
             fileOutputStream.flush();
@@ -198,9 +196,8 @@ public class XmlDoclet implements Doclet {
             }
 
             if (commandLine.hasOption("rst")) {
-                File outFile = new File(xmlFile.getParent(), basename + ".rst");
-                try (final var inputStream =
-                        XmlDoclet.class.getResourceAsStream(RESTRUCTURED_XSL);) {
+                final var outFile = new File(xmlFile.getParent(), basename + ".rst");
+                try (final var inputStream = XmlDoclet.class.getResourceAsStream(RESTRUCTURED_XSL)) {
                     transform(inputStream, xmlFile, outFile, parameters);
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, "Failed to write Restructured Text", ex);
@@ -238,12 +235,12 @@ public class XmlDoclet implements Doclet {
      */
     public CommandLine parseCommandLine(final String[][] optionsMatrix) {
         try {
-            final List<String> argumentList = new ArrayList<>();
+            final var argumentList = new ArrayList<String>();
             for (final String[] optionsArray : optionsMatrix) {
                 argumentList.addAll(Arrays.asList(optionsArray));
             }
 
-            final CommandLineParser commandLineParser = new DefaultParser();
+            final var commandLineParser = new DefaultParser();
             return commandLineParser.parse(cliOptions, argumentList.toArray(String[]::new), true);
         } catch (final ParseException e) {
             final var printWriter = new PrintWriter(System.out, true, Charset.defaultCharset());

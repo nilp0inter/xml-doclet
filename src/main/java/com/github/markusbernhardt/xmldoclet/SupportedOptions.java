@@ -51,23 +51,25 @@ final class SupportedOptions {
     }
 
     private void newOneArgOption(final String optionName, final String description) {
-        final var option = Option.builder(optionName)
-                .argName(optionName)
+        final var parsedOptionName = parseOptionName(optionName);
+        final var option = Option.builder(parsedOptionName)
+                .argName(parsedOptionName)
                 .required(false)
                 .numberOfArgs(1)
                 .desc(description)
                 .build();
+
         cliOptions.addOption(option);
     }
 
-    private void newArgOption(final String optionName, final String argName,
-            final String description) {
+    private void newArgOption(final String optionName, final String argName, final String description) {
         final var option = Option.builder(parseOptionName(optionName))
                 .argName(parseOptionName(argName))
                 .required(false)
                 .hasArg()
                 .desc(description)
                 .build();
+
         cliOptions.addOption(option);
     }
 
@@ -83,6 +85,7 @@ final class SupportedOptions {
                 .hasArg(false)
                 .desc(description)
                 .build();
+
         cliOptions.addOption(option);
     }
 }

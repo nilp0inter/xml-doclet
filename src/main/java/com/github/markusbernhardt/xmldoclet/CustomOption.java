@@ -1,6 +1,7 @@
 package com.github.markusbernhardt.xmldoclet;
 
 import jdk.javadoc.doclet.Doclet;
+import org.apache.commons.cli.Option;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +22,7 @@ public class CustomOption implements Doclet.Option {
      * @param cliOption Apache Commons CLI Option instance
      * @return the created {@link CustomOption}
      */
-    public static CustomOption of(org.apache.commons.cli.Option cliOption) {
+    public static CustomOption of(final Option cliOption) {
         return new CustomOption(
                 cliOption.getArgs(),
                 cliOption.getDescription(),
@@ -29,7 +30,8 @@ public class CustomOption implements Doclet.Option {
                 cliOption.getArgName());
     }
 
-    public CustomOption(final int argumentCount, final String description,
+    public CustomOption(
+            final int argumentCount, final String description,
             final List<String> names, final String parameters) {
         this.argumentCount = argumentCount;
         this.description = description;
@@ -65,7 +67,7 @@ public class CustomOption implements Doclet.Option {
 
     /**
      * Gets the list of parameters as an array of strings.
-     * 
+     *
      * @see #getParameters()
      */
     public String[] getParameterArray() {
