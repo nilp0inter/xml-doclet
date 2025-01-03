@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
+import static com.github.markusbernhardt.xmldoclet.TypeUtils.*;
 import static java.util.Objects.requireNonNullElse;
 
 /**
@@ -412,7 +413,7 @@ public class Parser {
         constructorNode.setStatic(hasModifier(constructorDoc, Modifier.STATIC));
         constructorNode.setSynchronized(hasModifier(constructorDoc, Modifier.SYNCHRONIZED));
         constructorNode.setVarArgs(constructorDoc.isVarArgs());
-        constructorNode.setSignature(TypeUtils.getMethodSignature(constructorDoc));
+        constructorNode.setSignature(getMethodSignature(constructorDoc));
 
         for (final VariableElement parameter : constructorDoc.getParameters()) {
             constructorNode.getParameter().add(parseMethodParameter(parameter));
@@ -454,7 +455,7 @@ public class Parser {
         methodNode.setStatic(hasModifier(methodDoc, Modifier.STATIC));
         methodNode.setSynchronized(hasModifier(methodDoc, Modifier.SYNCHRONIZED));
         methodNode.setVarArgs(methodDoc.isVarArgs());
-        methodNode.setSignature(TypeUtils.getMethodSignature(methodDoc));
+        methodNode.setSignature(getMethodSignature(methodDoc));
         methodNode.setReturn(parseTypeInfo(methodDoc.getReturnType()));
 
         for (final VariableElement parameter : methodDoc.getParameters()) {
@@ -488,40 +489,6 @@ public class Parser {
         }
 
         return parameterMethodNode;
-    }
-
-    /**
-     * Checks if an element has a given modifier
-     * @param element the element to check
-     * @param modifier the modifier we are looking for in the element
-     * @return true if the modifier is present in the element declaration, false otherwise
-     */
-    public boolean hasModifier(final Element element, final Modifier modifier) {
-        return element.getModifiers().contains(modifier);
-    }
-
-    /**
-     * {@return the list of fields from a given class element}
-     * @param classElement the class to get its fields
-     */
-    private List<VariableElement> getFields(final TypeElement classElement) {
-        return ElementFilter.fieldsIn(classElement.getEnclosedElements());
-    }
-
-    /**
-     * {@return the list of constructors from a given class element}
-     * @param classElement the class to get its constructors
-     */
-    private List<ExecutableElement> getConstructors(final TypeElement classElement) {
-        return ElementFilter.constructorsIn(classElement.getEnclosedElements());
-    }
-
-    /**
-     * {@return the list of methods from a given class element}
-     * @param classElement the class to get its methods
-     */
-    private List<ExecutableElement> getMethods(final TypeElement classElement) {
-        return ElementFilter.methodsIn(classElement.getEnclosedElements());
     }
 
     protected Field parseField(final VariableElement fieldDoc) {
