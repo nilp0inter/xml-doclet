@@ -29,13 +29,6 @@ import java.util.logging.Logger;
  *      Doclet API (refined in JDK 13)</a>
  */
 public class XmlDoclet implements Doclet {
-    /*
-     * TODO: <a href="https://chatgpt.com/c/675c3ead-dbc8-800a-bac5-46df2b61bef3">JDK 13 Doclet API migration</a>
-     * TODO: <a href="https://stackoverflow.com/questions/77082583/migrating-to-java-17-how-to-get-gradle-to-generate-java-classes-from-xsd">JAXB XJC Gradle JDK 17</a>
-     * TODO: https://stackoverflow.com/questions/70423036/cxf-codegen-plugin-in-gradle
-     * TODO: https://www.baeldung.com/gradle-build-to-maven-pom
-     * TODO: Promissing (there is a PR for JDK 21): https://github.com/qaware/xsd2java-gradle-plugin
-     */
     private static final Logger LOGGER = Logger.getLogger(XmlDoclet.class.getName());
 
     public static final String RESTRUCTURED_XSL = "/com/manticore/xsl/restructured.xsl";
