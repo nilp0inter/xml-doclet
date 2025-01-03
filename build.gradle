@@ -1,0 +1,351 @@
+import se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
+
+plugins {
+    id "java-library"
+    // https://github.com/GradleUp/shadow
+    id "com.gradleup.shadow" version "8.3.5"
+    id "maven-publish"
+    id "signing"
+
+    // https://github.com/GradleUp/jaxb2
+    // https://plugins.gradle.org/plugin/com.github.gradlecommunity.jaxb2
+    id "com.github.gradlecommunity.jaxb2" version "3.1.0"
+
+    id "com.github.spotbugs" version "latest.release"
+    id "com.diffplug.spotless" version "latest.release"
+    id "pmd"
+    id "checkstyle"
+
+    // Since we deal with XML libraries, we better scan for vulnerabilities
+    id "org.owasp.dependencycheck" version "latest.release"
+    id 'org.sonatype.gradle.plugins.scan' version "latest.release"
+
+    id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "latest.release"
+    id "org.hidetake.ssh" version "latest.release"
+}
+
+configurations {
+    xmlDoclet
+
+    configureEach {
+        resolutionStrategy {
+            force 'org.apache.logging.log4j:log4j-api:2.+'
+            force 'org.apache.logging.log4j:log4j-core:2.+'
+            force 'org.apache.logging.log4j:log4j-slf4j-impl:2.+'
+            force 'org.apache.logging.log4j:log4j-jul:2.+'
+            force 'org.slf4j:slf4j-log4j12:2.+'
+            force 'xerces:xercesImpl:+'
+            force 'xalan:xalan:+'
+            force 'org.dom4j:dom4j:+'
+
+            // avoid vulnerable optional artifacts
+            exclude(group: 'org.jdom')
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    api 'commons-cli:commons-cli:1.9.0'
+    api 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+
+
+    // We need to export this as API explicitly and fix the Versions
+    // or else the Doclet will silently(!) not generate the output
+    api 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
+    api 'javax.activation:javax.activation-api:1.2.0'
+
+    // default JAXB2 libs added by the com.github.gradlecommunity.jaxb2 plugin (https://github.com/GradleUp/jaxb2)
+    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-runtime:2.0.12' // 1.11.1 fails build (current version is 2.0.12)
+    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-ant:1.11.1'
+    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics:1.11.1'
+
+    jaxb2 'org.glassfish.jaxb:jaxb-xjc:4.0.5'
+    jaxb2 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
+    jaxb2 'javax.activation:javax.activation-api:1.2.0'
+
+    testImplementation 'org.slf4j:slf4j-simple:2.0.16'
+    testImplementation 'junit:junit:+'
+
+    // https://mvnrepository.com/artifact/net.sf.saxon/Saxon-HE
+    api 'net.sf.saxon:Saxon-HE:12.5'
+
+    // Java Doc in XML Format
+    xmlDoclet 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+    xmlDoclet 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
+    xmlDoclet 'javax.activation:javax.activation-api:1.2.0'
+    xmlDoclet 'com.manticore-projects.tools:xml-doclet:+'
+}
+
+tasks.register('versionTask', CustomVersionTask)
+version = tasks.named('versionTask').get().getVersion(true)
+group = 'com.manticore-projects.tools'
+description = 'XML Doclet'
+
+
+publish {
+    dependsOn(check)
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'XML Doclet'
+                description = 'Doclet for writing XML file (instead of JavaDoc HTML)'
+                url = 'https://github.com/manticore-projects/xml-doclet'
+                licenses {
+                    license {
+                        name = 'The Apache Software License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'mbe'
+                        name = 'Markus Bernhardt'
+                        email = 'markus.bernhardt@me.comt'
+                    }
+                    developer {
+                        id = 'are'
+                        name = 'Andreas Reichel'
+                        email = 'andreas@manticore-projects.com'
+                    }
+                    developer {
+                        id = 'vha'
+                        name = 'Vojtěch Habarta'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/manticore-projects/xml-doclet.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:manticore-projects/xml-doclet.git'
+                    url = 'https://github.com/manticore-projects/xml-doclet.git'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name "ossrh"
+
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl= "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials(PasswordCredentials)
+        }
+        maven {
+            name = "GitHubPackages"
+
+            url = uri("https://maven.pkg.github.com/manticore-projects/xml-doclet")
+            credentials(PasswordCredentials)
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+
+    sourceCompatibility(JavaVersion.VERSION_21)
+    targetCompatibility(JavaVersion.VERSION_21)
+
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
+jar {
+    manifest {
+        attributes('Main-Class': 'com.github.markusbernhardt.xmldoclet.XmlDoclet')
+    }
+}
+
+shadowJar {
+    minimize()
+}
+
+jaxb2 {
+    // JAXB XJC: JAXB Binding Compiler
+    xjc {
+      'xmldoclet-classes' {
+        basePackage = 'com.github.markusbernhardt.xmldoclet.xjc'
+        schema = 'src/main/xjc/javadoc.xsd'
+        encoding = 'UTF-8'
+        generatedSourcesDir = "${project.layout.buildDirectory}/generated/sources/java/main/xjc"
+        additionalArgs = '-extension'
+      }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "${project.buildDir}/generated/sources/java/main"
+        }
+    }
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+    options.addBooleanOption("Xdoclint:none", true)
+}
+
+tasks.register('xmldoc', Javadoc) {
+    dependsOn(jar)
+    source = sourceSets.main.allJava
+
+    // beware: Gradle deletes this folder automatically and there is no switch-off
+    destinationDir = reporting.file("xmlDoclet")
+    options.docletpath = configurations.xmlDoclet.files.asType(List)
+    options.doclet = "com.github.markusbernhardt.xmldoclet.XmlDoclet"
+    title = "API $version"
+    options.addBooleanOption("rst", true)
+    options.addBooleanOption("withFloatingToc", true)
+    options.addStringOption("basePackage", "com.github.markusbernhardt.xmldoclet")
+
+    doLast {
+        copy {
+            from reporting.file("xmlDoclet/javadoc.rst")
+            into "${projectDir}/src/site/sphinx"
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Javadoc).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+
+spotbugsMain {
+    reports {
+        html {
+            required.set(true)
+            outputLocation.set(file("build/reports/spotbugs/main/spotbugs.html"))
+            stylesheet = 'fancy-hist.xsl'
+        }
+    }
+}
+
+spotbugs {
+    // fail only on P1 and without the net.sf.jsqlparser.parser.*
+    excludeFilter = file("config/spotbugs/spotBugsExcludeFilter.xml")
+
+    // do not run over the test, although we should do that eventually
+    spotbugsTest.enabled = false
+}
+
+pmd {
+    consoleOutput = false
+    //toolVersion = "6.46.0"
+
+    sourceSets = [sourceSets.main]
+
+    // clear the ruleset in order to use configured rules only
+    ruleSets = []
+
+    //rulesMinimumPriority = 1
+    ruleSetFiles = files("config/pmd/ruleset.xml")
+
+    pmdMain {
+        excludes = [
+                "build/generated/*"
+        ]
+    }
+}
+
+tasks.configureEach { task ->
+    if(task.name.contains("compileJaxb2Java")) {
+        task.enabled = false
+    }
+}
+
+checkstyle {
+    sourceSets = [sourceSets.main, sourceSets.test]
+    configFile =rootProject.file('config/checkstyle/checkstyle.xml')
+}
+
+spotless {
+    // optional: limit format enforcement to just the files changed by this feature branch
+    ratchetFrom 'origin/master'
+
+    format 'misc', {
+        // define the files to apply `misc` to
+        target '*.rst', '*.md', '.gitignore'
+        // define the steps to apply to those files
+        trimTrailingWhitespace()
+        indentWithSpaces(4) // or spaces. Takes an integer argument if you don't like 4
+        endWithNewline()
+    }
+    java {
+        indentWithSpaces(4)
+        eclipse().configFile('config/formatter/eclipse-java-google-style.xml')
+    }
+}
+
+tasks.withType(Checkstyle).configureEach {
+    reports {
+        xml.required = false
+        html.required = true
+    }
+}
+
+remotes {
+    webServer {
+        host = findProperty("${project.name}.host")
+        user = findProperty("${project.name}.username")
+        identity = new File("${System.properties['user.home']}/.ssh/id_rsa")
+    }
+}
+
+tasks.register('upload') {
+    doFirst {
+        if (findProperty("${project.name}.host") == null) {
+            println('Property "${project.name}.host" not found.')
+            println('Please define "${project.name}.host" in the Gradle configuration (e. g. $HOME/.gradle/gradle.properties.')
+        }
+    }
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                def versionStable = tasks.named('versionTask').get().getVersion(false)
+                execute "mkdir -p download/${project.name}-${versionStable}"
+                for (File file: fileTree(include:['*.jar'], dir:"${project.buildDir}/libs").collect()) {
+                    put from: file, into: "download/${project.name}-${versionStable}"
+                }
+
+                // share the two relevant resources for download
+                put from: "${projectDir}/src/main/resources/com/manticore/floating_toc.css", into: "download/${project.name}-${versionStable}"
+                put from: "${projectDir}/src/main/resources/com/manticore/floating_toc.js", into: "download/${project.name}-${versionStable}"
+            }
+        }
+    }
+}
+
+tasks.register('gitChangelogTask', GitChangelogTask) {
+    fromRepo = file("$projectDir")
+    file = new File("${projectDir}/src/site/sphinx/changelog.md")
+    fromRef = "1.0"
+}
