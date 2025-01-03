@@ -7,9 +7,8 @@ plugins {
     id "maven-publish"
     id "signing"
 
-    // https://github.com/GradleUp/jaxb2
-    // https://plugins.gradle.org/plugin/com.github.gradlecommunity.jaxb2
-    id "com.github.gradlecommunity.jaxb2" version "3.1.0"
+    // https://github.com/qaware/xsd2java-gradle-plugin
+    id "de.qaware.gradle.plugin.xsd2java" version "4.0.0"
 
     id "com.github.spotbugs" version "latest.release"
     id "com.diffplug.spotless" version "latest.release"
@@ -58,15 +57,6 @@ dependencies {
     // or else the Doclet will silently(!) not generate the output
     api 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
     api 'javax.activation:javax.activation-api:1.2.0'
-
-    // default JAXB2 libs added by the com.github.gradlecommunity.jaxb2 plugin (https://github.com/GradleUp/jaxb2)
-    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-runtime:2.0.12' // 1.11.1 fails build (current version is 2.0.12)
-    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-ant:1.11.1'
-    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics:1.11.1'
-
-    jaxb2 'org.glassfish.jaxb:jaxb-xjc:4.0.5'
-    jaxb2 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
-    jaxb2 'javax.activation:javax.activation-api:1.2.0'
 
     testImplementation 'org.slf4j:slf4j-simple:2.0.16'
     testImplementation 'junit:junit:+'
@@ -181,23 +171,25 @@ shadowJar {
     minimize()
 }
 
-jaxb2 {
+xsd2java {
     // JAXB XJC: JAXB Binding Compiler
-    xjc {
-      'xmldoclet-classes' {
-        basePackage = 'com.github.markusbernhardt.xmldoclet.xjc'
-        schema = 'src/main/xjc/javadoc.xsd'
-        encoding = 'UTF-8'
-        generatedSourcesDir = "${project.layout.buildDirectory}/generated/sources/java/main/xjc"
-        additionalArgs = '-extension'
-      }
+    // https://github.com/qaware/xsd2java-gradle-plugin
+    schemas {
+        javadoc {
+            packageName = 'com.github.markusbernhardt.xmldoclet.xjc'
+            schemaDirPath = file('src/main/resources/xjc').toPath()
+        }
     }
+
+    extension = true
+    arguments ['-verbose']
+    outputDir = project.layout.buildDirectory.dir("generated/sources/java/main/xjc").get().asFile
 }
 
 sourceSets {
     main {
         java {
-            srcDir "${project.buildDir}/generated/sources/java/main"
+            srcDir project.layout.buildDirectory.dir("generated/sources/java/main").get().asFile
         }
     }
 }
@@ -207,6 +199,10 @@ javadoc {
         options.addBooleanOption('html5', true)
     }
     options.addBooleanOption("Xdoclint:none", true)
+}
+
+tasks.named('sourcesJar') {
+    dependsOn tasks.named('xsd2javaJavadoc')
 }
 
 tasks.register('xmldoc', Javadoc) {
