@@ -298,6 +298,7 @@ spotless {
     java {
         indentWithSpaces(4)
         eclipse().configFile('config/formatter/eclipse-java-google-style.xml')
+        target 'src/**/*.java'
     }
 }
 
