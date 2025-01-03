@@ -39,7 +39,7 @@ public class XmlDoclet implements Doclet {
     /**
      * The parsed object model. Used in unit tests.
      */
-    static Root root;
+    private Root root;
 
     /**
      * The Options instance to parse command line strings,
@@ -76,7 +76,7 @@ public class XmlDoclet implements Doclet {
 
     @Override
     public Set<? extends CustomOption> getSupportedOptions() {
-        return options;
+        return Collections.unmodifiableSet(options);
     }
 
     @Override
@@ -159,7 +159,7 @@ public class XmlDoclet implements Doclet {
      * @param commandLine the parsed command line arguments
      * @param root the document root
      */
-    public static void save(final CommandLine commandLine, final Root root) {
+    public void save(final CommandLine commandLine, final Root root) {
         if (commandLine.hasOption("dryrun")) {
             return;
         }
