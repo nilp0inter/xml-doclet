@@ -93,11 +93,12 @@ public class TypeUtils {
      * {@return the dimension of type that represents an array, or an empty string if the type is not an array}
      * @param typeMirror the array type to get its dimension
      */
-    public static String getArrayDimension(TypeMirror typeMirror) {
+    public static String getArrayDimension(final TypeMirror typeMirror) {
         int dimension = -1;
-        while (typeMirror.getKind() == TypeKind.ARRAY) {
+        var type = typeMirror;
+        while (type.getKind() == TypeKind.ARRAY) {
             dimension++;
-            typeMirror = ((ArrayType) typeMirror).getComponentType();
+            type = ((ArrayType) type).getComponentType();
         }
         return dimension == -1 ? "" : String.valueOf(dimension+1);
     }

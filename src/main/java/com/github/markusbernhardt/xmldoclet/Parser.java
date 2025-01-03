@@ -1,9 +1,9 @@
 package com.github.markusbernhardt.xmldoclet;
 
+import com.github.markusbernhardt.xmldoclet.xjc.*;
 import com.github.markusbernhardt.xmldoclet.xjc.Class;
 import com.github.markusbernhardt.xmldoclet.xjc.Enum;
 import com.github.markusbernhardt.xmldoclet.xjc.Package;
-import com.github.markusbernhardt.xmldoclet.xjc.*;
 import com.sun.source.doctree.DocTree;
 import com.sun.source.util.DocTrees;
 import jdk.javadoc.doclet.DocletEnvironment;
@@ -217,9 +217,11 @@ public class Parser {
             switch (objValue) {
                 case AnnotationValue[] annotationValues -> {
                     for (final AnnotationValue annotationValue : annotationValues) {
-                        if (annotationValue.getValue() instanceof AnnotationMirror annoDesc)
+                        if (annotationValue.getValue() instanceof AnnotationMirror annoDesc) {
                             annotationArgumentNode.getAnnotation().add(parseAnnotationDesc(annoDesc, programElement));
-                        else annotationArgumentNode.getValue().add(annotationValue.getValue().toString());
+                        } else {
+                            annotationArgumentNode.getValue().add(annotationValue.getValue().toString());
+                        }
                     }
                 }
                 case VariableElement fieldDoc -> annotationArgumentNode.getValue().add(fieldDoc.getSimpleName().toString());

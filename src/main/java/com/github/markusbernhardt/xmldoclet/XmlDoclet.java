@@ -198,9 +198,11 @@ public class XmlDoclet implements Doclet {
 
             final Map<String, String> parameters = new HashMap<>();
             for (final var option : commandLine.getOptions()) {
-                if (option.getValue() == null)
+                if (option.getValue() == null) {
                     parameters.put(option.getArgName(), "true");
-                else parameters.put(option.getArgName(), option.getValue());
+                } else {
+                    parameters.put(option.getArgName(), option.getValue());
+                }
             }
 
             if (commandLine.hasOption("rst")) {
