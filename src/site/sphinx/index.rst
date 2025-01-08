@@ -1,3 +1,7 @@
+.. meta::
+   :description: Java Doclet for writing XML, Restructured Text or Markdown from JavaDoc Source Comments
+   :keywords: javadoc, doclet, xml, restructured text, sphinx, markdown
+
 ######################################
 XMLDoclet
 ######################################

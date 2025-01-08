@@ -2,6 +2,12 @@
 
 Changelog of xml-doclet.
 
+## 1.3.0 (2023-05-21)
+
+### Features
+
+-  Add Floating TOC ([c6374](https://github.com/vojtechhabarta/xml-doclet/commit/c6374f43a0e978c) Andreas Reichel)  
+
 ## 1.2.1 (2023-05-14)
 
 ### Features

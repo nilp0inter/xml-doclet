@@ -10,7 +10,7 @@ You will need to have ``JDK 11`` or ``JDK 17`` installed.
 
 .. tab:: Maven
 
-.. code-block:: shell
+  .. code-block:: shell
 
         git clone https://github.com/manticore-projects/xml-doclet.git
         cd xml-doclet
@@ -21,7 +21,7 @@ You will need to have ``JDK 11`` or ``JDK 17`` installed.
   .. code-block:: shell
 
         git clone https://github.com/manticore-projects/xml-doclet.git
-        cd JDBCParquetWriter
+        cd xml-doclet
         gradle publishToMavenLocal
 
 
