@@ -1,24 +1,26 @@
 import se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
 
 plugins {
-    id 'java-library'
-    id 'com.github.johnrengelman.shadow' version 'latest.release'
-    id 'maven-publish'
-    id 'signing'
+    id "java-library"
+    // https://github.com/GradleUp/shadow
+    id "com.gradleup.shadow" version "8.3.5"
+    id "maven-publish"
+    id "signing"
 
-    id("com.github.gradlecommunity.jaxb2") version "3.1.0"
+    // https://github.com/qaware/xsd2java-gradle-plugin
+    id "de.qaware.gradle.plugin.xsd2java" version "4.0.0"
 
     id "com.github.spotbugs" version "latest.release"
     id "com.diffplug.spotless" version "latest.release"
-    id 'pmd'
-    id 'checkstyle'
+    id "pmd"
+    id "checkstyle"
 
     // Since we deal with XML libraries, we better scan for vulnerabilities
-    id 'org.owasp.dependencycheck' version "latest.release"
+    id "org.owasp.dependencycheck" version "latest.release"
     id 'org.sonatype.gradle.plugins.scan' version "latest.release"
 
     id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "latest.release"
-    id 'org.hidetake.ssh' version "latest.release"
+    id "org.hidetake.ssh" version "latest.release"
 }
 
 configurations {
@@ -42,82 +44,35 @@ configurations {
 }
 
 repositories {
+    mavenCentral()
     mavenLocal()
-    maven {
-        url = uri('https://oss.sonatype.org/content/repositories/snapshots')
-    }
-
-    maven {
-        url = uri('https://repo.maven.apache.org/maven2/')
-    }
 }
 
 dependencies {
-    api 'commons-cli:commons-cli:+'
-    api 'javax.xml.bind:jaxb-api:2.+'
+    api 'commons-cli:commons-cli:1.9.0'
+    api 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+
 
     // We need to export this as API explicitly and fix the Versions
     // or else the Doclet will silently(!) not generate the output
-    api 'org.glassfish.jaxb:jaxb-runtime:2.3.2'
+    api 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
     api 'javax.activation:javax.activation-api:1.2.0'
 
-    jaxb2 'org.glassfish.jaxb:jaxb-runtime:2.3.2'
-    jaxb2 'javax.activation:javax.activation-api:1.2.0'
-    testImplementation 'org.slf4j:slf4j-simple:+'
+    testImplementation 'org.slf4j:slf4j-simple:2.0.16'
     testImplementation 'junit:junit:+'
 
     // https://mvnrepository.com/artifact/net.sf.saxon/Saxon-HE
-    api 'net.sf.saxon:Saxon-HE:12.2'
+    api 'net.sf.saxon:Saxon-HE:12.5'
 
     // Java Doc in XML Format
-    xmlDoclet 'javax.xml.bind:jaxb-api:2.+'
-    xmlDoclet 'org.glassfish.jaxb:jaxb-runtime:2.3.2'
+    xmlDoclet 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+    xmlDoclet 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
     xmlDoclet 'javax.activation:javax.activation-api:1.2.0'
     xmlDoclet 'com.manticore-projects.tools:xml-doclet:+'
 }
 
-
-def getVersion = { boolean considerSnapshot ->
-    Integer major = 0
-    Integer minor = 0
-    Integer patch = null
-    Integer build = null
-    def commit = null
-    def snapshot = ""
-    new ByteArrayOutputStream().withStream { os ->
-        exec {
-            args = [
-                    "--no-pager"
-                    , "describe"
-                    , "--tags"
-                    , "--always"
-                    , "--dirty=-SNAPSHOT"
-            ]
-            executable "git"
-            standardOutput = os
-        }
-        def versionStr = os.toString().trim()
-        def pattern = /(?<major>\d*)\.(?<minor>\d*)(\.(?<patch>\d*))?(-(?<build>\d*)-(?<commit>[a-zA-Z\d]*))?/
-        def matcher = versionStr =~ pattern
-        if (matcher.find()) {
-            major = matcher.group('major') as Integer
-            minor = matcher.group('minor') as Integer
-            patch = matcher.group('patch') as Integer
-            build = matcher.group('build') as Integer
-            commit = matcher.group('commit')
-        }
-
-        if (considerSnapshot && ( versionStr.endsWith('SNAPSHOT') || build!=null) ) {
-            minor++
-            if (patch!=null) patch = 0
-            snapshot = "-SNAPSHOT"
-        }
-    }
-    return patch!=null
-            ? "${major}.${minor}.${patch}${snapshot}"
-            :  "${major}.${minor}${snapshot}"
-}
-version = getVersion(true)
+tasks.register('versionTask', CustomVersionTask)
+version = tasks.named('versionTask').get().getVersion(true)
 group = 'com.manticore-projects.tools'
 description = 'XML Doclet'
 
@@ -198,12 +153,11 @@ java {
     withSourcesJar()
     withJavadocJar()
 
-    sourceCompatibility(JavaVersion.VERSION_1_8)
-    targetCompatibility(JavaVersion.VERSION_1_8)
+    sourceCompatibility(JavaVersion.VERSION_21)
+    targetCompatibility(JavaVersion.VERSION_21)
 
-    // needed for XML-Doclet to work (since Doclet changed again with Java 13)
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
@@ -217,22 +171,25 @@ shadowJar {
     minimize()
 }
 
-jaxb2 {
-    xjc {
-      'xmldoclet-classes' {
-        basePackage = 'com.github.markusbernhardt.xmldoclet.xjc'
-        schema = 'src/main/xjc/javadoc.xsd'
-        encoding = 'UTF-8'
-        generatedSourcesDir = "${project.buildDir}/generated/sources/java/main/xjc"
-        additionalArgs = '-extension'
-      }
+xsd2java {
+    // JAXB XJC: JAXB Binding Compiler
+    // https://github.com/qaware/xsd2java-gradle-plugin
+    schemas {
+        javadoc {
+            packageName = 'com.github.markusbernhardt.xmldoclet.xjc'
+            schemaDirPath = file('src/main/resources/xjc').toPath()
+        }
     }
+
+    extension = true
+    arguments ['-verbose']
+    outputDir = project.layout.buildDirectory.dir("generated/sources/java/main").get().asFile
 }
 
 sourceSets {
     main {
         java {
-            srcDir "${project.buildDir}/generated/sources/java/main"
+            srcDir project.layout.buildDirectory.dir("generated/sources/java/main").get().asFile
         }
     }
 }
@@ -242,6 +199,10 @@ javadoc {
         options.addBooleanOption('html5', true)
     }
     options.addBooleanOption("Xdoclint:none", true)
+}
+
+tasks.named('sourcesJar') {
+    dependsOn tasks.named('xsd2javaJavadoc')
 }
 
 tasks.register('xmldoc', Javadoc) {
@@ -277,8 +238,8 @@ tasks.withType(Javadoc).configureEach {
 spotbugsMain {
     reports {
         html {
-            enabled = true
-            destination = file("build/reports/spotbugs/main/spotbugs.html")
+            required.set(true)
+            outputLocation.set(file("build/reports/spotbugs/main/spotbugs.html"))
             stylesheet = 'fancy-hist.xsl'
         }
     }
@@ -337,6 +298,7 @@ spotless {
     java {
         indentWithSpaces(4)
         eclipse().configFile('config/formatter/eclipse-java-google-style.xml')
+        target 'src/**/*.java'
     }
 }
 
@@ -358,18 +320,14 @@ remotes {
 tasks.register('upload') {
     doFirst {
         if (findProperty("${project.name}.host") == null) {
-            println(
-                    """
-                Property \"${project.name}.host\' not found.
-                Please define \"${project.name}.host\" in the Gradle configuration (e. g. \$HOME/.gradle/gradle.properties.
-                """
-            )
+            println('Property "${project.name}.host" not found.')
+            println('Please define "${project.name}.host" in the Gradle configuration (e. g. $HOME/.gradle/gradle.properties.')
         }
     }
     doLast {
         ssh.run {
             session(remotes.webServer) {
-                def versionStable = getVersion(false)
+                def versionStable = tasks.named('versionTask').get().getVersion(false)
                 execute "mkdir -p download/${project.name}-${versionStable}"
                 for (File file: fileTree(include:['*.jar'], dir:"${project.buildDir}/libs").collect()) {
                     put from: file, into: "download/${project.name}-${versionStable}"

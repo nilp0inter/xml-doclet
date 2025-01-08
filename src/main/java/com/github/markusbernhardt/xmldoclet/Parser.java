@@ -1,102 +1,129 @@
 package com.github.markusbernhardt.xmldoclet;
 
+import com.github.markusbernhardt.xmldoclet.xjc.*;
+import com.github.markusbernhardt.xmldoclet.xjc.Class;
+import com.github.markusbernhardt.xmldoclet.xjc.Enum;
+import com.github.markusbernhardt.xmldoclet.xjc.Package;
+import com.sun.source.doctree.DocTree;
+import com.sun.source.util.DocTrees;
+import jdk.javadoc.doclet.DocletEnvironment;
+
+import javax.lang.model.element.*;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
+import javax.lang.model.type.WildcardType;
+import javax.lang.model.util.ElementFilter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
-import com.github.markusbernhardt.xmldoclet.xjc.Annotation;
-import com.github.markusbernhardt.xmldoclet.xjc.AnnotationArgument;
-import com.github.markusbernhardt.xmldoclet.xjc.AnnotationElement;
-import com.github.markusbernhardt.xmldoclet.xjc.AnnotationInstance;
-import com.github.markusbernhardt.xmldoclet.xjc.Class;
-import com.github.markusbernhardt.xmldoclet.xjc.Constructor;
-import com.github.markusbernhardt.xmldoclet.xjc.Enum;
-import com.github.markusbernhardt.xmldoclet.xjc.EnumConstant;
-import com.github.markusbernhardt.xmldoclet.xjc.Field;
-import com.github.markusbernhardt.xmldoclet.xjc.Interface;
-import com.github.markusbernhardt.xmldoclet.xjc.Method;
-import com.github.markusbernhardt.xmldoclet.xjc.MethodParameter;
-import com.github.markusbernhardt.xmldoclet.xjc.ObjectFactory;
-import com.github.markusbernhardt.xmldoclet.xjc.Package;
-import com.github.markusbernhardt.xmldoclet.xjc.Root;
-import com.github.markusbernhardt.xmldoclet.xjc.TagInfo;
-import com.github.markusbernhardt.xmldoclet.xjc.TypeInfo;
-import com.github.markusbernhardt.xmldoclet.xjc.TypeParameter;
-import com.github.markusbernhardt.xmldoclet.xjc.Wildcard;
-import com.sun.javadoc.AnnotationDesc;
-import com.sun.javadoc.AnnotationTypeDoc;
-import com.sun.javadoc.AnnotationTypeElementDoc;
-import com.sun.javadoc.AnnotationValue;
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.ConstructorDoc;
-import com.sun.javadoc.FieldDoc;
-import com.sun.javadoc.MethodDoc;
-import com.sun.javadoc.PackageDoc;
-import com.sun.javadoc.Parameter;
-import com.sun.javadoc.ParameterizedType;
-import com.sun.javadoc.ProgramElementDoc;
-import com.sun.javadoc.RootDoc;
-import com.sun.javadoc.Tag;
-import com.sun.javadoc.Type;
-import com.sun.javadoc.TypeVariable;
-import com.sun.javadoc.WildcardType;
+import static com.github.markusbernhardt.xmldoclet.TypeUtils.*;
+import static java.util.Objects.requireNonNullElse;
 
 /**
  * The main parser class. It scans the given Doclet document root and creates the XML tree.
- * 
+ *
  * @author markus
  */
 public class Parser {
-
     private final static Logger LOGGER = Logger.getLogger(Parser.class.getName());
 
-    protected Map<String, Package> packages = new TreeMap<String, Package>();
+    /**
+     * A map where each key is a package name and each value is an object containing a package's JavaDoc.
+     */
+    protected Map<String, Package> packages = new TreeMap<>();
 
     protected ObjectFactory objectFactory = new ObjectFactory();
 
     /**
+     * The operating environment of a single invocation of the doclet
+     */
+    private final DocletEnvironment env;
+    private final DocTrees docTrees;
+    private final TypeUtils typeUtils;
+
+    /**
+     * @param env the operating environment of a single invocation of the doclet
+     */
+    public Parser(final DocletEnvironment env) {
+        this.env = env;
+        this.docTrees = env.getDocTrees();
+        this.typeUtils = new TypeUtils(env.getTypeUtils(), env.getElementUtils());
+    }
+
+    public Set<TypeElement> getClasses(final DocletEnvironment env) {
+        final Set<? extends Element> elements = env.getIncludedElements();
+        return ElementFilter.typesIn(elements);
+    }
+
+    private String getJavaDoc(final Element element) {
+        final var docCommentTree = docTrees.getDocCommentTree(element);
+        return docCommentTree == null ? "" : docCommentTree.getFullBody().toString();
+    }
+
+    /**
+     * {@return the tags inside a JavaDoc comment}
+     *
+     * @param element the Java element to get its JavaDoc tags
+     */
+    public List<? extends DocTree> getTags(final Element element) {
+        final var docCommentTree = docTrees.getDocCommentTree(element);
+        return docCommentTree == null ? List.of() : docCommentTree.getBlockTags();
+    }
+
+    /**
      * The entry point into parsing the javadoc.
-     * 
-     * @param rootDoc The RootDoc intstance obtained via the doclet API
+     *
      * @return The root node, containing everything parsed from javadoc doclet
      */
-    public Root parseRootDoc(RootDoc rootDoc) {
-        Root rootNode = objectFactory.createRoot();
+    public Root parseRootDoc() {
+        final Root rootNode = objectFactory.createRoot();
 
-        for (ClassDoc classDoc : rootDoc.classes()) {
-            PackageDoc packageDoc = classDoc.containingPackage();
+        for (final TypeElement classDoc : getClasses(env)) {
+            final Package packageNode = getPackage(rootNode, classDoc);
 
-            Package packageNode = packages.get(packageDoc.name());
-            if (packageNode == null) {
-                packageNode = parsePackage(packageDoc);
-                packages.put(packageDoc.name(), packageNode);
-                rootNode.getPackage().add(packageNode);
-            }
-
-            if (classDoc instanceof AnnotationTypeDoc) {
-                packageNode.getAnnotation()
-                        .add(parseAnnotationTypeDoc((AnnotationTypeDoc) classDoc));
-            } else if (classDoc.isEnum()) {
-                packageNode.getEnum().add(parseEnum(classDoc));
-            } else if (classDoc.isInterface()) {
-                packageNode.getInterface().add(parseInterface(classDoc));
-            } else {
-                packageNode.getClazz().add(parseClass(classDoc));
+            switch (classDoc.getKind()) {
+                case ANNOTATION_TYPE -> packageNode.getAnnotation().add(parseAnnotationTypeDoc(classDoc));
+                case ENUM -> packageNode.getEnum().add(parseEnum(classDoc));
+                case INTERFACE -> packageNode.getInterface().add(parseInterface(classDoc));
+                default -> packageNode.getClazz().add(parseClass(classDoc));
             }
         }
 
         return rootNode;
     }
 
-    protected Package parsePackage(PackageDoc packageDoc) {
-        Package packageNode = objectFactory.createPackage();
-        packageNode.setName(packageDoc.name());
-        String comment = packageDoc.commentText();
-        if (comment.length() > 0) {
+    /**
+     * {@return the package node for the given class element}
+     *
+     * @param rootNode
+     * @param classElement class to get its package
+     */
+    private Package getPackage(final Root rootNode, final TypeElement classElement) {
+        // Gets the package element of the given class
+        final var packageDoc = (PackageElement) classElement.getEnclosingElement();
+
+        return packages.computeIfAbsent(packageDoc.getQualifiedName().toString(), pkgName -> {
+            final var packageNode = parsePackage(packageDoc);
+            packages.put(pkgName, packageNode);
+            rootNode.getPackage().add(packageNode);
+            return packageNode;
+        });
+    }
+
+    protected Package parsePackage(final PackageElement packageDoc) {
+        final Package packageNode = objectFactory.createPackage();
+        packageNode.setName(packageDoc.getQualifiedName().toString());
+        final String comment = getJavaDoc(packageDoc);
+        if (!comment.isEmpty()) {
             packageNode.setComment(comment);
         }
 
-        for (Tag tag : packageDoc.tags()) {
+        for (final DocTree tag : getTags(packageDoc)) {
             packageNode.getTag().add(parseTag(tag));
         }
 
@@ -104,33 +131,37 @@ public class Parser {
     }
 
     /**
-     * Parse an annotation.
-     * 
+     * Parse the JavaDoc of an annotation type.
+     *
      * @param annotationTypeDoc A AnnotationTypeDoc instance
      * @return the annotation node
      */
-    protected Annotation parseAnnotationTypeDoc(AnnotationTypeDoc annotationTypeDoc) {
-        Annotation annotationNode = objectFactory.createAnnotation();
-        annotationNode.setName(annotationTypeDoc.name());
-        annotationNode.setQualified(annotationTypeDoc.qualifiedName());
-        String comment = annotationTypeDoc.commentText();
-        if (comment.length() > 0) {
+    protected Annotation parseAnnotationTypeDoc(final TypeElement annotationTypeDoc) {
+        final Annotation annotationNode = objectFactory.createAnnotation();
+        annotationNode.setName(annotationTypeDoc.getSimpleName().toString());
+        annotationNode.setQualified(getQualifiedName(annotationTypeDoc));
+        final String comment = getJavaDoc(annotationTypeDoc);
+        if (!comment.isEmpty()) {
             annotationNode.setComment(comment);
         }
-        annotationNode.setIncluded(annotationTypeDoc.isIncluded());
+
+        // TODO: What does isIncluded() mean?
+        // annotationNode.setIncluded(annotationTypeDoc.isIncluded());
+
         annotationNode.setScope(parseScope(annotationTypeDoc));
 
-        for (AnnotationTypeElementDoc annotationTypeElementDoc : annotationTypeDoc.elements()) {
-            annotationNode.getElement()
-                    .add(parseAnnotationTypeElementDoc(annotationTypeElementDoc));
+        for (final ExecutableElement annotationTypeElementDoc : getMethods(annotationTypeDoc)) {
+            final var annotationElement = parseAnnotationTypeElementDoc(annotationTypeElementDoc);
+            annotationNode.getElement().add(annotationElement);
         }
 
-        for (AnnotationDesc annotationDesc : annotationTypeDoc.annotations()) {
-            annotationNode.getAnnotation()
-                    .add(parseAnnotationDesc(annotationDesc, annotationTypeDoc.qualifiedName()));
+        for (final AnnotationMirror annotationDesc : annotationTypeDoc.getAnnotationMirrors()) {
+            final var annotationInstance =
+                    parseAnnotationDesc(annotationDesc, annotationTypeDoc.getQualifiedName());
+            annotationNode.getAnnotation().add(annotationInstance);
         }
 
-        for (Tag tag : annotationTypeDoc.tags()) {
+        for (final DocTree tag : getTags(annotationTypeDoc)) {
             annotationNode.getTag().add(parseTag(tag));
         }
 
@@ -139,18 +170,18 @@ public class Parser {
 
     /**
      * Parse the elements of an annotation
-     * 
+     *
      * @param annotationTypeElementDoc A AnnotationTypeElementDoc instance
      * @return the annotation element node
      */
     protected AnnotationElement parseAnnotationTypeElementDoc(
-            AnnotationTypeElementDoc annotationTypeElementDoc) {
-        AnnotationElement annotationElementNode = objectFactory.createAnnotationElement();
-        annotationElementNode.setName(annotationTypeElementDoc.name());
-        annotationElementNode.setQualified(annotationTypeElementDoc.qualifiedName());
-        annotationElementNode.setType(parseTypeInfo(annotationTypeElementDoc.returnType()));
+            final ExecutableElement annotationTypeElementDoc) {
+        final AnnotationElement annotationElementNode = objectFactory.createAnnotationElement();
+        annotationElementNode.setName(annotationTypeElementDoc.getSimpleName().toString());
+        annotationElementNode.setQualified(annotationTypeElementDoc.getSimpleName().toString());
+        annotationElementNode.setType(parseTypeInfo(annotationTypeElementDoc.getReturnType()));
 
-        AnnotationValue value = annotationTypeElementDoc.defaultValue();
+        final AnnotationValue value = annotationTypeElementDoc.getDefaultValue();
         if (value != null) {
             annotationElementNode.setDefault(value.toString());
         }
@@ -160,88 +191,98 @@ public class Parser {
 
     /**
      * Parses annotation instances of an annotable program element
-     * 
+     *
      * @param annotationDesc annotationDesc
-     * @param programElement programElement
+     * @param programElement the name of a program element to parse
      * @return representation of annotations
      */
-    protected AnnotationInstance parseAnnotationDesc(AnnotationDesc annotationDesc,
-            String programElement) {
-        AnnotationInstance annotationInstanceNode = objectFactory.createAnnotationInstance();
+    protected AnnotationInstance parseAnnotationDesc(final AnnotationMirror annotationDesc,
+            final Name programElement) {
+        final var annotationInstance = objectFactory.createAnnotationInstance();
 
         try {
-            AnnotationTypeDoc annotTypeInfo = annotationDesc.annotationType();
-            annotationInstanceNode.setName(annotTypeInfo.name());
-            annotationInstanceNode.setQualified(annotTypeInfo.qualifiedTypeName());
+            final var annotTypeInfo = annotationDesc.getAnnotationType();
+            annotationInstance.setName(annotTypeInfo.asElement().getSimpleName().toString());
+            annotationInstance.setQualified(annotTypeInfo.asElement().getSimpleName().toString());
         } catch (ClassCastException castException) {
             LOGGER.severe(
                     "Unable to obtain type data about an annotation found on: " + programElement);
             LOGGER.severe("Add to the classpath the class/jar that defines this annotation.");
         }
 
-        for (AnnotationDesc.ElementValuePair elementValuesPair : annotationDesc.elementValues()) {
-            AnnotationArgument annotationArgumentNode = objectFactory.createAnnotationArgument();
-            annotationArgumentNode.setName(elementValuesPair.element().name());
+        for (final var elementValuesPair : annotationDesc.getElementValues().entrySet()) {
+            final AnnotationArgument annotationArgumentNode = objectFactory.createAnnotationArgument();
+            annotationArgumentNode.setName(elementValuesPair.getKey().getSimpleName().toString());
 
-            Type annotationArgumentType = elementValuesPair.element().returnType();
+            final TypeMirror annotationArgumentType = elementValuesPair.getKey().asType();
             annotationArgumentNode.setType(parseTypeInfo(annotationArgumentType));
-            annotationArgumentNode.setPrimitive(annotationArgumentType.isPrimitive());
-            annotationArgumentNode.setArray(annotationArgumentType.dimension().length() > 0);
+            annotationArgumentNode.setPrimitive(annotationArgumentType.getKind().isPrimitive());
+            annotationArgumentNode.setArray(isArray(annotationArgumentType));
 
-            Object objValue = elementValuesPair.value().value();
-            if (objValue instanceof AnnotationValue[]) {
-                for (AnnotationValue annotationValue : (AnnotationValue[]) objValue) {
-                    if (annotationValue.value() instanceof AnnotationDesc) {
-                        AnnotationDesc annoDesc = (AnnotationDesc) annotationValue.value();
-                        annotationArgumentNode.getAnnotation()
-                                .add(parseAnnotationDesc(annoDesc, programElement));
-                    } else {
-                        annotationArgumentNode.getValue().add(annotationValue.value().toString());
+            final Object objValue = elementValuesPair.getValue();
+            switch (objValue) {
+                case AnnotationValue[] annotationValues -> {
+                    for (final AnnotationValue annotationValue : annotationValues) {
+                        if (annotationValue.getValue() instanceof AnnotationMirror annoDesc) {
+                            annotationArgumentNode.getAnnotation().add(parseAnnotationDesc(annoDesc, programElement));
+                        } else {
+                            annotationArgumentNode.getValue().add(annotationValue.getValue().toString());
+                        }
                     }
                 }
-            } else if (objValue instanceof FieldDoc) {
-                annotationArgumentNode.getValue().add(((FieldDoc) objValue).name());
-            } else if (objValue instanceof ClassDoc) {
-                annotationArgumentNode.getValue().add(((ClassDoc) objValue).qualifiedTypeName());
-            } else {
-                annotationArgumentNode.getValue().add(objValue.toString());
+                case VariableElement fieldDoc -> annotationArgumentNode.getValue().add(getSimpleName(fieldDoc));
+                case TypeElement classDoc -> annotationArgumentNode.getValue().add(getQualifiedName(classDoc));
+                case null -> {
+                }
+                default -> annotationArgumentNode.getValue().add(objValue.toString());
             }
-            annotationInstanceNode.getArgument().add(annotationArgumentNode);
+
+            annotationInstance.getArgument().add(annotationArgumentNode);
         }
 
-        return annotationInstanceNode;
+        return annotationInstance;
     }
 
-    protected Enum parseEnum(ClassDoc classDoc) {
-        Enum enumNode = objectFactory.createEnum();
-        enumNode.setName(classDoc.name());
-        enumNode.setQualified(classDoc.qualifiedName());
-        String comment = classDoc.commentText();
-        if (comment.length() > 0) {
+    private static String getQualifiedName(final TypeElement typeElement) {
+        return typeElement.getQualifiedName().toString();
+    }
+
+    private static String getSimpleName(final VariableElement element) {
+        return element.getSimpleName().toString();
+    }
+
+    protected Enum parseEnum(final TypeElement classDoc) {
+        final Enum enumNode = objectFactory.createEnum();
+        enumNode.setName(classDoc.getSimpleName().toString());
+        enumNode.setQualified(getQualifiedName(classDoc));
+        final String comment = getJavaDoc(classDoc);
+        if (!comment.isEmpty()) {
             enumNode.setComment(comment);
         }
-        enumNode.setIncluded(classDoc.isIncluded());
+
+        // TODO: What does isIncluded() mean?
+        // enumNode.setIncluded(classDoc.isIncluded());
+
         enumNode.setScope(parseScope(classDoc));
 
-        Type superClassType = classDoc.superclassType();
+        final TypeMirror superClassType = classDoc.getSuperclass();
         if (superClassType != null) {
             enumNode.setClazz(parseTypeInfo(superClassType));
         }
 
-        for (Type interfaceType : classDoc.interfaceTypes()) {
+        for (final TypeMirror interfaceType : classDoc.getInterfaces()) {
             enumNode.getInterface().add(parseTypeInfo(interfaceType));
         }
 
-        for (FieldDoc field : classDoc.enumConstants()) {
+        for (final VariableElement field : getEnumConstants(classDoc)) {
             enumNode.getConstant().add(parseEnumConstant(field));
         }
 
-        for (AnnotationDesc annotationDesc : classDoc.annotations()) {
-            enumNode.getAnnotation()
-                    .add(parseAnnotationDesc(annotationDesc, classDoc.qualifiedName()));
+        for (final AnnotationMirror annotationDesc : classDoc.getAnnotationMirrors()) {
+            enumNode.getAnnotation().add(parseAnnotationDesc(annotationDesc, classDoc.getQualifiedName()));
         }
 
-        for (Tag tag : classDoc.tags()) {
+        for (final DocTree tag : getTags(classDoc)) {
             enumNode.getTag().add(parseTag(tag));
         }
 
@@ -250,318 +291,328 @@ public class Parser {
 
     /**
      * Parses an enum type definition
-     * 
+     *
      * @param fieldDoc
      * @return
      */
-    protected EnumConstant parseEnumConstant(FieldDoc fieldDoc) {
-        EnumConstant enumConstant = objectFactory.createEnumConstant();
-        enumConstant.setName(fieldDoc.name());
-        String comment = fieldDoc.commentText();
-        if (comment.length() > 0) {
+    protected EnumConstant parseEnumConstant(final VariableElement fieldDoc) {
+        final EnumConstant enumConstant = objectFactory.createEnumConstant();
+        enumConstant.setName(getSimpleName(fieldDoc));
+        final String comment = getJavaDoc(fieldDoc);
+        if (!comment.isEmpty()) {
             enumConstant.setComment(comment);
         }
 
-        for (AnnotationDesc annotationDesc : fieldDoc.annotations()) {
-            enumConstant.getAnnotation()
-                    .add(parseAnnotationDesc(annotationDesc, fieldDoc.qualifiedName()));
+        for (final AnnotationMirror annotationDesc : fieldDoc.getAnnotationMirrors()) {
+            enumConstant.getAnnotation().add(parseAnnotationDesc(annotationDesc, fieldDoc.getSimpleName()));
         }
 
-        for (Tag tag : fieldDoc.tags()) {
+        for (final DocTree tag : getTags(fieldDoc)) {
             enumConstant.getTag().add(parseTag(tag));
         }
 
         return enumConstant;
     }
 
-    protected Interface parseInterface(ClassDoc classDoc) {
-
-        Interface interfaceNode = objectFactory.createInterface();
-        interfaceNode.setName(classDoc.name());
-        interfaceNode.setQualified(classDoc.qualifiedName());
-        String comment = classDoc.commentText();
-        if (comment.length() > 0) {
+    protected Interface parseInterface(final TypeElement classDoc) {
+        final Interface interfaceNode = objectFactory.createInterface();
+        interfaceNode.setName(classDoc.getSimpleName().toString());
+        interfaceNode.setQualified(getQualifiedName(classDoc));
+        final String comment = getJavaDoc(classDoc);
+        if (!comment.isEmpty()) {
             interfaceNode.setComment(comment);
         }
-        interfaceNode.setIncluded(classDoc.isIncluded());
+
+        // TODO: What does isIncluded() mean?
+        // interfaceNode.setIncluded(classDoc.isIncluded());
+
         interfaceNode.setScope(parseScope(classDoc));
 
-        for (TypeVariable typeVariable : classDoc.typeParameters()) {
+        for (final TypeParameterElement typeVariable : classDoc.getTypeParameters()) {
             interfaceNode.getGeneric().add(parseTypeParameter(typeVariable));
         }
 
-        for (Type interfaceType : classDoc.interfaceTypes()) {
+        for (final TypeMirror interfaceType : classDoc.getInterfaces()) {
             interfaceNode.getInterface().add(parseTypeInfo(interfaceType));
         }
 
-        for (MethodDoc method : classDoc.methods()) {
+        for (final ExecutableElement method : getMethods(classDoc)) {
             interfaceNode.getMethod().add(parseMethod(method));
         }
 
-        for (AnnotationDesc annotationDesc : classDoc.annotations()) {
-            interfaceNode.getAnnotation()
-                    .add(parseAnnotationDesc(annotationDesc, classDoc.qualifiedName()));
+        for (final AnnotationMirror annotationDesc : classDoc.getAnnotationMirrors()) {
+            interfaceNode.getAnnotation().add(parseAnnotationDesc(annotationDesc, classDoc.getQualifiedName()));
         }
 
-        for (Tag tag : classDoc.tags()) {
+        for (final DocTree tag : getTags(classDoc)) {
             interfaceNode.getTag().add(parseTag(tag));
         }
 
-        for (FieldDoc field : classDoc.fields()) {
+        for (final VariableElement field : getFields(classDoc)) {
             interfaceNode.getField().add(parseField(field));
         }
 
         return interfaceNode;
     }
 
-    protected Class parseClass(ClassDoc classDoc) {
-
-        Class classNode = objectFactory.createClass();
-        classNode.setName(classDoc.name());
-        classNode.setQualified(classDoc.qualifiedName());
-        String comment = classDoc.commentText();
-        if (comment.length() > 0) {
+    protected Class parseClass(final TypeElement classDoc) {
+        final Class classNode = objectFactory.createClass();
+        classNode.setName(classDoc.getSimpleName().toString());
+        classNode.setQualified(getQualifiedName(classDoc));
+        final String comment = getJavaDoc(classDoc);
+        if (!comment.isEmpty()) {
             classNode.setComment(comment);
         }
-        classNode.setAbstract(classDoc.isAbstract());
-        classNode.setError(classDoc.isError());
-        classNode.setException(classDoc.isException());
-        classNode.setExternalizable(classDoc.isExternalizable());
-        classNode.setIncluded(classDoc.isIncluded());
-        classNode.setSerializable(classDoc.isSerializable());
+        classNode.setAbstract(hasModifier(classDoc, Modifier.ABSTRACT));
+        classNode.setError(typeUtils.isError(classDoc));
+        classNode.setException(typeUtils.isException(classDoc));
+        classNode.setExternalizable(typeUtils.isExternalizable(classDoc));
+
+        // TODO: What does isIncluded() mean?
+        // classNode.setIncluded(classDoc.isIncluded());
+
+        classNode.setSerializable(typeUtils.isSerializable(classDoc));
         classNode.setScope(parseScope(classDoc));
 
-        for (TypeVariable typeVariable : classDoc.typeParameters()) {
+        for (final var typeVariable : classDoc.getTypeParameters()) {
             classNode.getGeneric().add(parseTypeParameter(typeVariable));
         }
 
-        Type superClassType = classDoc.superclassType();
+        final TypeMirror superClassType = classDoc.getSuperclass();
         if (superClassType != null) {
             classNode.setClazz(parseTypeInfo(superClassType));
         }
 
-        for (Type interfaceType : classDoc.interfaceTypes()) {
+        for (final TypeMirror interfaceType : classDoc.getInterfaces()) {
             classNode.getInterface().add(parseTypeInfo(interfaceType));
         }
 
-        for (MethodDoc method : classDoc.methods()) {
+        for (final ExecutableElement method : getMethods(classDoc)) {
             classNode.getMethod().add(parseMethod(method));
         }
 
-        for (AnnotationDesc annotationDesc : classDoc.annotations()) {
-            classNode.getAnnotation()
-                    .add(parseAnnotationDesc(annotationDesc, classDoc.qualifiedName()));
+        for (final AnnotationMirror annotationDesc : classDoc.getAnnotationMirrors()) {
+            final var annotationInstance = parseAnnotationDesc(annotationDesc, classDoc.getQualifiedName());
+            classNode.getAnnotation().add(annotationInstance);
         }
 
-        for (ConstructorDoc constructor : classDoc.constructors()) {
+        for (final ExecutableElement constructor : getConstructors(classDoc)) {
             classNode.getConstructor().add(parseConstructor(constructor));
         }
 
-        for (FieldDoc field : classDoc.fields()) {
+        for (final VariableElement field : getFields(classDoc)) {
             classNode.getField().add(parseField(field));
         }
 
-        for (Tag tag : classDoc.tags()) {
+        for (final DocTree tag : getTags(classDoc)) {
             classNode.getTag().add(parseTag(tag));
         }
 
         return classNode;
     }
 
-    protected Constructor parseConstructor(ConstructorDoc constructorDoc) {
-        Constructor constructorNode = objectFactory.createConstructor();
+    protected Constructor parseConstructor(final ExecutableElement constructorDoc) {
+        final Constructor constructorNode = objectFactory.createConstructor();
 
-        constructorNode.setName(constructorDoc.name());
-        constructorNode.setQualified(constructorDoc.qualifiedName());
-        String comment = constructorDoc.commentText();
-        if (comment.length() > 0) {
+        constructorNode.setName(constructorDoc.getSimpleName().toString());
+        constructorNode.setQualified(constructorDoc.getSimpleName().toString());
+        final String comment = getJavaDoc(constructorDoc);
+        if (!comment.isEmpty()) {
             constructorNode.setComment(comment);
         }
         constructorNode.setScope(parseScope(constructorDoc));
-        constructorNode.setIncluded(constructorDoc.isIncluded());
-        constructorNode.setFinal(constructorDoc.isFinal());
-        constructorNode.setNative(constructorDoc.isNative());
-        constructorNode.setStatic(constructorDoc.isStatic());
-        constructorNode.setSynchronized(constructorDoc.isSynchronized());
-        constructorNode.setVarArgs(constructorDoc.isVarArgs());
-        constructorNode.setSignature(constructorDoc.signature());
 
-        for (Parameter parameter : constructorDoc.parameters()) {
+        // TODO: What does isIncluded() mean?
+        // constructorNode.setIncluded(constructorDoc.isIncluded());
+
+        constructorNode.setFinal(hasModifier(constructorDoc, Modifier.FINAL));
+        constructorNode.setNative(hasModifier(constructorDoc, Modifier.NATIVE));
+        constructorNode.setStatic(hasModifier(constructorDoc, Modifier.STATIC));
+        constructorNode.setSynchronized(hasModifier(constructorDoc, Modifier.SYNCHRONIZED));
+        constructorNode.setVarArgs(constructorDoc.isVarArgs());
+        constructorNode.setSignature(getMethodSignature(constructorDoc));
+
+        for (final VariableElement parameter : constructorDoc.getParameters()) {
             constructorNode.getParameter().add(parseMethodParameter(parameter));
         }
 
-        for (Type exceptionType : constructorDoc.thrownExceptionTypes()) {
+        for (final TypeMirror exceptionType : constructorDoc.getThrownTypes()) {
             constructorNode.getException().add(parseTypeInfo(exceptionType));
         }
 
-        for (AnnotationDesc annotationDesc : constructorDoc.annotations()) {
-            constructorNode.getAnnotation()
-                    .add(parseAnnotationDesc(annotationDesc, constructorDoc.qualifiedName()));
+        for (final AnnotationMirror annotationDesc : constructorDoc.getAnnotationMirrors()) {
+            final var annotationInstance = parseAnnotationDesc(annotationDesc, constructorDoc.getSimpleName());
+            constructorNode.getAnnotation().add(annotationInstance);
         }
 
-        for (Tag tag : constructorDoc.tags()) {
+        for (final DocTree tag : getTags(constructorDoc)) {
             constructorNode.getTag().add(parseTag(tag));
         }
 
         return constructorNode;
     }
 
-    protected Method parseMethod(MethodDoc methodDoc) {
-        Method methodNode = objectFactory.createMethod();
+    protected Method parseMethod(final ExecutableElement methodDoc) {
+        final Method methodNode = objectFactory.createMethod();
 
-        methodNode.setName(methodDoc.name());
-        methodNode.setQualified(methodDoc.qualifiedName());
-        String comment = methodDoc.commentText();
-        if (comment.length() > 0) {
+        methodNode.setName(methodDoc.getSimpleName().toString());
+        methodNode.setQualified(methodDoc.getSimpleName().toString());
+        final String comment = getJavaDoc(methodDoc);
+        if (!comment.isEmpty()) {
             methodNode.setComment(comment);
         }
         methodNode.setScope(parseScope(methodDoc));
-        methodNode.setAbstract(methodDoc.isAbstract());
-        methodNode.setIncluded(methodDoc.isIncluded());
-        methodNode.setFinal(methodDoc.isFinal());
-        methodNode.setNative(methodDoc.isNative());
-        methodNode.setStatic(methodDoc.isStatic());
-        methodNode.setSynchronized(methodDoc.isSynchronized());
-        methodNode.setVarArgs(methodDoc.isVarArgs());
-        methodNode.setSignature(methodDoc.signature());
-        methodNode.setReturn(parseTypeInfo(methodDoc.returnType()));
+        methodNode.setAbstract(hasModifier(methodDoc, Modifier.ABSTRACT));
 
-        for (Parameter parameter : methodDoc.parameters()) {
+        // TODO: What does isIncluded() mean?
+        // methodNode.setIncluded(methodDoc.isIncluded());
+
+        methodNode.setFinal(hasModifier(methodDoc, Modifier.FINAL));
+        methodNode.setNative(hasModifier(methodDoc, Modifier.NATIVE));
+        methodNode.setStatic(hasModifier(methodDoc, Modifier.STATIC));
+        methodNode.setSynchronized(hasModifier(methodDoc, Modifier.SYNCHRONIZED));
+        methodNode.setVarArgs(methodDoc.isVarArgs());
+        methodNode.setSignature(getMethodSignature(methodDoc));
+        methodNode.setReturn(parseTypeInfo(methodDoc.getReturnType()));
+
+        for (final VariableElement parameter : methodDoc.getParameters()) {
             methodNode.getParameter().add(parseMethodParameter(parameter));
         }
 
-        for (Type exceptionType : methodDoc.thrownExceptionTypes()) {
+        for (final TypeMirror exceptionType : methodDoc.getThrownTypes()) {
             methodNode.getException().add(parseTypeInfo(exceptionType));
         }
 
-        for (AnnotationDesc annotationDesc : methodDoc.annotations()) {
-            methodNode.getAnnotation()
-                    .add(parseAnnotationDesc(annotationDesc, methodDoc.qualifiedName()));
+        for (final AnnotationMirror annotationDesc : methodDoc.getAnnotationMirrors()) {
+            final var annotationInstance = parseAnnotationDesc(annotationDesc, methodDoc.getSimpleName());
+            methodNode.getAnnotation().add(annotationInstance);
         }
 
-        for (Tag tag : methodDoc.tags()) {
+        for (final DocTree tag : getTags(methodDoc)) {
             methodNode.getTag().add(parseTag(tag));
         }
 
         return methodNode;
     }
 
-    protected MethodParameter parseMethodParameter(Parameter parameter) {
-        MethodParameter parameterMethodNode = objectFactory.createMethodParameter();
-        parameterMethodNode.setName(parameter.name());
-        parameterMethodNode.setType(parseTypeInfo(parameter.type()));
+    protected MethodParameter parseMethodParameter(final VariableElement parameter) {
+        final MethodParameter parameterMethodNode = objectFactory.createMethodParameter();
+        parameterMethodNode.setName(getSimpleName(parameter));
+        parameterMethodNode.setType(parseTypeInfo(parameter.asType()));
 
-        for (AnnotationDesc annotationDesc : parameter.annotations()) {
-            parameterMethodNode.getAnnotation()
-                    .add(parseAnnotationDesc(annotationDesc, parameter.typeName()));
+        for (final AnnotationMirror annotationDesc : parameter.getAnnotationMirrors()) {
+            final var annotationInstance = parseAnnotationDesc(annotationDesc, parameter.getSimpleName());
+            parameterMethodNode.getAnnotation().add(annotationInstance);
         }
 
         return parameterMethodNode;
     }
 
-    protected Field parseField(FieldDoc fieldDoc) {
-        Field fieldNode = objectFactory.createField();
-        fieldNode.setType(parseTypeInfo(fieldDoc.type()));
-        fieldNode.setName(fieldDoc.name());
-        fieldNode.setQualified(fieldDoc.qualifiedName());
-        String comment = fieldDoc.commentText();
-        if (comment.length() > 0) {
+    protected Field parseField(final VariableElement fieldDoc) {
+        final Field fieldNode = objectFactory.createField();
+        fieldNode.setType(parseTypeInfo(fieldDoc.asType()));
+        fieldNode.setName(getSimpleName(fieldDoc));
+        fieldNode.setQualified(getSimpleName(fieldDoc));
+        String comment = getJavaDoc(fieldDoc);
+        if (!comment.isEmpty()) {
             fieldNode.setComment(comment);
         }
         fieldNode.setScope(parseScope(fieldDoc));
-        fieldNode.setFinal(fieldDoc.isFinal());
-        fieldNode.setStatic(fieldDoc.isStatic());
-        fieldNode.setVolatile(fieldDoc.isVolatile());
-        fieldNode.setTransient(fieldDoc.isTransient());
-        fieldNode.setConstant(fieldDoc.constantValueExpression());
+        fieldNode.setFinal(hasModifier(fieldDoc, Modifier.FINAL));
+        fieldNode.setStatic(hasModifier(fieldDoc, Modifier.STATIC));
+        fieldNode.setVolatile(hasModifier(fieldDoc, Modifier.VOLATILE));
+        fieldNode.setTransient(hasModifier(fieldDoc, Modifier.TRANSIENT));
+        fieldNode.setConstant(requireNonNullElse(fieldDoc.getConstantValue(), "").toString());
 
-        for (AnnotationDesc annotationDesc : fieldDoc.annotations()) {
-            fieldNode.getAnnotation()
-                    .add(parseAnnotationDesc(annotationDesc, fieldDoc.qualifiedName()));
+        for (final AnnotationMirror annotationDesc : fieldDoc.getAnnotationMirrors()) {
+            fieldNode.getAnnotation().add(parseAnnotationDesc(annotationDesc, fieldDoc.getSimpleName()));
         }
 
-        for (Tag tag : fieldDoc.tags()) {
+        for (final DocTree tag : getTags(fieldDoc)) {
             fieldNode.getTag().add(parseTag(tag));
         }
 
         return fieldNode;
     }
 
-    protected TypeInfo parseTypeInfo(Type type) {
-        TypeInfo typeInfoNode = objectFactory.createTypeInfo();
-        typeInfoNode.setQualified(type.qualifiedTypeName());
-        String dimension = type.dimension();
-        if (dimension.length() > 0) {
+    protected TypeInfo parseTypeInfo(final TypeMirror type) {
+        final TypeInfo typeInfoNode = objectFactory.createTypeInfo();
+        typeInfoNode.setQualified(type.toString());
+        final String dimension = getArrayDimension(type);
+        if (!dimension.isEmpty()) {
             typeInfoNode.setDimension(dimension);
         }
 
-        WildcardType wildcard = type.asWildcardType();
+        final WildcardType wildcard = getWildcardType(type);
         if (wildcard != null) {
             typeInfoNode.setWildcard(parseWildcard(wildcard));
         }
 
-        ParameterizedType parameterized = type.asParameterizedType();
+        final ParameterizedType parameterized = getParameterizedType(type);
+
         if (parameterized != null) {
-            for (Type typeArgument : parameterized.typeArguments()) {
-                typeInfoNode.getGeneric().add(parseTypeInfo(typeArgument));
+            for (final Type typeArgument : parameterized.getActualTypeArguments()) {
+                typeInfoNode.getGeneric().add(parseTypeInfo(typeUtils.getTypeMirror(typeArgument)));
             }
         }
 
         return typeInfoNode;
     }
 
-    protected Wildcard parseWildcard(WildcardType wildcard) {
-        Wildcard wildcardNode = objectFactory.createWildcard();
+    protected Wildcard parseWildcard(final WildcardType wildcard) {
+        final Wildcard wildcardNode = objectFactory.createWildcard();
 
-        for (Type extendType : wildcard.extendsBounds()) {
-            wildcardNode.getExtendsBound().add(parseTypeInfo(extendType));
-        }
+        final TypeMirror extendType = wildcard.getExtendsBound();
+        wildcardNode.getExtendsBound().add(parseTypeInfo(extendType));
 
-        for (Type superType : wildcard.superBounds()) {
-            wildcardNode.getSuperBound().add(parseTypeInfo(superType));
-        }
+        final TypeMirror superType = wildcard.getSuperBound();
+        wildcardNode.getSuperBound().add(parseTypeInfo(superType));
 
         return wildcardNode;
     }
 
+    protected TypeParameter parseTypeParameter(final TypeParameterElement typeParameter) {
+        return parseTypeParameter((TypeVariable) typeParameter.asType());
+    }
+
     /**
      * Parse type variables for generics
-     * 
+     *
      * @param typeVariable
      * @return
      */
-    protected TypeParameter parseTypeParameter(TypeVariable typeVariable) {
-        TypeParameter typeParameter = objectFactory.createTypeParameter();
-        typeParameter.setName(typeVariable.typeName());
+    protected TypeParameter parseTypeParameter(final TypeVariable typeVariable) {
+        final TypeParameter typeParameter = objectFactory.createTypeParameter();
+        typeParameter.setName(typeVariable.toString());
 
-        for (Type bound : typeVariable.bounds()) {
-            typeParameter.getBound().add(bound.qualifiedTypeName());
-        }
+        final List<String> bounds = typeParameter.getBound();
+        bounds.add(typeVariable.getLowerBound().toString());
+        bounds.add(typeVariable.getUpperBound().toString());
 
         return typeParameter;
     }
 
-    protected TagInfo parseTag(Tag tagDoc) {
-        TagInfo tagNode = objectFactory.createTagInfo();
-        tagNode.setName(tagDoc.kind());
-        tagNode.setText(tagDoc.text());
+    protected TagInfo parseTag(final DocTree tagDoc) {
+        final TagInfo tagNode = objectFactory.createTagInfo();
+        tagNode.setName(tagDoc.getKind().tagName);
+        tagNode.setText(tagDoc.toString());
         return tagNode;
     }
 
     /**
-     * Returns string representation of scope
-     * 
-     * @param doc
-     * @return
+     * {@return string representation of the element scope}
+     *
+     * @param doc the element to get its scope
      */
-    protected String parseScope(ProgramElementDoc doc) {
-        if (doc.isPrivate()) {
+    protected String parseScope(final Element doc) {
+        if (hasModifier(doc, Modifier.PRIVATE)) {
             return "private";
-        } else if (doc.isProtected()) {
+        } else if (hasModifier(doc, Modifier.PROTECTED)) {
             return "protected";
-        } else if (doc.isPublic()) {
+        } else if (hasModifier(doc, Modifier.PUBLIC)) {
             return "public";
         }
+
         return "";
     }
 }
