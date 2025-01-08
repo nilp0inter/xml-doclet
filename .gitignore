@@ -1,10 +1,20 @@
-/target
-/build
-/out
-/.settings
-/.classpath
-/.project
-/.gradle
-/.idea
-/CHANGELOG.md
+target/
+build/
+out/
+.settings
+.classpath
+.project
+.gradle
+CHANGELOG.md
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# MacOS
+.DS_Store
+
+# Files generated from the parsing of the javadoc.xsd using the JAXB maven plugin
+sun-jaxb.episode
+
 
