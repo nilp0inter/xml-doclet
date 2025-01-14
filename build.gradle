@@ -162,16 +162,6 @@ java {
     modularity.inferModulePath = true
 }
 
-compileJava {
-    doFirst {
-        options.compilerArgs += [
-                '--module-path', classpath.asPath,
-                '-Xmaxerrs', 1000
-        ]
-        classpath = files()
-    }
-}
-
 jar {
     manifest {
         attributes('Main-Class': 'com.github.markusbernhardt.xmldoclet.XmlDoclet')
