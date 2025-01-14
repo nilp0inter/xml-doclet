@@ -198,8 +198,10 @@ public class Parser {
      */
     protected AnnotationInstance parseAnnotationDesc(final AnnotationMirror annotationDesc,
             final Name programElement) {
-        final var annotationInstance = objectFactory.createAnnotationInstance();
 
+        final var annotationInstance=objectFactory.createAnnotationInstance();
+
+        //@formatter:off
         try {
             final var annotTypeInfo = annotationDesc.getAnnotationType();
             annotationInstance.setName(annotTypeInfo.asElement().getSimpleName().toString());
@@ -239,6 +241,7 @@ public class Parser {
 
             annotationInstance.getArgument().add(annotationArgumentNode);
         }
+        //@formatter:on
 
         return annotationInstance;
     }

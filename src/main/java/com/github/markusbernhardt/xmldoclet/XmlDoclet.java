@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 /// - [Using the new JDK 9 Doclet API (refined in JDK 13)](https://openjdk.org/groups/compiler/using-new-doclet.html)
 ///
 /// @author markus
-public class XmlDoclet implements Doclet {
+public final class XmlDoclet implements Doclet {
     private static final Logger LOGGER = Logger.getLogger(XmlDoclet.class.getName());
 
     public static final String RESTRUCTURED_XSL = "/com/manticore/xsl/restructured.xsl";
@@ -57,7 +57,11 @@ public class XmlDoclet implements Doclet {
             this.options = supportedOptions.toDocletOptions();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Failed to initialize XmlDoclet", e);
-            throw e;
+
+            // Classes that throw exceptions in their constructors are vulnerable to Finalizer attacks
+            // A finalizer attack can be prevented, by declaring the class final, using an empty finalizer declared as final, or by a clever
+            // use of a private constructor.
+            throw new RuntimeException("Failed to initialize XmlDoclet", e);
         }
     }
 
