@@ -3,12 +3,12 @@ import se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
 plugins {
     id "java-library"
     // https://github.com/GradleUp/shadow
-    id "com.gradleup.shadow" version "8.3.5"
+    id "com.gradleup.shadow" version "latest.release"
     id "maven-publish"
     id "signing"
 
     // https://github.com/qaware/xsd2java-gradle-plugin
-    id "de.qaware.gradle.plugin.xsd2java" version "4.0.0"
+    id "de.qaware.gradle.plugin.xsd2java" version "latest.release"
 
     id "com.github.spotbugs" version "latest.release"
     id "com.diffplug.spotless" version "latest.release"
@@ -36,10 +36,13 @@ configurations {
             force 'xerces:xercesImpl:+'
             force 'xalan:xalan:+'
             force 'org.dom4j:dom4j:+'
-
-            // avoid vulnerable optional artifacts
-            exclude(group: 'org.jdom')
         }
+
+        // avoid vulnerable optional artifacts
+        exclude(group: 'org.jdom')
+
+        // Exclude legacy API
+        exclude group: 'javax.xml.bind', module: 'jaxb-api'
     }
 }
 
@@ -49,30 +52,69 @@ repositories {
 }
 
 dependencies {
-    api 'commons-cli:commons-cli:1.9.0'
-    api 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+    api 'commons-cli:commons-cli:+'
+    api 'jakarta.xml.bind:jakarta.xml.bind-api:+'
 
     // We need to export this as API explicitly and fix the Versions
     // or else the Doclet will silently(!) not generate the output
-    api 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
-    api 'javax.activation:javax.activation-api:1.2.0'
+    api 'org.glassfish.jaxb:jaxb-runtime:+'
+    api('org.glassfish.jaxb:jaxb-core:+')
+    api 'javax.activation:javax.activation-api:+'
 
     testImplementation 'org.slf4j:slf4j-simple:+'
     testImplementation 'junit:junit:+'
 
     // https://mvnrepository.com/artifact/net.sf.saxon/Saxon-HE
-    implementation 'net.sf.saxon:Saxon-HE:12.5'
+    implementation 'net.sf.saxon:Saxon-HE:+'
 
     // Java Doc in XML Format
-    xmlDoclet 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
-    xmlDoclet 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
-    xmlDoclet 'javax.activation:javax.activation-api:1.2.0'
+    xmlDoclet 'jakarta.xml.bind:jakarta.xml.bind-api:+'
+    xmlDoclet 'org.glassfish.jaxb:jaxb-runtime:+'
+    xmlDoclet 'javax.activation:javax.activation-api:+'
     xmlDoclet 'com.manticore-projects.tools:xml-doclet:+'
-    xmlDoclet 'net.sf.saxon:Saxon-HE:12.5'
 }
 
-tasks.register('customVersionTask', CustomVersionTask)
-version = tasks.named('customVersionTask').get().getVersion(true)
+def getVersion = { boolean considerSnapshot ->
+    Integer major = 0
+    Integer minor = 0
+    Integer patch = null
+    Integer build = null
+    def commit = null
+    def snapshot = ""
+    new ByteArrayOutputStream().withStream { os ->
+        exec {
+            args = [
+                    "--no-pager"
+                    , "describe"
+                    , "--tags"
+                    , "--always"
+                    , "--dirty=-SNAPSHOT"
+            ]
+            executable "git"
+            standardOutput = os
+        }
+        def versionStr = os.toString().trim()
+        def pattern = /(?<major>\d*)\.(?<minor>\d*)(\.(?<patch>\d*))?(-(?<build>\d*)-(?<commit>[a-zA-Z\d]*))?/
+        def matcher = versionStr =~ pattern
+        if (matcher.find()) {
+            major = matcher.group('major') as Integer
+            minor = matcher.group('minor') as Integer
+            patch = matcher.group('patch') as Integer
+            build = matcher.group('build') as Integer
+            commit = matcher.group('commit')
+        }
+
+        if (considerSnapshot && ( versionStr.endsWith('SNAPSHOT') || build!=null) ) {
+            minor++
+            if (patch!=null) patch = 0
+            snapshot = "-SNAPSHOT"
+        }
+    }
+    return patch!=null
+            ? "${major}.${minor}.${patch}${snapshot}"
+            :  "${major}.${minor}${snapshot}"
+}
+version = getVersion(true)
 group = 'com.manticore-projects.tools'
 description = 'XML Doclet'
 
@@ -117,6 +159,11 @@ publishing {
                     developer {
                         id = 'vha'
                         name = 'Vojtěch Habarta'
+                    }
+                    developer {
+                        id = 'maca'
+                        name = 'Manoel Campos '
+                        email = ''
                     }
                 }
                 scm {
@@ -171,6 +218,8 @@ jar {
 
 shadowJar {
     minimize()
+    mergeServiceFiles()
+    archiveClassifier.set('all')
 }
 
 xsd2java {
