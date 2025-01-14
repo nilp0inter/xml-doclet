@@ -83,7 +83,7 @@ public class TypeUtils {
      */
     public static ParameterizedType getParameterizedType(TypeMirror typeMirror) {
         if (typeMirror instanceof DeclaredType declaredType) {
-            if (!declaredType.getTypeArguments().isEmpty()) {
+            if (!declaredType.getTypeArguments().isEmpty() && declaredType instanceof ParameterizedType) {
                 return (ParameterizedType) declaredType;
             }
         }
