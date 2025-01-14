@@ -93,6 +93,9 @@ public class XmlDoclet implements Doclet {
      */
     @Override
     public boolean run(final DocletEnvironment env) {
+        // find org.glassfish.jaxb.runtime.v2.ContextFactory in the FAT Jar
+        Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+
         final var commandLine = parseCommandLine(getOptionsMatrix());
         root = new Parser(env).parseRootDoc();
         save(commandLine, root);
