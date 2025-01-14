@@ -18,7 +18,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.logging.Logger;
 
 import static com.github.markusbernhardt.xmldoclet.TypeUtils.*;
@@ -35,7 +35,7 @@ public class Parser {
     /**
      * A map where each key is a package name and each value is an object containing a package's JavaDoc.
      */
-    protected Map<String, Package> packages = new TreeMap<>();
+    protected Map<String, Package> packages = new ConcurrentSkipListMap<>();
 
     protected ObjectFactory objectFactory = new ObjectFactory();
 
