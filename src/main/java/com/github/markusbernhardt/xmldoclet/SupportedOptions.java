@@ -51,9 +51,8 @@ final class SupportedOptions {
     }
 
     private void newOneArgOption(final String optionName, final String description) {
-        final var parsedOptionName = parseOptionName(optionName);
-        final var option = Option.builder(parsedOptionName)
-                .argName(parsedOptionName)
+        final var option = Option.builder(optionName)
+                .argName(optionName)
                 .required(false)
                 .numberOfArgs(1)
                 .desc(description)
@@ -63,8 +62,8 @@ final class SupportedOptions {
     }
 
     private void newArgOption(final String optionName, final String argName, final String description) {
-        final var option = Option.builder(parseOptionName(optionName))
-                .argName(parseOptionName(argName))
+        final var option = Option.builder(optionName)
+                .argName(argName)
                 .required(false)
                 .hasArg()
                 .desc(description)
@@ -73,14 +72,9 @@ final class SupportedOptions {
         cliOptions.addOption(option);
     }
 
-    private static String parseOptionName(final String optionName) {
-        return optionName.startsWith("-") ? optionName : "-" + optionName;
-    }
-
     private void newNoArgOption(final String optionName, final String description) {
-        final var parsedOptionName = parseOptionName(optionName);
-        final var option = Option.builder(parsedOptionName)
-                .argName(parsedOptionName)
+        final var option = Option.builder(optionName)
+                .argName(optionName)
                 .required(false)
                 .hasArg(false)
                 .desc(description)

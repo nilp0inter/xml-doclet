@@ -1,6 +1,7 @@
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
+
 import javax.inject.Inject
 
 class CustomVersionTask extends DefaultTask {
@@ -26,7 +27,6 @@ class CustomVersionTask extends DefaultTask {
         def commit = null
         def snapshot = ""
         new ByteArrayOutputStream().withStream { os ->
-            // TODO: use ExecOperations.exec
             execOperations.exec { spec ->
                 spec.args = [
                         "--no-pager"

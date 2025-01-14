@@ -51,9 +51,14 @@ public class XmlDoclet implements Doclet {
     private PrintWriter stdout;
 
     public XmlDoclet() {
-        final var supportedOptions = new SupportedOptions();
-        this.cliOptions = supportedOptions.get();
-        this.options = supportedOptions.toDocletOptions();
+        try {
+            final var supportedOptions = new SupportedOptions();
+            this.cliOptions = supportedOptions.get();
+            this.options = supportedOptions.toDocletOptions();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Failed to initialize XmlDoclet", e);
+            throw e;
+        }
     }
 
     @Override
