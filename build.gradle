@@ -49,7 +49,7 @@ repositories {
 }
 
 dependencies {
-    api 'commons-cli:commons-cli:+'
+    api 'commons-cli:commons-cli:1.9.0'
     api 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
 
     // We need to export this as API explicitly and fix the Versions
