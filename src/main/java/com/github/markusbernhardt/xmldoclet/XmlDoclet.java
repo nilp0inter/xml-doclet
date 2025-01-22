@@ -33,7 +33,7 @@ public final class XmlDoclet implements Doclet {
     /**
      * The parsed object model. Used in unit tests.
      */
-    private Root root;
+    private static Root root;
 
     /**
      * The Options instance to parse command line strings, that defines the supported XMLDoclet {@link #options}.
@@ -262,5 +262,9 @@ public final class XmlDoclet implements Doclet {
                     null, cliOptions, 1, 3, null, false);
             return CommandLine.builder().build();
         }
+    }
+
+    public static Root getRoot() {
+        return root;
     }
 }

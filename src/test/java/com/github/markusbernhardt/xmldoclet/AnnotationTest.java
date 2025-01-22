@@ -1,49 +1,35 @@
 package com.github.markusbernhardt.xmldoclet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
 import com.github.markusbernhardt.xmldoclet.simpledata.Annotation1;
 import com.github.markusbernhardt.xmldoclet.simpledata.Annotation2;
 import com.github.markusbernhardt.xmldoclet.simpledata.Annotation3;
 import com.github.markusbernhardt.xmldoclet.xjc.Annotation;
 import com.github.markusbernhardt.xmldoclet.xjc.AnnotationElement;
 import com.github.markusbernhardt.xmldoclet.xjc.AnnotationInstance;
-import com.github.markusbernhardt.xmldoclet.xjc.Package;
-import com.github.markusbernhardt.xmldoclet.xjc.Root;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit test group for Annotations
  */
 @SuppressWarnings("deprecation")
-public class AnnotationTest extends AbstractTestParent {
-    /**
-     * Rigourous Parser :-)
-     */
-    @Test
-    public void testSampledoc() {
-        executeJavadoc(null, new String[] {"./src/test/java"}, null, null, new String[] {"com"},
-                new String[] {"-dryrun"});
-    }
+public class AnnotationTest extends AbstractTest {
 
     /**
      * testing an annotation with nothing defined
      */
     @Test
     public void testAnnotation1() {
-        String[] sourceFiles = new String[] {
-                "./src/test/java/com/github/markusbernhardt/xmldoclet/simpledata/Annotation1.java"};
-        Root rootNode =
-                executeJavadoc(null, null, null, sourceFiles, null, new String[] {"-dryrun"});
-
-        Package packageNode = rootNode.getPackage().get(0);
-        Annotation annotationNode = packageNode.getAnnotation().get(0);
+        final var javaDocElements = newJavaDocElements("Annotation1.java");
+        final var rootNode = javaDocElements.rootNode();
+        final var packageNode = javaDocElements.packageNode();
+        final Annotation annotationNode = packageNode.getAnnotation().getFirst();
 
         assertEquals(rootNode.getPackage().size(), 1);
         assertEquals(packageNode.getComment(), null);
-        assertEquals(packageNode.getName(), "com.github.markusbernhardt.xmldoclet.simpledata");
+        assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
         assertEquals(packageNode.getAnnotation().size(), 1);
         assertEquals(packageNode.getEnum().size(), 0);
         assertEquals(packageNode.getInterface().size(), 0);
@@ -63,18 +49,15 @@ public class AnnotationTest extends AbstractTestParent {
      */
     @Test
     public void testAnnotation2() {
-        String[] sourceFiles = new String[] {
-                "./src/test/java/com/github/markusbernhardt/xmldoclet/simpledata/Annotation2.java"};
-        Root rootNode =
-                executeJavadoc(null, null, null, sourceFiles, null, new String[] {"-dryrun"});
-
-        Package packageNode = rootNode.getPackage().get(0);
-        Annotation annotationNode = packageNode.getAnnotation().get(0);
-        AnnotationInstance annotationInstance = annotationNode.getAnnotation().get(0);
+        final var javaDocElements = newJavaDocElements("Annotation2.java");
+        final var rootNode = javaDocElements.rootNode();
+        final var packageNode = javaDocElements.packageNode();
+        final Annotation annotationNode = packageNode.getAnnotation().getFirst();
+        final AnnotationInstance annotationInstance = annotationNode.getAnnotation().getFirst();
 
         assertEquals(rootNode.getPackage().size(), 1);
         assertEquals(packageNode.getComment(), null);
-        assertEquals(packageNode.getName(), "com.github.markusbernhardt.xmldoclet.simpledata");
+        assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
         assertEquals(packageNode.getAnnotation().size(), 1);
         assertEquals(packageNode.getEnum().size(), 0);
         assertEquals(packageNode.getInterface().size(), 0);
@@ -99,18 +82,15 @@ public class AnnotationTest extends AbstractTestParent {
      */
     @Test
     public void testAnnotation3() {
-        String[] sourceFiles = new String[] {
-                "./src/test/java/com/github/markusbernhardt/xmldoclet/simpledata/Annotation3.java"};
-        Root rootNode =
-                executeJavadoc(null, null, null, sourceFiles, null, new String[] {"-dryrun"});
-
-        Package packageNode = rootNode.getPackage().get(0);
-        Annotation annotationNode = packageNode.getAnnotation().get(0);
-        AnnotationElement element = annotationNode.getElement().get(0);
+        final var javaDocElements = newJavaDocElements("Annotation3.java");
+        final var rootNode = javaDocElements.rootNode();
+        final var packageNode = javaDocElements.packageNode();
+        final Annotation annotationNode = packageNode.getAnnotation().getFirst();
+        final AnnotationElement element = annotationNode.getElement().getFirst();
 
         assertEquals(rootNode.getPackage().size(), 1);
         assertEquals(packageNode.getComment(), null);
-        assertEquals(packageNode.getName(), "com.github.markusbernhardt.xmldoclet.simpledata");
+        assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
         assertEquals(packageNode.getAnnotation().size(), 1);
         assertEquals(packageNode.getEnum().size(), 0);
         assertEquals(packageNode.getInterface().size(), 0);
@@ -126,8 +106,7 @@ public class AnnotationTest extends AbstractTestParent {
 
         // test annotation element
         assertEquals(element.getName(), "id");
-        assertEquals(element.getQualified(),
-                "com.github.markusbernhardt.xmldoclet.simpledata.Annotation3.id");
+        assertEquals(element.getQualified(), "com.github.markusbernhardt.xmldoclet.simpledata.Annotation3.id");
         assertEquals(element.getType().getQualified(), "int");
         assertEquals(element.getDefault(), Integer.toString(3));
     }
@@ -137,17 +116,14 @@ public class AnnotationTest extends AbstractTestParent {
      */
     @Test
     public void testAnnotation4() {
-        String[] sourceFiles = new String[] {
-                "./src/test/java/com/github/markusbernhardt/xmldoclet/simpledata/Annotation4.java"};
-        Root rootNode =
-                executeJavadoc(null, null, null, sourceFiles, null, new String[] {"-dryrun"});
-
-        Package packageNode = rootNode.getPackage().get(0);
-        Annotation annotationNode = packageNode.getAnnotation().get(0);
+        final var javaDocElements = newJavaDocElements("Annotation4.java");
+        final var rootNode = javaDocElements.rootNode();
+        final var packageNode = javaDocElements.packageNode();
+        final Annotation annotationNode = packageNode.getAnnotation().getFirst();
 
         assertEquals(rootNode.getPackage().size(), 1);
         assertEquals(packageNode.getComment(), null);
-        assertEquals(packageNode.getName(), "com.github.markusbernhardt.xmldoclet.simpledata");
+        assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
         assertEquals(packageNode.getAnnotation().size(), 1);
         assertEquals(packageNode.getEnum().size(), 0);
         assertEquals(packageNode.getInterface().size(), 0);
@@ -155,8 +131,7 @@ public class AnnotationTest extends AbstractTestParent {
 
         assertEquals(annotationNode.getComment(), "Annotation4");
         assertEquals(annotationNode.getName(), "Annotation4");
-        assertEquals(annotationNode.getQualified(),
-                "com.github.markusbernhardt.xmldoclet.simpledata.Annotation4");
+        assertEquals(annotationNode.getQualified(), getElementPathFromSimpleDataPackage("Annotation4"));
         assertEquals(annotationNode.getScope(), "");
         assertEquals(annotationNode.getAnnotation().size(), 0);
         assertEquals(annotationNode.getElement().size(), 0);

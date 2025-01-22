@@ -3,7 +3,7 @@ package com.github.markusbernhardt.xmldoclet.simpledata;
 /**
  * Class1
  */
-public class Method3 {
+public class MethodsC {
     /** Method */
     public void method1() {
 
@@ -44,7 +44,7 @@ public class Method3 {
 
     /**
      * Method
-     * 
+     *
      * @throws Exception exception
      */
     public void method9() throws Exception {
@@ -53,7 +53,7 @@ public class Method3 {
 
     /**
      * Method
-     * 
+     *
      * @throws OutOfMemoryError exception
      * @throws IllegalArgumentException exception
      */
