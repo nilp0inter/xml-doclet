@@ -5,6 +5,8 @@ import com.github.markusbernhardt.xmldoclet.xjc.Package;
 import com.github.markusbernhardt.xmldoclet.xjc.Root;
 import org.junit.Test;
 
+import javax.tools.DocumentationTool;
+import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
@@ -13,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.spi.ToolProvider;
 
 import static java.util.Arrays.stream;
 
@@ -128,9 +129,27 @@ abstract class AbstractTest {
 
             LOGGER.info("Executing doclet with arguments: " + join(" ", argumentList));
 
-            final var javadoc = ToolProvider.findFirst("javadoc").orElseThrow();
-            final String[] arguments = argumentList.toArray(new String[] {});
-            javadoc.run(infoWriter, errorWriter, arguments);
+            final DocumentationTool javadoc = ToolProvider.getSystemDocumentationTool();
+            if (javadoc == null) {
+                throw new IllegalStateException("No javadoc command available on the system");
+            }
+
+            // Create a task to run the doclet
+            final var task = javadoc.getTask(
+                    new PrintWriter(System.out, true, Charset.defaultCharset()), // output writer
+                    null, // file manager (use default)
+                    null, // diagnostic listener (use default)
+                    XmlDoclet.class,
+                    argumentList, // arguments
+                    null // compilation units (use default)
+            );
+
+            // Run the task
+            if (task.call()) {
+                System.out.println("Doclet ran successfully");
+            } else {
+                System.err.println("Doclet execution failed");
+            }
 
             LOGGER.info("done with doclet processing");
         } catch (Exception e) {

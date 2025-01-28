@@ -6,6 +6,7 @@ import org.apache.commons.cli.Option;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Manoel Campos
@@ -40,7 +41,7 @@ public class CustomOption implements Doclet.Option {
         return new CustomOption(
                 cliOption.getArgs(),
                 cliOption.getDescription(),
-                List.of(cliOption.getOpt()),
+                List.of('-' + cliOption.getOpt()),
                 cliOption.getArgName());
     }
 
@@ -50,7 +51,7 @@ public class CustomOption implements Doclet.Option {
         this.argumentCount = argumentCount;
         this.description = description;
         this.names = new ArrayList<>(names);
-        this.parameters = parameters;
+        this.parameters = Objects.requireNonNullElse(parameters, "");
     }
 
     @Override
@@ -96,6 +97,6 @@ public class CustomOption implements Doclet.Option {
      */
     @Override
     public boolean process(final String option, final List<String> arguments) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return arguments.size() == argumentCount;
     }
 }

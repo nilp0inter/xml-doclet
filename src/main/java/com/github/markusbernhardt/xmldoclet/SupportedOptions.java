@@ -87,9 +87,8 @@ final class SupportedOptions {
 
     private void newNoArgOption(final String optionName, final String description) {
         final var option = Option.builder(optionName)
-                .argName(optionName)
                 .required(false)
-                .hasArg(false)
+                .numberOfArgs(0)
                 .desc(description)
                 .build();
 

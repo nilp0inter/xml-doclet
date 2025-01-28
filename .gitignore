@@ -6,6 +6,7 @@ out/
 .project
 .gradle
 CHANGELOG.md
+javadoc.xml
 
 # IntelliJ IDEA
 .idea/
