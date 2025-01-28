@@ -220,6 +220,10 @@ shadowJar {
     minimize()
     mergeServiceFiles()
     archiveClassifier.set('all')
+
+    archiveBaseName = 'xml-doclet-shadow'
+    archiveClassifier = ''
+    archiveVersion = ''
 }
 
 xsd2java {
