@@ -56,7 +56,6 @@ public class CustomOption implements Doclet.Option {
 
     @Override
     public List<String> getNames() {
-        // return List.of("-customOption");
         return Collections.unmodifiableList(names);
     }
 
