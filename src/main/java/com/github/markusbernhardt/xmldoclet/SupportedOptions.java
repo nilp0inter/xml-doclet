@@ -52,6 +52,11 @@ final class SupportedOptions {
         return cliOptions.getOptions().stream().map(CustomOption::of).collect(toSet());
     }
 
+    /**
+     * Creates a new Apache Commons CLI option with one argument that has the same name of the option itself.
+     * @param optionName name of the option and its own single argument
+     * @param description option description
+     */
     private void newOneArgOption(final String optionName, final String description) {
         final var option = Option.builder(optionName)
                 .argName(optionName)
@@ -63,6 +68,12 @@ final class SupportedOptions {
         cliOptions.addOption(option);
     }
 
+    /**
+     * Creates a new Apache Commons CLI option with one argument.
+     * @param optionName name of the option
+     * @param argName name of the argument to be passed to the option
+     * @param description option description
+     */
     private void newArgOption(final String optionName, final String argName, final String description) {
         final var option = Option.builder(optionName)
                 .argName(argName)
