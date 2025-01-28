@@ -48,7 +48,6 @@ public final class XmlDoclet implements Doclet {
     private final Set<CustomOption> options;
 
     private Reporter reporter;
-    private PrintWriter stdout;
 
     public XmlDoclet() {
         try {
@@ -68,7 +67,6 @@ public final class XmlDoclet implements Doclet {
     @Override
     public void init(final Locale locale, final Reporter reporter) {
         this.reporter = reporter;
-        this.stdout = reporter.getStandardWriter();
     }
 
     @Override
