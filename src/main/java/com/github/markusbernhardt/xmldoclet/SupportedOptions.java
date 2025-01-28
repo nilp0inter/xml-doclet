@@ -61,7 +61,7 @@ final class SupportedOptions {
         final var option = Option.builder(optionName)
                 .argName(optionName)
                 .required(false)
-                .numberOfArgs(1)
+                .hasArg()
                 .desc(description)
                 .build();
 
