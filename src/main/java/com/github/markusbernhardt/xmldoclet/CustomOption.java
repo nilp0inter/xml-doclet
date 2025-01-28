@@ -11,9 +11,23 @@ import java.util.List;
  * @author Manoel Campos
  */
 public class CustomOption implements Doclet.Option {
+    /**
+     * The number of arguments this option will consume,
+     * which is the number of expected {@link #parameters}.
+     */
     private final int argumentCount;
     private final String description;
     private final List<String> names;
+
+    /**
+     * A user-friendly string description of the option's parameters, or the empty string if this option has no parameters.
+     * This is used to generate the help message for the option.
+     * If the option expectes a file name as parameter, the description may include the word "file"
+     * to indicate that.
+     *
+     * <p>If the option has multiple parameters, this attribute should provide
+     * a string representation of all of them, such as: file1 file2</p>
+     */
     private final String parameters;
 
     /**
@@ -73,6 +87,13 @@ public class CustomOption implements Doclet.Option {
         return parameters.split(" ");
     }
 
+    /**
+     * {@inheritDoc}
+     * It must check if the given option arguments are valid.
+     * @param option {@inheritDoc}
+     * @param arguments {@inheritDoc} received during the doclet execution
+     * @return if the option has the expected number of arguments and they are valid
+     */
     @Override
     public boolean process(final String option, final List<String> arguments) {
         throw new UnsupportedOperationException("Not supported yet.");
