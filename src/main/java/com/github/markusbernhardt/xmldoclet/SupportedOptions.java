@@ -19,10 +19,7 @@ import static java.util.stream.Collectors.toSet;
 final class SupportedOptions {
     private final Options cliOptions = new Options();
 
-    /**
-     * {@return the Apache Commons CLI command line options supported by the XMLDoclet}
-     */
-    Options get() {
+    public SupportedOptions() {
         newArgOption("d", "directory", "Destination directory for output file.\nDefault: .");
         newArgOption("docencoding", "encoding", "Encoding of the output file.\nDefault: UTF8");
         newNoArgOption("dryrun", "Parse javadoc, but don't write output file.\nDefault: false");
@@ -36,7 +33,12 @@ final class SupportedOptions {
         newOneArgOption("windowtitle", "Window Title\n");
         newNoArgOption("noTimestamp", "No Timestamp.\n");
         newNoArgOption("withFloatingToc", "Renders a Floating TOC on the right side.\n");
+    }
 
+    /**
+     * {@return the Apache Commons CLI options supported by the XMLDoclet}
+     */
+    Options get() {
         return cliOptions;
     }
 
