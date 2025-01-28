@@ -11,6 +11,7 @@ import net.sf.saxon.s9api.*;
 import org.apache.commons.cli.*;
 
 import javax.lang.model.SourceVersion;
+import javax.tools.Diagnostic;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.nio.charset.Charset;
@@ -194,7 +195,7 @@ public final class XmlDoclet implements Doclet {
             bufferedOutputStream.flush();
             fileOutputStream.flush();
 
-            LOGGER.info("Wrote XML to: " + xmlFile.getAbsolutePath());
+            reporter.print(Diagnostic.Kind.NOTE, "Wrote XML to: " + xmlFile.getAbsolutePath());
 
             final var parameters = new HashMap<String, String>();
             for (final var option : commandLine.getOptions()) {
@@ -212,7 +213,7 @@ public final class XmlDoclet implements Doclet {
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, "Failed to write Restructured Text", ex);
                 }
-                LOGGER.info("Wrote Restructured Text to: " + outFile.getAbsolutePath());
+                reporter.print(Diagnostic.Kind.NOTE, "Wrote Restructured Text to: " + outFile.getAbsolutePath());
             }
 
             if (commandLine.hasOption("md")) {
@@ -222,15 +223,15 @@ public final class XmlDoclet implements Doclet {
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, "Failed to write Markdown", ex);
                 }
-                LOGGER.info("Wrote Markdown to: " + outFile.getAbsolutePath());
+                reporter.print(Diagnostic.Kind.NOTE, "Wrote Markdown to: " + outFile.getAbsolutePath());
             }
 
             if (commandLine.hasOption("docbook")) {
-                LOGGER.info("Docbook transformation is not supported yet.");
+                reporter.print(Diagnostic.Kind.WARNING, "Docbook transformation is not supported yet.");
             }
 
             if (commandLine.hasOption("adoc")) {
-                LOGGER.info("ASCII Doctor transformation is not supported yet.");
+                reporter.print(Diagnostic.Kind.WARNING, "ASCII transformation is not supported yet.");
             }
         } catch (RuntimeException | IOException | JAXBException e) {
             LOGGER.log(Level.SEVERE, "Failed to write the XML File", e);
