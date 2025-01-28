@@ -36,7 +36,7 @@ public final class XmlDoclet implements Doclet {
     private static Root root;
 
     /**
-     * The Options instance to parse command line strings, that defines the supported XMLDoclet {@link #options}.
+     * The Apache Commons CLI {@link Options} instance to parse command line strings, that defines the supported XMLDoclet {@link #options}.
      */
     public final Options cliOptions;
 
