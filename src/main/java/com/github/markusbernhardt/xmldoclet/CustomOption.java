@@ -3,7 +3,6 @@ package com.github.markusbernhardt.xmldoclet;
 import jdk.javadoc.doclet.Doclet;
 import org.apache.commons.cli.Option;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -18,6 +17,11 @@ public class CustomOption implements Doclet.Option {
      */
     private final int argumentCount;
     private final String description;
+
+    /**
+     * The names of the option, such as {@code d} or {@code debug},
+     * without a preceding hyphen (included automatically).
+     */
     private final List<String> names;
 
     /**
@@ -41,17 +45,21 @@ public class CustomOption implements Doclet.Option {
         return new CustomOption(
                 cliOption.getArgs(),
                 cliOption.getDescription(),
-                List.of('-' + cliOption.getOpt()),
+                List.of(cliOption.getOpt()),
                 cliOption.getArgName());
     }
 
-    public CustomOption(
+    private CustomOption(
             final int argumentCount, final String description,
             final List<String> names, final String parameters) {
         this.argumentCount = argumentCount;
         this.description = description;
-        this.names = new ArrayList<>(names);
+        this.names = names.stream().map(this::addHyphenPrefix).toList();
         this.parameters = Objects.requireNonNullElse(parameters, "");
+    }
+
+    private String addHyphenPrefix(final String name) {
+        return name.startsWith("-") ? name : "-" + name;
     }
 
     @Override
