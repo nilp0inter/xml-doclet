@@ -11,11 +11,6 @@ import java.util.Objects;
  * @author Manoel Campos
  */
 public class CustomOption implements Doclet.Option {
-    /**
-     * The number of arguments this option will consume,
-     * which is the number of expected {@link #parameters}.
-     */
-    private final int argumentCount;
     private final String description;
 
     /**
@@ -36,6 +31,12 @@ public class CustomOption implements Doclet.Option {
     private final String parameters;
 
     /**
+     * The number of arguments this option will consume,
+     * which is the number of expected {@link #parameters}.
+     */
+    private final int argumentCount;
+
+    /**
      * Creates a Custom {@link Doclet.Option} based on a {@link org.apache.commons.cli.Option} instance.
      *
      * @param cliOption Apache Commons CLI Option instance
@@ -43,19 +44,17 @@ public class CustomOption implements Doclet.Option {
      */
     public static CustomOption of(final Option cliOption) {
         return new CustomOption(
-                cliOption.getArgs(),
-                cliOption.getDescription(),
-                List.of(cliOption.getOpt()),
-                cliOption.getArgName());
+                cliOption.getDescription(), List.of(cliOption.getOpt()),
+                cliOption.getArgName(), cliOption.getArgs()
+        );
     }
 
-    private CustomOption(
-            final int argumentCount, final String description,
-            final List<String> names, final String parameters) {
-        this.argumentCount = argumentCount;
+    public CustomOption(
+            final String description, final List<String> names, final String parameters, final int argumentCount) {
         this.description = description;
         this.names = names.stream().map(this::addHyphenPrefix).toList();
         this.parameters = Objects.requireNonNullElse(parameters, "");
+        this.argumentCount = argumentCount;
     }
 
     private String addHyphenPrefix(final String name) {
