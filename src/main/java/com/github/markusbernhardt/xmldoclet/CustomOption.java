@@ -3,7 +3,6 @@ package com.github.markusbernhardt.xmldoclet;
 import jdk.javadoc.doclet.Doclet;
 import org.apache.commons.cli.Option;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
@@ -96,7 +95,7 @@ public class CustomOption implements Doclet.Option {
 
     @Override
     public List<String> getNames() {
-        return Collections.unmodifiableList(names);
+        return names;
     }
 
     @Override
