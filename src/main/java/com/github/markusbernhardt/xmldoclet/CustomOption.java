@@ -6,6 +6,7 @@ import org.apache.commons.cli.Option;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiPredicate;
 
 /**
  * @author Manoel Campos
@@ -31,6 +32,15 @@ public class CustomOption implements Doclet.Option {
     private final String parameters;
 
     /**
+     * A function ({@link java.util.function.Predicate}) to validate the option arguments.
+     * The function can check the number of required arguments, try to convert them to the expected type
+     * and perform any validation operation required.
+     * If the arguments are valid, the Predicate must return true.
+     * @see #process(String, List)
+     */
+    private final BiPredicate<String, List<String>> argumentsProcessor;
+
+    /**
      * The number of arguments this option will consume,
      * which is the number of expected {@link #parameters}.
      */
@@ -51,10 +61,18 @@ public class CustomOption implements Doclet.Option {
 
     public CustomOption(
             final String description, final List<String> names, final String parameters, final int argumentCount) {
+        this(description, names, parameters, argumentCount, (option, args) -> args.size() == argumentCount);
+    }
+
+    public CustomOption(
+            final String description, final List<String> names,
+            final String parameters, final int argumentCount,
+            final BiPredicate<String, List<String>> argumentsProcessor) {
         this.description = description;
         this.names = names.stream().map(this::addHyphenPrefix).toList();
         this.parameters = Objects.requireNonNullElse(parameters, "");
         this.argumentCount = argumentCount;
+        this.argumentsProcessor = argumentsProcessor;
     }
 
     private String addHyphenPrefix(final String name) {
@@ -103,7 +121,7 @@ public class CustomOption implements Doclet.Option {
      * @return if the option has the expected number of arguments and they are valid
      */
     @Override
-    public boolean process(final String option, final List<String> arguments) {
-        return arguments.size() == argumentCount;
+    public final boolean process(final String option, final List<String> arguments) {
+        return argumentsProcessor.test(option, arguments);
     }
 }
