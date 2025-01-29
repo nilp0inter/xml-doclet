@@ -62,7 +62,8 @@ dependencies {
     api 'javax.activation:javax.activation-api:+'
 
     testImplementation 'org.slf4j:slf4j-simple:+'
-    testImplementation 'org.junit.jupiter:junit-jupiter:+'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:+'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:+'
 
     // https://mvnrepository.com/artifact/net.sf.saxon/Saxon-HE
     implementation 'net.sf.saxon:Saxon-HE:+'
@@ -72,6 +73,11 @@ dependencies {
     xmlDoclet 'org.glassfish.jaxb:jaxb-runtime:+'
     xmlDoclet 'javax.activation:javax.activation-api:+'
     xmlDoclet 'com.manticore-projects.tools:xml-doclet:+'
+}
+
+test {
+    // Enable JUnit 5 (Gradle 4.6+).
+    useJUnitPlatform()
 }
 
 def getVersion = { boolean considerSnapshot ->
