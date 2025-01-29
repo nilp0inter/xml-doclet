@@ -42,7 +42,7 @@ abstract class AbstractTest {
         final var rootNode = executeJavadoc(null, null, null, sourceFiles, null, ARGS);
 
         final var packageNode = rootNode.getPackage().getFirst();
-        final var classNode = packageNode.getClazz().getFirst();
+        final var classNode = packageNode.getClazz().isEmpty() ? null : packageNode.getClazz().getFirst();
         return new JavaDocElements(rootNode, packageNode, classNode);
     }
 
