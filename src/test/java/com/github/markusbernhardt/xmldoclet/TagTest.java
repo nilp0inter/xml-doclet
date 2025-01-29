@@ -1,34 +1,34 @@
 package com.github.markusbernhardt.xmldoclet;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 /**
  * Unit test group for Tags
  */
-public class TagTest extends AbstractTest {
+class TagTest extends AbstractTest {
 
     /**
      * testing a simple tags
      */
     @Test
-    public void testTag1() {
+    void testTag1() {
         final var javaDocElements = newJavaDocElements("Tag1.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
         final var classNode = javaDocElements.classNode();
 
-        assertEquals(rootNode.getPackage().size(), 1);
+        assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
-        assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
-        assertEquals(packageNode.getClazz().size(), 1);
+        assertEquals(SIMPLE_DATA_PACKAGE, packageNode.getName());
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertEquals(0, packageNode.getEnum().size());
+        assertTrue(packageNode.getInterface().isEmpty());
+        assertEquals(1, packageNode.getClazz().size());
 
-        assertEquals(classNode.getTag().size(), 7);
-        assertEquals(classNode.getMethod().getFirst().getTag().size(), 3);
+        assertEquals(7, classNode.getTag().size());
+        assertEquals(3, classNode.getMethod().getFirst().getTag().size());
     }
 }

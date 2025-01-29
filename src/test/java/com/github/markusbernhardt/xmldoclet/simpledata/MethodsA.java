@@ -15,7 +15,7 @@ public class MethodsA {
      * @return ret
      */
     public Integer method2() {
-        return new Integer(0);
+        return 0;
     }
 
     /**
@@ -44,7 +44,7 @@ public class MethodsA {
      * @return lins
      */
     public Integer method6() {
-        return new Integer(0);
+        return 0;
     }
 
     /**
@@ -52,7 +52,7 @@ public class MethodsA {
      * @return line
      */
     public Integer method7() {
-        return new Integer(0);
+        return 0;
     }
 
     /**
@@ -60,7 +60,7 @@ public class MethodsA {
      * @return line
      */
     public Integer method8() {
-        return new Integer(0);
+        return 0;
     }
 
     /**
@@ -68,7 +68,7 @@ public class MethodsA {
      * @return line line
      */
     public Integer method9() {
-        return new Integer(0);
+        return 0;
     }
 
     /**
@@ -76,6 +76,6 @@ public class MethodsA {
      * @return line line
      */
     public Integer method10() {
-        return new Integer(0);
+        return 0;
     }
 }

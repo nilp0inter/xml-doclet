@@ -6,7 +6,7 @@ import com.github.markusbernhardt.xmldoclet.xjc.TypeInfo;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Base class for implementing tests for methods.
@@ -15,8 +15,8 @@ abstract class AbstractMethodsTest extends AbstractTest {
     protected final List<Method> testMethods;
 
     public AbstractMethodsTest(final String sourceFileName) {
-        final var javadocElemenets = newJavaDocElements(sourceFileName);
-        this.testMethods = javadocElemenets.classNode().getMethod();
+        final var javadocElements = newJavaDocElements(sourceFileName);
+        this.testMethods = javadocElements.classNode().getMethod();
     }
 
     /**

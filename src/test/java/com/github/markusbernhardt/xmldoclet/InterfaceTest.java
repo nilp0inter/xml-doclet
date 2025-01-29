@@ -8,40 +8,42 @@ import com.github.markusbernhardt.xmldoclet.xjc.AnnotationInstance;
 import com.github.markusbernhardt.xmldoclet.xjc.Interface;
 import com.github.markusbernhardt.xmldoclet.xjc.Method;
 import com.github.markusbernhardt.xmldoclet.xjc.TypeParameter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import java.io.Serializable;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit test group for Interfaces
  */
 @SuppressWarnings("deprecation")
-public class InterfaceTest extends AbstractTest {
+class InterfaceTest extends AbstractTest {
     /**
      * testing a interface with nothing defined
      */
     @Test
-    public void testInterface1() {
+    void testInterface1() {
         final var javaDocElements = newJavaDocElements("Interface1.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
         final Interface interfaceNode = packageNode.getInterface().getFirst();
 
-        assertEquals(rootNode.getPackage().size(), 1);
+        assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
-        assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 1);
-        assertEquals(packageNode.getClazz().size(), 0);
+        assertEquals(SIMPLE_DATA_PACKAGE, packageNode.getName());
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertEquals(1, packageNode.getInterface().size());
+        assertTrue(packageNode.getClazz().isEmpty());
 
-        assertEquals(interfaceNode.getComment(), "Interface1");
+        assertEquals("Interface1", interfaceNode.getComment());
         assertEquals(interfaceNode.getName(), Interface1.class.getSimpleName());
         assertEquals(interfaceNode.getQualified(), Interface1.class.getName());
-        assertEquals(interfaceNode.getScope(), "public");
-        assertEquals(interfaceNode.getMethod().size(), 0);
-        assertEquals(interfaceNode.getAnnotation().size(), 0);
-        assertEquals(interfaceNode.getInterface().size(), 0);
+        assertEquals("public", interfaceNode.getScope());
+        assertTrue(interfaceNode.getMethod().isEmpty());
+        assertTrue(interfaceNode.getAnnotation().isEmpty());
+        assertTrue(interfaceNode.getInterface().isEmpty());
         assertTrue(interfaceNode.isIncluded());
     }
 
@@ -49,44 +51,44 @@ public class InterfaceTest extends AbstractTest {
      * testing a interface with 1 method
      */
     @Test
-    public void testInterface2() {
+    void testInterface2() {
         final var javaDocElements = newJavaDocElements("Interface2.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
         final Interface interfaceNode = packageNode.getInterface().getFirst();
         final Method method = interfaceNode.getMethod().getFirst();
 
-        assertEquals(rootNode.getPackage().size(), 1);
+        assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
-        assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 1);
-        assertEquals(packageNode.getClazz().size(), 0);
+        assertEquals(SIMPLE_DATA_PACKAGE, packageNode.getName());
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertEquals(1, packageNode.getInterface().size());
+        assertTrue(packageNode.getClazz().isEmpty());
 
-        assertEquals(interfaceNode.getComment(), "Interface2");
+        assertEquals("Interface2", interfaceNode.getComment());
         assertEquals(interfaceNode.getName(), Interface2.class.getSimpleName());
         assertEquals(interfaceNode.getQualified(), Interface2.class.getName());
-        assertEquals(interfaceNode.getScope(), "public");
-        assertEquals(interfaceNode.getMethod().size(), 1);
-        assertEquals(interfaceNode.getAnnotation().size(), 0);
-        assertEquals(interfaceNode.getInterface().size(), 0);
+        assertEquals("public", interfaceNode.getScope());
+        assertEquals(1, interfaceNode.getMethod().size());
+        assertTrue(interfaceNode.getAnnotation().isEmpty());
+        assertTrue(interfaceNode.getInterface().isEmpty());
         assertTrue(interfaceNode.isIncluded());
 
         // verify method
-        assertEquals(method.getComment(), "method1");
-        assertEquals(method.getName(), "method1");
-        assertEquals(method.getSignature(), "()");
+        assertEquals("method1", method.getComment());
+        assertEquals("method1", method.getName());
+        assertEquals("()", method.getSignature());
         assertFalse(method.isFinal());
         assertFalse(method.isNative());
         assertFalse(method.isStatic());
         assertFalse(method.isSynchronized());
         assertFalse(method.isVarArgs());
         assertEquals(method.getQualified(), getElementPathFromSimpleDataPackage("Interface2.method1"));
-        assertEquals(method.getScope(), "public");
-        assertEquals(method.getAnnotation().size(), 0);
-        assertEquals(method.getParameter().size(), 0);
-        assertEquals(method.getException().size(), 0);
+        assertEquals("public", method.getScope());
+        assertTrue(method.getAnnotation().isEmpty());
+        assertTrue(method.getParameter().isEmpty());
+        assertTrue(method.getException().isEmpty());
 
     }
 
@@ -94,38 +96,38 @@ public class InterfaceTest extends AbstractTest {
      * testing a interface that extends another interface
      */
     @Test
-    public void testInterface3() {
+    void testInterface3() {
         final var javaDocElements = newJavaDocElements("Interface3.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
         final Interface interfaceNode = packageNode.getInterface().getFirst();
 
-        assertEquals(rootNode.getPackage().size(), 1);
+        assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
-        assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 1);
-        assertEquals(packageNode.getClazz().size(), 0);
+        assertEquals(SIMPLE_DATA_PACKAGE, packageNode.getName());
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertEquals(1, packageNode.getInterface().size());
+        assertTrue(packageNode.getClazz().isEmpty());
 
-        assertEquals(interfaceNode.getComment(), "Interface3");
+        assertEquals("Interface3", interfaceNode.getComment());
         assertEquals(interfaceNode.getName(), Interface3.class.getSimpleName());
         assertEquals(interfaceNode.getQualified(), Interface3.class.getName());
-        assertEquals(interfaceNode.getScope(), "public");
-        assertEquals(interfaceNode.getMethod().size(), 0);
-        assertEquals(interfaceNode.getAnnotation().size(), 0);
-        assertEquals(interfaceNode.getInterface().size(), 1);
+        assertEquals("public", interfaceNode.getScope());
+        assertTrue(interfaceNode.getMethod().isEmpty());
+        assertTrue(interfaceNode.getAnnotation().isEmpty());
+        assertEquals(1, interfaceNode.getInterface().size());
         assertTrue(interfaceNode.isIncluded());
 
         // verify interface
-        assertEquals(interfaceNode.getInterface().getFirst().getQualified(), java.io.Serializable.class.getName());
+        assertEquals(interfaceNode.getInterface().getFirst().getQualified(), Serializable.class.getName());
     }
 
     /**
      * testing a interface that implements one annotation
      */
     @Test
-    public void testInterface4() {
+    void testInterface4() {
         final var javaDocElements = newJavaDocElements("Interface4.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -160,7 +162,7 @@ public class InterfaceTest extends AbstractTest {
      * testing a interface that is abstract
      */
     @Test
-    public void testInterface5() {
+    void testInterface5() {
         final var javaDocElements = newJavaDocElements("Interface5.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -206,7 +208,7 @@ public class InterfaceTest extends AbstractTest {
      * testing a interface that has a type variable
      */
     @Test
-    public void testInterface6() {
+    void testInterface6() {
         final var javaDocElements = newJavaDocElements("Interface6.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -238,7 +240,7 @@ public class InterfaceTest extends AbstractTest {
      * testing a interface that has a type variable with extends
      */
     @Test
-    public void testInterface7() {
+    void testInterface7() {
         final var javaDocElements = newJavaDocElements("Interface7.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -270,7 +272,7 @@ public class InterfaceTest extends AbstractTest {
      * testing a interface that has a type variable with extends of a class and interface
      */
     @Test
-    public void testInterface8() {
+    void testInterface8() {
         final var javaDocElements = newJavaDocElements("Interface8.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();

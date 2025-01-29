@@ -2,18 +2,18 @@ package com.github.markusbernhardt.xmldoclet;
 
 import com.github.markusbernhardt.xmldoclet.simpledata.MethodsA;
 import com.github.markusbernhardt.xmldoclet.xjc.Method;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test group for Methods in {@link MethodsA}.
  */
-public class MethodsATest extends AbstractMethodsTest {
+class MethodsATest extends AbstractMethodsTest {
     public MethodsATest() {
         super("MethodsA.java");
     }
 
     @Test
-    public void testMethodsReturn1() {
+    void testMethodsReturn1() {
         // with methodNode1 we are checking that a simple methodNode can exist
         // with no arguments and no return
         final Method methodNode1 = findByMethodName("method1");
@@ -22,7 +22,7 @@ public class MethodsATest extends AbstractMethodsTest {
     }
 
     @Test
-    public void testMethodsReturn2() {
+    void testMethodsReturn2() {
         // methodNode2 - checking Object based returns
         final Method methodNode2 = findByMethodName("method2");
         checkParamType(methodNode2.getReturn(), "java.lang.Integer");
@@ -30,7 +30,7 @@ public class MethodsATest extends AbstractMethodsTest {
     }
 
     @Test
-    public void testMethodsReturn3() {
+    void testMethodsReturn3() {
         // methodNode 3 - checking primitive based returns
         final Method methodNode3 = findByMethodName("method3");
         checkParamType(methodNode3.getReturn(), "int");

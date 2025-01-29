@@ -5,21 +5,21 @@ import com.github.markusbernhardt.xmldoclet.xjc.AnnotationArgument;
 import com.github.markusbernhardt.xmldoclet.xjc.AnnotationInstance;
 import com.github.markusbernhardt.xmldoclet.xjc.Enum;
 import com.github.markusbernhardt.xmldoclet.xjc.EnumConstant;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Unit test group for Enumerations
  */
-public class EnumTest extends AbstractTest {
+class EnumTest extends AbstractTest {
 
     /**
      * testing a simple enum
      */
     @Test
-    public void testEnum1() {
+    void testEnum1() {
         final var javaDocElements = newJavaDocElements("Enum1.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -46,7 +46,7 @@ public class EnumTest extends AbstractTest {
      * testing an empty enum
      */
     @Test
-    public void testEnum2() {
+    void testEnum2() {
         final var javaDocElements = newJavaDocElements("Enum2.java");
         final var packageNode = javaDocElements.packageNode();
         final Enum enumNode = packageNode.getEnum().getFirst();
@@ -61,7 +61,7 @@ public class EnumTest extends AbstractTest {
      * testing enum comment
      */
     @Test
-    public void testEnum3() {
+    void testEnum3() {
         final var javaDocElements = newJavaDocElements("Enum3.java");
         final var packageNode = javaDocElements.packageNode();
         final Enum enumNode = packageNode.getEnum().getFirst();
@@ -72,7 +72,7 @@ public class EnumTest extends AbstractTest {
      * testing enum field comment
      */
     @Test
-    public void testEnum4() {
+    void testEnum4() {
         final var javaDocElements = newJavaDocElements("Enum4.java");
         final var packageNode = javaDocElements.packageNode();
         final Enum enumNode = packageNode.getEnum().getFirst();
@@ -85,7 +85,7 @@ public class EnumTest extends AbstractTest {
      * testing single annotation
      */
     @Test
-    public void testEnum5() {
+    void testEnum5() {
         final var javaDocElements = newJavaDocElements("Enum5.java");
         final var packageNode = javaDocElements.packageNode();
         final Enum enumNode = packageNode.getEnum().getFirst();
@@ -98,7 +98,7 @@ public class EnumTest extends AbstractTest {
      * testing multiple annotation
      */
     @Test
-    public void testEnum6() {
+    void testEnum6() {
         final var javaDocElements = newJavaDocElements("Enum6.java");
         final var packageNode = javaDocElements.packageNode();
         final Enum enumNode = packageNode.getEnum().getFirst();

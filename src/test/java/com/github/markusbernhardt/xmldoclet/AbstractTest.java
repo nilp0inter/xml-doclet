@@ -3,7 +3,7 @@ package com.github.markusbernhardt.xmldoclet;
 import com.github.markusbernhardt.xmldoclet.xjc.Class;
 import com.github.markusbernhardt.xmldoclet.xjc.Package;
 import com.github.markusbernhardt.xmldoclet.xjc.Root;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.tools.DocumentationTool;
 import javax.tools.ToolProvider;

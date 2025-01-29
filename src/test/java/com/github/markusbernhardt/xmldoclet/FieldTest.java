@@ -4,16 +4,16 @@ import com.github.markusbernhardt.xmldoclet.simpledata.Annotation12;
 import com.github.markusbernhardt.xmldoclet.xjc.Class;
 import com.github.markusbernhardt.xmldoclet.xjc.Package;
 import com.github.markusbernhardt.xmldoclet.xjc.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit test group for Fields
  */
-public class FieldTest extends AbstractTest {
+class FieldTest extends AbstractTest {
     private final Root rootNode;
     private final Package packageNode;
     private final List<Field> fields;
@@ -27,56 +27,55 @@ public class FieldTest extends AbstractTest {
     }
 
     @Test
-    public void mainTest() {
-        assertEquals(rootNode.getPackage().size(), 1);
+    void mainTest() {
+        assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
-        assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
-        assertEquals(packageNode.getClazz().size(), 1);
+        assertEquals(SIMPLE_DATA_PACKAGE, packageNode.getName());
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
+        assertEquals(1, packageNode.getClazz().size());
     }
 
     /**
      * testing a returns of fields
      */
     @Test
-    public void testField0() {
+    void testField0() {
         // field0 -- test name
         final var field = findByFieldName("field0", fields);
-        assertEquals(field.getName(), "field0");
+        assertEquals("field0", field.getName());
     }
 
     @Test
-    public void testField1() {
+    void testField1() {
         // field1 -- test public field
         final var field = findByFieldName("field1", fields);
-        assertEquals(field.getScope(), "public");
+        assertEquals("public", field.getScope());
     }
 
     @Test
-    public void testField2() {
+    void testField2() {
         // field2 -- test private field
         final var field = findByFieldName("field2", fields);
-        assertEquals(field.getScope(), "private");
+        assertEquals("private", field.getScope());
     }
 
     @Test
-    public void testField3() {
+    void testField3() {
         // field3 -- default scope field (non defined)
         final var field = findByFieldName("field3", fields);
-        assertEquals(field.getScope(), "");
+        assertEquals("", field.getScope());
     }
 
     @Test
-    public void testField4() {
+    void testField4() {
         // field4 -- protected scope field
         final var field = findByFieldName("field4", fields);
-        assertEquals(field.getScope(), "protected");
+        assertEquals("protected", field.getScope());
 
         // negative test of final
         assertFalse(field.isFinal());
-
 
         // negative test of static
         assertFalse(field.isStatic());
@@ -89,123 +88,123 @@ public class FieldTest extends AbstractTest {
     }
 
     @Test
-    public void testField5() {
+    void testField5() {
         // field5 -- volatile field
         final var field = findByFieldName("field5", fields);
         assertTrue(field.isVolatile());
     }
 
     @Test
-    public void testField6() {
+    void testField6() {
         // field6 -- static field
         final var field = findByFieldName("field6", fields);
         assertTrue(field.isStatic());
     }
 
     @Test
-    public void testField7() {
+    void testField7() {
         // field7 -- transient field
         final var field = findByFieldName("field7", fields);
         assertTrue(field.isTransient());
     }
 
     @Test
-    public void testField8() {
+    void testField8() {
         // field8 -- final field
         final var field = findByFieldName("field8", fields);
         assertTrue(field.isFinal());
     }
 
     @Test
-    public void testField9() {
+    void testField9() {
         // field9 -- string final expression
         final var field = findByFieldName("field9", fields);
-        assertEquals(field.getConstant(), "\"testy\"");
+        assertEquals("\"testy\"", field.getConstant());
     }
 
     @Test
-    public void testField10() {
+    void testField10() {
         // field10 -- int final expression
         final var field = findByFieldName("field10", fields);
-        assertEquals(field.getConstant(), "10");
+        assertEquals("10", field.getConstant());
     }
 
     @Test
-    public void testField11() {
+    void testField11() {
         // field11 -- annotation
         final var field = findByFieldName("field11", fields);
-        assertEquals(field.getAnnotation().size(), 1);
+        assertEquals(1, field.getAnnotation().size());
 
         AnnotationInstance annotation = field.getAnnotation().getFirst();
-        assertEquals(annotation.getQualified(), "java.lang.Deprecated");
-        assertEquals(annotation.getName(), "Deprecated");
-        assertEquals(annotation.getArgument().size(), 0);
+        assertEquals("java.lang.Deprecated", annotation.getQualified());
+        assertEquals("Deprecated", annotation.getName());
+        assertTrue(annotation.getArgument().isEmpty());
     }
 
     @Test
-    public void testField12() {
+    void testField12() {
         // field12 -- two annotations
         final var field = findByFieldName("field12", fields);
-        assertEquals(field.getAnnotation().size(), 2);
+        assertEquals(2, field.getAnnotation().size());
 
         final var annotation1 = field.getAnnotation().get(0);
-        assertEquals(annotation1.getQualified(), "java.lang.Deprecated");
-        assertEquals(annotation1.getName(), "Deprecated");
-        assertEquals(annotation1.getArgument().size(), 0);
+        assertEquals("java.lang.Deprecated", annotation1.getQualified());
+        assertEquals("Deprecated", annotation1.getName());
+        assertTrue(annotation1.getArgument().isEmpty());
 
         final var annotation2 = field.getAnnotation().get(1);
         assertEquals(annotation2.getQualified(), Annotation12.class.getName());
         assertEquals(annotation2.getName(), Annotation12.class.getSimpleName());
-        assertEquals(annotation2.getArgument().size(), 1);
+        assertEquals(1, annotation2.getArgument().size());
 
         final AnnotationArgument argument = annotation2.getArgument().getFirst();
-        assertEquals(argument.getName(), "value");
-        assertEquals(argument.getValue().getFirst(), "mister");
+        assertEquals("value", argument.getName());
+        assertEquals("mister", argument.getValue().getFirst());
     }
 
     @Test
-    public void testField13() {
+    void testField13() {
         // field13 - type testing
         final var field = findByFieldName("field13", fields);
         assertNotNull(field.getType());
-        assertEquals(field.getType().getQualified(), "java.lang.String");
+        assertEquals("java.lang.String", field.getType().getQualified());
         assertNull(field.getType().getDimension());
         assertNull(field.getType().getWildcard());
-        assertEquals(field.getType().getGeneric().size(), 0);
+        assertTrue(field.getType().getGeneric().isEmpty());
     }
 
     @Test
-    public void testField14() {
+    void testField14() {
         // field14 - wild card
         final var field = findByFieldName("field14", fields);
         assertNotNull(field.getType());
-        assertEquals(field.getType().getQualified(), "java.util.ArrayList");
+        assertEquals("java.util.ArrayList<?>", field.getType().getQualified());
         assertNotNull(field.getType().getGeneric());
-        assertEquals(field.getType().getGeneric().size(), 1);
-        assertEquals(field.getType().getGeneric().getFirst().getQualified(), "?");
+        assertEquals(1, field.getType().getGeneric().size());
+        assertEquals("?", field.getType().getGeneric().getFirst().getQualified());
         assertNotNull(field.getType().getGeneric().getFirst().getWildcard());
     }
 
     @Test
-    public void testField15() {
+    void testField15() {
         // field15 - typed generic
         final var field = findByFieldName("field15", fields);
         assertNotNull(field.getType());
-        assertEquals(field.getType().getQualified(), "java.util.HashMap");
-        assertEquals(field.getType().getGeneric().size(), 2);
-        assertEquals(field.getType().getGeneric().get(0).getQualified(), "java.lang.String");
+        assertEquals("java.util.HashMap", field.getType().getQualified());
+        assertEquals(2, field.getType().getGeneric().size());
+        assertEquals("java.lang.String", field.getType().getGeneric().get(0).getQualified());
         assertNull(field.getType().getGeneric().get(0).getWildcard());
-        assertEquals(field.getType().getGeneric().get(1).getQualified(), "java.lang.Integer");
+        assertEquals("java.lang.Integer", field.getType().getGeneric().get(1).getQualified());
         assertNull(field.getType().getGeneric().get(1).getWildcard());
     }
 
     @Test
-    public void testField16() {
+    void testField16() {
         // field16 - array
         final var field = findByFieldName("field16", fields);
         assertNotNull(field.getType());
-        assertEquals(field.getType().getQualified(), "java.lang.String");
-        assertEquals(field.getType().getDimension(), "[]");
+        assertEquals("java.lang.String", field.getType().getQualified());
+        assertEquals("[]", field.getType().getDimension());
     }
 
     /**
@@ -217,12 +216,11 @@ public class FieldTest extends AbstractTest {
      */
     private Field findByFieldName(final String fieldName, final List<Field> fields) {
         for (final var field : fields) {
-            if (field.getName().equals(fieldName)) {
+            if (fieldName.equals(field.getName())) {
                 return field;
             }
         }
 
-        fail();
-        return null;
+        throw new AssertionError("Field not found: " + fieldName);
     }
 }

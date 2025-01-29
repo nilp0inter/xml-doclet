@@ -5,17 +5,17 @@ import com.github.markusbernhardt.xmldoclet.xjc.AnnotationArgument;
 import com.github.markusbernhardt.xmldoclet.xjc.AnnotationInstance;
 import com.github.markusbernhardt.xmldoclet.xjc.TypeInfo;
 import com.github.markusbernhardt.xmldoclet.xjc.TypeParameter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit test group for Classes
  */
 @SuppressWarnings("deprecation")
-public class ClassTest extends AbstractTest {
+class ClassTest extends AbstractTest {
 
     /**
      * Testing nested Annotations
@@ -23,7 +23,7 @@ public class ClassTest extends AbstractTest {
      * @see ClassAnnotationCascade
      */
     @Test
-    public void testClassAnnotationCascade() {
+    void testClassAnnotationCascade() {
         final var javaDocElements = newJavaDocElements("ClassAnnotationCascade.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -51,7 +51,7 @@ public class ClassTest extends AbstractTest {
 
         // Two nested annotations in child attribute
         assertEquals("children", annotationArgNode.getName());
-        assertEquals(0, annotationArgNode.getValue().size());
+        assertTrue(annotationArgNode.getValue().isEmpty());
         assertEquals(2, annotationArgNode.getAnnotation().size());
 
         final AnnotationInstance annonNodePrimitive = annotationArgNode.getAnnotation().get(0);
@@ -96,7 +96,7 @@ public class ClassTest extends AbstractTest {
      * by the java compiler is not marked synthetic. um what?
      */
     @Test
-    public void testClass1() {
+    void testClass1() {
         final var javaDocElements = newJavaDocElements("Class1.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -133,7 +133,7 @@ public class ClassTest extends AbstractTest {
      * testing a class with 1 constructor
      */
     @Test
-    public void testClass2() {
+    void testClass2() {
         final var javaDocElements = newJavaDocElements("Class2.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -176,7 +176,7 @@ public class ClassTest extends AbstractTest {
      * testing a class with 1 method
      */
     @Test
-    public void testClass3() {
+    void testClass3() {
         final var javaDocElements = newJavaDocElements("Class3.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -234,7 +234,7 @@ public class ClassTest extends AbstractTest {
      * testing a class with 1 field
      */
     @Test
-    public void testClass4() {
+    void testClass4() {
         final var javaDocElements = newJavaDocElements("Class4.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -287,7 +287,7 @@ public class ClassTest extends AbstractTest {
      * testing a class that extends another class with 1 method
      */
     @Test
-    public void testClass5() {
+    void testClass5() {
         final var javaDocElements = newJavaDocElements("Class5.java", "Class3.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -325,7 +325,7 @@ public class ClassTest extends AbstractTest {
      * testing a class that implements one interface
      */
     @Test
-    public void testClass6() {
+    void testClass6() {
         final var javaDocElements = newJavaDocElements("Class6.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -368,7 +368,7 @@ public class ClassTest extends AbstractTest {
      * testing one annotation instance on the class
      */
     @Test
-    public void testClass7() {
+    void testClass7() {
         final var javaDocElements = newJavaDocElements("Class7.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -412,7 +412,7 @@ public class ClassTest extends AbstractTest {
      * testing abstract keyword on class
      */
     @Test
-    public void testClass8() {
+    void testClass8() {
         final var javaDocElements = newJavaDocElements("Class8.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -450,7 +450,7 @@ public class ClassTest extends AbstractTest {
      * testing java.io.Externalizable interface on class
      */
     @Test
-    public void testClass9() {
+    void testClass9() {
         final var javaDocElements = newJavaDocElements("Class9.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -487,7 +487,7 @@ public class ClassTest extends AbstractTest {
      * testing difference of scope modifier on class
      */
     @Test
-    public void testClass10() {
+    void testClass10() {
         final var javaDocElements = newJavaDocElements("Class10.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -524,7 +524,7 @@ public class ClassTest extends AbstractTest {
      * testing if isException is populated correctly
      */
     @Test
-    public void testClass11() {
+    void testClass11() {
         final var javaDocElements = newJavaDocElements("Class11.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -561,7 +561,7 @@ public class ClassTest extends AbstractTest {
      * testing if isError is populated correctly
      */
     @Test
-    public void testClass12() {
+    void testClass12() {
         final var javaDocElements = newJavaDocElements("Class12.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -599,7 +599,7 @@ public class ClassTest extends AbstractTest {
      * testing if type variables can be determined
      */
     @Test
-    public void testClass13() {
+    void testClass13() {
         final var javaDocElements = newJavaDocElements("Class13.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -635,14 +635,14 @@ public class ClassTest extends AbstractTest {
 
         // check the 'fun' type var
         assertEquals(typeParameter.getName(), "Fun");
-        assertEquals(typeParameter.getBound().size(), 0);
+        assertTrue(typeParameter.getBound().isEmpty());
     }
 
     /**
      * testing if a single bounds can be determined
      */
     @Test
-    public void testClass14() {
+    void testClass14() {
         final var javaDocElements = newJavaDocElements("Class14.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -652,9 +652,9 @@ public class ClassTest extends AbstractTest {
         assertEquals(rootNode.getPackage().size(), 1);
         assertNull(packageNode.getComment());
         assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
         assertEquals(packageNode.getClazz().size(), 1);
 
         assertEquals(classNode.getComment(), "Class14");
@@ -663,10 +663,10 @@ public class ClassTest extends AbstractTest {
         assertEquals(classNode.getQualified(), getElementPathFromSimpleDataPackage("Class14"));
         assertEquals(classNode.getScope(), "public");
         assertEquals(classNode.getGeneric().size(), 1);
-        assertEquals(classNode.getMethod().size(), 0);
-        assertEquals(classNode.getField().size(), 0);
-        assertEquals(classNode.getAnnotation().size(), 0);
-        assertEquals(classNode.getInterface().size(), 0);
+        assertTrue(classNode.getMethod().isEmpty());
+        assertTrue(classNode.getField().isEmpty());
+        assertTrue(classNode.getAnnotation().isEmpty());
+        assertTrue(classNode.getInterface().isEmpty());
         assertEquals(classNode.getClazz().getQualified(), Object.class.getName());
         assertFalse(classNode.isAbstract());
         assertFalse(classNode.isExternalizable());
@@ -685,7 +685,7 @@ public class ClassTest extends AbstractTest {
      * testing if a multiple bounds can be determined
      */
     @Test
-    public void testClass15() {
+    void testClass15() {
         final var javaDocElements = newJavaDocElements("Class15.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
@@ -695,9 +695,9 @@ public class ClassTest extends AbstractTest {
         assertEquals(rootNode.getPackage().size(), 1);
         assertNull(packageNode.getComment());
         assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
         assertEquals(packageNode.getClazz().size(), 1);
 
         assertEquals(classNode.getComment(), "Class15");
@@ -706,10 +706,10 @@ public class ClassTest extends AbstractTest {
         assertEquals(classNode.getQualified(), getElementPathFromSimpleDataPackage("Class15"));
         assertEquals(classNode.getScope(), "public");
         assertEquals(classNode.getGeneric().size(), 1);
-        assertEquals(classNode.getMethod().size(), 0);
-        assertEquals(classNode.getField().size(), 0);
-        assertEquals(classNode.getAnnotation().size(), 0);
-        assertEquals(classNode.getInterface().size(), 0);
+        assertTrue(classNode.getMethod().isEmpty());
+        assertTrue(classNode.getField().isEmpty());
+        assertTrue(classNode.getAnnotation().isEmpty());
+        assertTrue(classNode.getInterface().isEmpty());
         assertEquals(classNode.getClazz().getQualified(), Object.class.getName());
         assertFalse(classNode.isAbstract());
         assertFalse(classNode.isExternalizable());
@@ -729,7 +729,7 @@ public class ClassTest extends AbstractTest {
      * testing integer annotation argument
      */
     @Test
-    public void testClass16() {
+    void testClass16() {
         final var javaDocElements = newJavaDocElements("Class16.java", "Annotation3.java");
         final var classNode = javaDocElements.classNode();
 
@@ -747,7 +747,7 @@ public class ClassTest extends AbstractTest {
      * testing integer array annotation argument
      */
     @Test
-    public void testClass17() {
+    void testClass17() {
         final var javaDocElements = newJavaDocElements("Class17.java", "Annotation5.java");
         final var classNode = javaDocElements.classNode();
         final AnnotationInstance instance = classNode.getAnnotation().getFirst();
@@ -765,7 +765,7 @@ public class ClassTest extends AbstractTest {
      * testing integer array annotation argument
      */
     @Test
-    public void testClass18() {
+    void testClass18() {
         final var javaDocElements = newJavaDocElements("Class18.java", "Annotation6.java");
         final var classNode = javaDocElements.classNode();
         final AnnotationInstance instance = classNode.getAnnotation().getFirst();
@@ -782,7 +782,7 @@ public class ClassTest extends AbstractTest {
      * testing enum annotation argument
      */
     @Test
-    public void testClass19() {
+    void testClass19() {
         final var javaDocElements = newJavaDocElements("Class19.java", "Annotation7.java", "Enum1.java");
         final var classNode = javaDocElements.classNode();
         final AnnotationInstance instance = classNode.getAnnotation().getFirst();
@@ -799,7 +799,7 @@ public class ClassTest extends AbstractTest {
      * testing class annotation argument
      */
     @Test
-    public void testClass20() {
+    void testClass20() {
         final var javaDocElements = newJavaDocElements("Class20.java", "Annotation8.java");
         final var classNode = javaDocElements.classNode();
         final AnnotationInstance instance = classNode.getAnnotation().getFirst();
@@ -815,7 +815,7 @@ public class ClassTest extends AbstractTest {
      * testing character annotation argument
      */
     @Test
-    public void testClass21() {
+    void testClass21() {
         final var javaDocElements = newJavaDocElements("Class21.java", "Annotation10.java");
         final var classNode = javaDocElements.classNode();
         final AnnotationInstance instance = classNode.getAnnotation().getFirst();
@@ -832,7 +832,7 @@ public class ClassTest extends AbstractTest {
      * testing 0 character annotation argument
      */
     @Test
-    public void testClass22() {
+    void testClass22() {
         final var javaDocElements = newJavaDocElements("Class22.java", "Annotation10.java");
         final var classNode = javaDocElements.classNode();
         final AnnotationInstance instance = classNode.getAnnotation().getFirst();
@@ -840,7 +840,7 @@ public class ClassTest extends AbstractTest {
 
         assertEquals(argument.getType().getQualified(), "char");
         assertEquals(argument.getValue().size(), 1);
-        assertEquals(argument.getValue().getFirst(), Integer.toString(0));
+        assertEquals(argument.getValue().getFirst(), "0");
         assertTrue(argument.isPrimitive());
         assertFalse(argument.isArray());
     }
@@ -849,7 +849,7 @@ public class ClassTest extends AbstractTest {
      * testing boolean annotation argument
      */
     @Test
-    public void testClass23() {
+    void testClass23() {
         final var javaDocElements = newJavaDocElements("Class23.java", "Annotation11.java");
         final var classNode = javaDocElements.classNode();
         final AnnotationInstance instance = classNode.getAnnotation().getFirst();
@@ -857,7 +857,7 @@ public class ClassTest extends AbstractTest {
 
         assertEquals(argument.getType().getQualified(), "boolean");
         assertEquals(argument.getValue().size(), 1);
-        assertEquals(argument.getValue().getFirst(), Boolean.TRUE.toString());
+        assertEquals(argument.getValue().getFirst(), "true");
         assertTrue(argument.isPrimitive());
         assertFalse(argument.isArray());
     }
@@ -866,14 +866,14 @@ public class ClassTest extends AbstractTest {
      * testing empty int array annotation argument
      */
     @Test
-    public void testClass24() {
+    void testClass24() {
         final var javaDocElements = newJavaDocElements("Class24.java", "Annotation5.java");
         final var classNode = javaDocElements.classNode();
         final AnnotationInstance instance = classNode.getAnnotation().getFirst();
         final AnnotationArgument argument = instance.getArgument().getFirst();
 
         assertEquals(argument.getType().getQualified(), "int");
-        assertEquals(argument.getValue().size(), 0);
+        assertTrue(argument.getValue().isEmpty());
         assertTrue(argument.isPrimitive());
         assertTrue(argument.isArray());
     }

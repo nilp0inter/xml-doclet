@@ -3,26 +3,26 @@ package com.github.markusbernhardt.xmldoclet;
 import com.github.markusbernhardt.xmldoclet.simpledata.MethodsB;
 import com.github.markusbernhardt.xmldoclet.xjc.MethodParameter;
 import com.github.markusbernhardt.xmldoclet.xjc.TypeInfo;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit test group for Methods in {@link MethodsB}.
  */
-public class MethodsBTest extends AbstractMethodsTest {
+class MethodsBTest extends AbstractMethodsTest {
     public MethodsBTest() {
         super("MethodsB.java");
     }
 
     @Test
-    public void testMethodsArguments1() {
+    void testMethodsArguments1() {
         // methodNode - methodNode with no arguments
         assertMethodSignature("method1", 0, "()");
     }
 
     @Test
-    public void testMethodsArguments2() {
+    void testMethodsArguments2() {
         // methodNode2 - methodNode with one Object-derived argument
         final var methodNode2 = assertMethodSignature("method2", 1, "(" + Integer.class.getName() + ")");
 
@@ -33,7 +33,7 @@ public class MethodsBTest extends AbstractMethodsTest {
     }
 
     @Test
-    public void testMethodsArguments3() {
+    void testMethodsArguments3() {
         // methodNode3 - check primitive argument
         final var method = assertMethodSignature("method3", 1, "(int)");
 
@@ -42,10 +42,10 @@ public class MethodsBTest extends AbstractMethodsTest {
     }
 
     @Test
-    public void testMethodsArguments4() {
+    void testMethodsArguments4() {
         // methodNode4 - check that two args are OK
         final var method = findByMethodName("method4");
-        assertEquals(method.getParameter().size(), 2);
+        assertEquals(2, method.getParameter().size());
         assertEquals(method.getSignature(), "(" + Integer.class.getName() + ", " + Integer.class.getName() + ")");
 
         final var parameter1 = method.getParameter().get(0);
@@ -56,11 +56,11 @@ public class MethodsBTest extends AbstractMethodsTest {
     }
 
     @Test
-    public void testMethodsArguments5() {
+    void testMethodsArguments5() {
         // methodNode5 - check that a generic argument is valid
         final var method = findByMethodName("method5");
-        assertEquals(method.getParameter().size(), 1);
-        assertEquals(method.getSignature(), "(java.util.ArrayList<java.lang.String>)");
+        assertEquals(1, method.getParameter().size());
+        assertEquals("(java.util.ArrayList<java.lang.String>)", method.getSignature());
 
         final var parameter = method.getParameter().getFirst();
         checkParamNameAndType(parameter, "arg1", "java.util.ArrayList");
@@ -72,11 +72,11 @@ public class MethodsBTest extends AbstractMethodsTest {
     }
 
     @Test
-    public void testMethodsArguments6() {
+    void testMethodsArguments6() {
         // methodNode6 - check that a wildcard argument is valid
         final var method = findByMethodName("method6");
-        assertEquals(method.getParameter().size(), 1);
-        assertEquals(method.getSignature(), "(java.util.ArrayList<?>)");
+        assertEquals(1, method.getParameter().size());
+        assertEquals("(java.util.ArrayList<?>)", method.getSignature());
 
         final var parameter = method.getParameter().getFirst();
         checkParamNameAndType(parameter, "arg1", "java.util.ArrayList");
@@ -92,11 +92,11 @@ public class MethodsBTest extends AbstractMethodsTest {
     }
 
     @Test
-    public void testMethodsArguments7() {
+    void testMethodsArguments7() {
         // methodNode7 - check that a wildcard argument is valid with extends clause
         final var method = findByMethodName("method7");
-        assertEquals(method.getParameter().size(), 1);
-        assertEquals(method.getSignature(), "(java.util.ArrayList<? extends java.lang.String>)");
+        assertEquals(1, method.getParameter().size());
+        assertEquals("(java.util.ArrayList<? extends java.lang.String>)", method.getSignature());
 
         final var parameter = method.getParameter().getFirst();
         checkParamNameAndType(parameter, "arg1", "java.util.ArrayList");
@@ -107,7 +107,7 @@ public class MethodsBTest extends AbstractMethodsTest {
         paramHasNoGenericsNoDimensionSomeWildcard(genericParamType);
 
         final var genericParamWildcard = genericParamType.getWildcard();
-        assertEquals(genericParamWildcard.getExtendsBound().size(), 1);
+        assertEquals(1, genericParamWildcard.getExtendsBound().size());
         assertTrue(genericParamWildcard.getSuperBound().isEmpty());
 
         final TypeInfo extendsBound = genericParamWildcard.getExtendsBound().getFirst();
@@ -116,11 +116,11 @@ public class MethodsBTest extends AbstractMethodsTest {
     }
 
     @Test
-    public void testMethodsArguments8() {
+    void testMethodsArguments8() {
         // methodNode8 - check that a wildcard argument is valid with super clause
         final var method = findByMethodName("method8");
-        assertEquals(method.getParameter().size(), 1);
-        assertEquals(method.getSignature(), "(java.util.ArrayList<? super java.lang.String>)");
+        assertEquals(1, method.getParameter().size());
+        assertEquals("(java.util.ArrayList<? super java.lang.String>)", method.getSignature());
 
         final var parameter = method.getParameter().getFirst();
         checkParamNameAndType(parameter, "arg1", "java.util.ArrayList");
@@ -131,7 +131,7 @@ public class MethodsBTest extends AbstractMethodsTest {
         paramHasNoGenericsNoDimensionSomeWildcard(genericParamType);
 
         final var genericParamWildcard = genericParamType.getWildcard();
-        assertEquals(genericParamWildcard.getSuperBound().size(), 1);
+        assertEquals(1, genericParamWildcard.getSuperBound().size());
         assertTrue(genericParamWildcard.getExtendsBound().isEmpty());
 
         final TypeInfo superBounds = genericParamWildcard.getSuperBound().getFirst();
@@ -140,11 +140,11 @@ public class MethodsBTest extends AbstractMethodsTest {
     }
 
     @Test
-    public void testMethodsArguments9() {
+    void testMethodsArguments9() {
         // methodNode9 - check that a two-level deep nested generic
         final var method = findByMethodName("method9");
-        assertEquals(method.getParameter().size(), 1);
-        assertEquals(method.getSignature(), "(java.util.ArrayList<java.util.ArrayList<java.lang.String>>)");
+        assertEquals(1, method.getParameter().size());
+        assertEquals("(java.util.ArrayList<java.util.ArrayList<java.lang.String>>)", method.getSignature());
 
         final var parameter = method.getParameter().getFirst();
         checkParamNameAndType(parameter, "arg1", "java.util.ArrayList");
@@ -163,16 +163,16 @@ public class MethodsBTest extends AbstractMethodsTest {
     }
 
     @Test
-    public void testMethodsArguments10() {
+    void testMethodsArguments10() {
         // methodNode10 - check var args
         final var method = findByMethodName("method10");
-        assertEquals(method.getParameter().size(), 1);
-        assertEquals(method.getSignature(), "(java.lang.Object...)");
+        assertEquals(1, method.getParameter().size());
+        assertEquals("(java.lang.Object...)", method.getSignature());
         assertTrue(method.isVarArgs());
 
         final var parameter = method.getParameter().getFirst();
         checkParamNameAndType(parameter, "object", "java.lang.Object");
-        assertEquals(parameter.getType().getDimension(), "[]");
+        assertEquals("[]", parameter.getType().getDimension());
     }
 
     private static void checkParamNameAndType(final MethodParameter methodParam, final String paramName, final String fullQualifiedParamType) {
