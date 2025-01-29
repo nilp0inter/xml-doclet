@@ -1,9 +1,9 @@
 package com.github.markusbernhardt.xmldoclet;
 
-import com.github.markusbernhardt.xmldoclet.xjc.*;
 import com.github.markusbernhardt.xmldoclet.xjc.Class;
 import com.github.markusbernhardt.xmldoclet.xjc.Enum;
 import com.github.markusbernhardt.xmldoclet.xjc.Package;
+import com.github.markusbernhardt.xmldoclet.xjc.*;
 import com.sun.source.doctree.DocTree;
 import com.sun.source.util.DocTrees;
 import jdk.javadoc.doclet.DocletEnvironment;
@@ -178,7 +178,7 @@ public class Parser {
             final ExecutableElement annotationTypeElementDoc) {
         final AnnotationElement annotationElementNode = objectFactory.createAnnotationElement();
         annotationElementNode.setName(annotationTypeElementDoc.getSimpleName().toString());
-        annotationElementNode.setQualified(annotationTypeElementDoc.getSimpleName().toString());
+        annotationElementNode.setQualified(getQualifiedName(annotationTypeElementDoc));
         annotationElementNode.setType(parseTypeInfo(annotationTypeElementDoc.getReturnType()));
 
         final AnnotationValue value = annotationTypeElementDoc.getDefaultValue();
@@ -205,7 +205,7 @@ public class Parser {
         try {
             final var annotTypeInfo = annotationDesc.getAnnotationType();
             annotationInstance.setName(annotTypeInfo.asElement().getSimpleName().toString());
-            annotationInstance.setQualified(annotTypeInfo.asElement().getSimpleName().toString());
+            annotationInstance.setQualified(getQualifiedName(annotTypeInfo.asElement()));
         } catch (ClassCastException castException) {
             LOGGER.severe(
                     "Unable to obtain type data about an annotation found on: " + programElement);
@@ -248,6 +248,10 @@ public class Parser {
 
     private static String getQualifiedName(final TypeElement typeElement) {
         return typeElement.getQualifiedName().toString();
+    }
+
+    private static String getQualifiedName(final Element element) {
+        return element.asType().toString();
     }
 
     private static String getSimpleName(final VariableElement element) {
