@@ -221,19 +221,24 @@ public class Parser {
 
             final Object objValue = elementValuesPair.getValue();
             switch (objValue) {
-                case AnnotationValue[] annotationValues -> {
-                    for (final AnnotationValue annotationValue : annotationValues) {
-                        if (annotationValue.getValue() instanceof AnnotationMirror annoDesc) {
-                            annotationArgumentNode.getAnnotation().add(parseAnnotationDesc(annoDesc, programElement));
-                        } else {
-                            annotationArgumentNode.getValue().add(annotationValue.getValue().toString());
+                case AnnotationValue annotationValue -> {
+                    if (annotationValue.getValue() instanceof List<?> valueList) {
+                        for (final Object value : valueList) {
+                            if (annotationValue.getValue() instanceof AnnotationMirror annoDesc) {
+                                annotationArgumentNode.getAnnotation().add(parseAnnotationDesc(annoDesc, programElement));
+                            } else {
+                                /*
+                                Consider the annotation @Annotation1("A") or @Annotation1({"A", "B"}}).
+                                The annotation value is an AnnototionValue object with value attribute.
+                                This attribute is a List (even if there is a single value).
+                                But each value is not the actual value, but another AnnotationValue object with a value attribute.
+                                 */
+                                annotationArgumentNode.getValue().add(((AnnotationValue)value).getValue().toString());
+                            }
                         }
                     }
                 }
-                case VariableElement fieldDoc -> annotationArgumentNode.getValue().add(getSimpleName(fieldDoc));
-                case TypeElement classDoc -> annotationArgumentNode.getValue().add(getQualifiedName(classDoc));
-                case null -> {
-                }
+                case null -> {}
                 default -> annotationArgumentNode.getValue().add(objValue.toString());
             }
 
