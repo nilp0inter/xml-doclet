@@ -9,12 +9,11 @@ import com.sun.source.util.DocTrees;
 import jdk.javadoc.doclet.DocletEnvironment;
 
 import javax.lang.model.element.*;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.ElementFilter;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -558,11 +557,11 @@ public class Parser {
             typeInfoNode.setWildcard(parseWildcard(wildcard));
         }
 
-        final ParameterizedType parameterized = getParameterizedType(type);
+        final DeclaredType parameterized = getParameterizedType(type);
 
         if (parameterized != null) {
-            for (final Type typeArgument : parameterized.getActualTypeArguments()) {
-                typeInfoNode.getGeneric().add(parseTypeInfo(typeUtils.getTypeMirror(typeArgument)));
+            for (final TypeMirror typeArgument : parameterized.getTypeArguments()) {
+                typeInfoNode.getGeneric().add(parseTypeInfo(typeArgument));
             }
         }
 
@@ -572,13 +571,15 @@ public class Parser {
     protected Wildcard parseWildcard(final WildcardType wildcard) {
         final Wildcard wildcardNode = objectFactory.createWildcard();
 
-        final TypeMirror extendType = wildcard.getExtendsBound();
-        wildcardNode.getExtendsBound().add(parseTypeInfo(extendType));
-
-        final TypeMirror superType = wildcard.getSuperBound();
-        wildcardNode.getSuperBound().add(parseTypeInfo(superType));
+        addIfNotNull(wildcardNode.getExtendsBound(), wildcard.getExtendsBound());
+        addIfNotNull(wildcardNode.getSuperBound(), wildcard.getSuperBound());
 
         return wildcardNode;
+    }
+
+    private void addIfNotNull(final List<TypeInfo> wildcardNode, final TypeMirror extendType) {
+        if (extendType != null)
+            wildcardNode.add(parseTypeInfo(extendType));
     }
 
     protected TypeParameter parseTypeParameter(final TypeParameterElement typeParameter) {

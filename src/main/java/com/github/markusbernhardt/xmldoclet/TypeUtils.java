@@ -5,7 +5,6 @@ import javax.lang.model.type.*;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class TypeUtils {
 
     /**
      * Checks if an element has a given modifier
-     * 
+     *
      * @param element the element to check
      * @param modifier the modifier we are looking for in the element
      * @return true if the modifier is present in the element declaration, false otherwise
@@ -38,7 +37,7 @@ public class TypeUtils {
 
     /**
      * {@return the list of fields from a given class element}
-     * 
+     *
      * @param classElement the class to get its fields
      */
     public static List<VariableElement> getFields(final TypeElement classElement) {
@@ -47,7 +46,7 @@ public class TypeUtils {
 
     /**
      * {@return the list of constructors from a given class element}
-     * 
+     *
      * @param classElement the class to get its constructors
      */
     public static List<ExecutableElement> getConstructors(final TypeElement classElement) {
@@ -56,7 +55,7 @@ public class TypeUtils {
 
     /**
      * {@return the list of methods from a given class element}
-     * 
+     *
      * @param classElement the class to get its methods
      */
     public static List<ExecutableElement> getMethods(final TypeElement classElement) {
@@ -65,7 +64,7 @@ public class TypeUtils {
 
     /**
      * {@return a type as WildcardType if it is such a type, or null otherwise}
-     * 
+     *
      * @param typeMirror the type to get it as a wildcard type
      */
     public static WildcardType getWildcardType(final TypeMirror typeMirror) {
@@ -77,14 +76,14 @@ public class TypeUtils {
     }
 
     /**
-     * {@return a type as ParameterizedType if it is such a type, or null otherwise}
-     * 
+     * {@return a type as DeclaredType if the typeMirror has type arguments (such a List<String>), or null otherwise}
+     *
      * @param typeMirror the type to get it as a wildcard type
      */
-    public static ParameterizedType getParameterizedType(TypeMirror typeMirror) {
+    public static DeclaredType getParameterizedType(TypeMirror typeMirror) {
         if (typeMirror instanceof DeclaredType declaredType) {
-            if (!declaredType.getTypeArguments().isEmpty() && declaredType instanceof ParameterizedType) {
-                return (ParameterizedType) declaredType;
+            if (!declaredType.getTypeArguments().isEmpty()) {
+                return declaredType;
             }
         }
 
@@ -97,7 +96,7 @@ public class TypeUtils {
 
     /**
      * {@return the dimension of type that represents an array, or an empty string if the type is not an array}
-     * 
+     *
      * @param typeMirror the array type to get its dimension
      */
     public static String getArrayDimension(final TypeMirror typeMirror) {
@@ -112,7 +111,7 @@ public class TypeUtils {
 
     /**
      * {@return a TypeMirror for a given Type instance}
-     * 
+     *
      * @param type the {@link Type} instance to get a {@link TypeMirror}
      */
     public TypeMirror getTypeMirror(final Type type) {
