@@ -29,19 +29,19 @@ class ClassTest extends AbstractTest {
         final var packageNode = javaDocElements.packageNode();
         final var classNode = javaDocElements.classNode();
 
-        assertEquals(rootNode.getPackage().size(), 1);
-        assertEquals(packageNode.getComment(), null);
-        assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getClazz().size(), 1);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
+        assertEquals(1, rootNode.getPackage().size());
+        assertEquals(null, packageNode.getComment());
+        assertEquals(SIMPLE_DATA_PACKAGE, packageNode.getName());
+        assertEquals(1, packageNode.getClazz().size());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
 
         assertEquals("ClassAnnotationCascade", classNode.getComment());
         assertEquals("ClassAnnotationCascade", classNode.getName());
 
         assertEquals(ClassAnnotationCascade.class.getName(), classNode.getQualified());
 
-        assertEquals(classNode.getAnnotation().size(), 1);
+        assertEquals(1, classNode.getAnnotation().size());
         final AnnotationInstance annotationNode = classNode.getAnnotation().getFirst();
 
         assertEquals("AnnotationCascade", annotationNode.getName());
@@ -90,7 +90,6 @@ class ClassTest extends AbstractTest {
         assertEquals("666", annArgNodeNested.getAnnotation().get(2).getArgument().getFirst().getValue().getFirst());
     }
 
-
     /**
      * testing a class with nothing defined EMPIRICAL OBSERVATION: The default constructor created
      * by the java compiler is not marked synthetic. um what?
@@ -102,31 +101,31 @@ class ClassTest extends AbstractTest {
         final var packageNode = javaDocElements.packageNode();
         final var classNode = javaDocElements.classNode();
 
-        assertEquals(rootNode.getPackage().size(), 1);
+        assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
-        assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
-        assertEquals(packageNode.getClazz().size(), 1);
+        assertEquals(SIMPLE_DATA_PACKAGE, packageNode.getName());
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
+        assertEquals(1, packageNode.getClazz().size());
 
-        assertEquals(classNode.getComment(), "Class1");
-        assertEquals(classNode.getName(), Class1.class.getSimpleName());
-        assertEquals(classNode.getQualified(), Class1.class.getName());
-        assertEquals(classNode.getScope(), "public");
-        assertEquals(classNode.getConstructor().size(), 1);
-        assertEquals(classNode.getField().size(), 0);
-        assertEquals(classNode.getMethod().size(), 0);
-        assertEquals(classNode.getAnnotation().size(), 0);
-        assertEquals(classNode.getInterface().size(), 0);
-        assertEquals(classNode.getClazz().getQualified(), Object.class.getName());
+        assertEquals("Class1", classNode.getComment());
+        assertEquals(Class1.class.getSimpleName(), classNode.getName());
+        assertEquals(Class1.class.getName(), classNode.getQualified());
+        assertEquals("public", classNode.getScope());
+        assertEquals(1, classNode.getConstructor().size());
+        assertTrue(classNode.getField().isEmpty());
+        assertTrue(classNode.getMethod().isEmpty());
+        assertTrue(classNode.getAnnotation().isEmpty());
+        assertTrue(classNode.getInterface().isEmpty());
+        assertEquals(Object.class.getName(), classNode.getClazz().getQualified());
         assertFalse(classNode.isAbstract());
         assertFalse(classNode.isExternalizable());
         assertTrue(classNode.isIncluded());
         assertFalse(classNode.isSerializable());
         assertFalse(classNode.isException());
         assertFalse(classNode.isError());
-        assertEquals(classNode.getGeneric().size(), 0);
+        assertTrue(classNode.getGeneric().isEmpty());
     }
 
     /**
@@ -140,23 +139,23 @@ class ClassTest extends AbstractTest {
         final var classNode = javaDocElements.classNode();
         final var constructor = classNode.getConstructor().getFirst();
 
-        assertEquals(rootNode.getPackage().size(), 1);
+        assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
-        assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
-        assertEquals(packageNode.getClazz().size(), 1);
+        assertEquals(SIMPLE_DATA_PACKAGE, packageNode.getName());
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
+        assertEquals(1, packageNode.getClazz().size());
 
         assertEquals(classNode.getComment(), "Class2");
         assertEquals(classNode.getConstructor().size(), 1);
         assertEquals(classNode.getName(), Class2.class.getSimpleName());
         assertEquals(classNode.getQualified(), Class2.class.getName());
         assertEquals(classNode.getScope(), "public");
-        assertEquals(classNode.getField().size(), 0);
-        assertEquals(classNode.getMethod().size(), 0);
-        assertEquals(classNode.getAnnotation().size(), 0);
-        assertEquals(classNode.getInterface().size(), 0);
+        assertTrue(classNode.getField().isEmpty());
+        assertTrue(classNode.getMethod().isEmpty());
+        assertTrue(classNode.getAnnotation().isEmpty());
+        assertTrue(classNode.getInterface().isEmpty());
         assertEquals(classNode.getClazz().getQualified(), Object.class.getName());
         assertFalse(classNode.isAbstract());
         assertFalse(classNode.isExternalizable());
@@ -164,12 +163,12 @@ class ClassTest extends AbstractTest {
         assertFalse(classNode.isSerializable());
         assertFalse(classNode.isException());
         assertFalse(classNode.isError());
-        assertEquals(classNode.getGeneric().size(), 0);
+        assertTrue(classNode.getGeneric().isEmpty());
 
         assertEquals(constructor.getComment(), "Constructor1");
         assertEquals(constructor.getName(), "Class2");
-        assertEquals(constructor.getParameter().size(), 0);
-        assertEquals(constructor.getAnnotation().size(), 0);
+        assertTrue(constructor.getParameter().isEmpty());
+        assertTrue(constructor.getAnnotation().isEmpty());
     }
 
     /**
@@ -186,9 +185,9 @@ class ClassTest extends AbstractTest {
         assertEquals(rootNode.getPackage().size(), 1);
         assertNull(packageNode.getComment());
         assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
         assertEquals(packageNode.getClazz().size(), 1);
 
         assertEquals(classNode.getComment(), "Class3");
@@ -197,9 +196,9 @@ class ClassTest extends AbstractTest {
         assertEquals(classNode.getQualified(), Class3.class.getName());
         assertEquals(classNode.getScope(), "public");
         assertEquals(classNode.getMethod().size(), 1);
-        assertEquals(classNode.getField().size(), 0);
-        assertEquals(classNode.getAnnotation().size(), 0);
-        assertEquals(classNode.getInterface().size(), 0);
+        assertTrue(classNode.getField().isEmpty());
+        assertTrue(classNode.getAnnotation().isEmpty());
+        assertTrue(classNode.getInterface().isEmpty());
         assertEquals(classNode.getClazz().getQualified(), Object.class.getName());
         assertFalse(classNode.isAbstract());
         assertFalse(classNode.isExternalizable());
@@ -207,7 +206,7 @@ class ClassTest extends AbstractTest {
         assertFalse(classNode.isSerializable());
         assertFalse(classNode.isException());
         assertFalse(classNode.isError());
-        assertEquals(classNode.getGeneric().size(), 0);
+        assertTrue(classNode.getGeneric().isEmpty());
 
         assertEquals(method.getComment(), "method1");
         assertEquals(method.getName(), "method1");
@@ -219,14 +218,14 @@ class ClassTest extends AbstractTest {
         assertFalse(method.isVarArgs());
         assertEquals(method.getQualified(), getElementPathFromSimpleDataPackage("Class3.method1"));
         assertEquals(method.getScope(), "public");
-        assertEquals(method.getAnnotation().size(), 0);
-        assertEquals(method.getParameter().size(), 0);
-        assertEquals(method.getException().size(), 0);
+        assertTrue(method.getAnnotation().isEmpty());
+        assertTrue(method.getParameter().isEmpty());
+        assertTrue(method.getException().isEmpty());
 
         final TypeInfo returnNode = method.getReturn();
         assertEquals(returnNode.getQualified(), "int");
         assertNull(returnNode.getDimension());
-        assertEquals(returnNode.getGeneric().size(), 0);
+        assertTrue(returnNode.getGeneric().isEmpty());
         assertNull(returnNode.getWildcard());
     }
 
@@ -244,9 +243,9 @@ class ClassTest extends AbstractTest {
         assertEquals(rootNode.getPackage().size(), 1);
         assertNull(packageNode.getComment());
         assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
         assertEquals(packageNode.getClazz().size(), 1);
 
         assertEquals(classNode.getComment(), "Class4");
@@ -255,9 +254,9 @@ class ClassTest extends AbstractTest {
         assertEquals(classNode.getQualified(), Class4.class.getName());
         assertEquals(classNode.getScope(), "public");
         assertEquals(classNode.getField().size(), 1);
-        assertEquals(classNode.getMethod().size(), 0);
-        assertEquals(classNode.getAnnotation().size(), 0);
-        assertEquals(classNode.getInterface().size(), 0);
+        assertTrue(classNode.getMethod().isEmpty());
+        assertTrue(classNode.getAnnotation().isEmpty());
+        assertTrue(classNode.getInterface().isEmpty());
         assertEquals(classNode.getClazz().getQualified(), Object.class.getName());
         assertFalse(classNode.isAbstract());
         assertFalse(classNode.isExternalizable());
@@ -265,7 +264,7 @@ class ClassTest extends AbstractTest {
         assertFalse(classNode.isSerializable());
         assertFalse(classNode.isException());
         assertFalse(classNode.isError());
-        assertEquals(classNode.getGeneric().size(), 0);
+        assertTrue(classNode.getGeneric().isEmpty());
 
         // test field
         assertEquals(field.getComment(), "field1");
@@ -273,14 +272,14 @@ class ClassTest extends AbstractTest {
         assertEquals(field.getScope(), "public");
         assertEquals(field.getType().getQualified(), "int");
         assertNull(field.getType().getDimension());
-        assertEquals(field.getType().getGeneric().size(), 0);
+        assertTrue(field.getType().getGeneric().isEmpty());
         assertNull(field.getType().getWildcard());
         assertFalse(field.isStatic());
         assertFalse(field.isTransient());
         assertFalse(field.isVolatile());
         assertFalse(field.isFinal());
         assertNull(field.getConstant());
-        assertEquals(field.getAnnotation().size(), 0);
+        assertTrue(field.getAnnotation().isEmpty());
     }
 
     /**
@@ -297,9 +296,9 @@ class ClassTest extends AbstractTest {
         assertEquals(rootNode.getPackage().size(), 1);
         assertNull(packageNode.getComment());
         assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
         assertEquals(packageNode.getClazz().size(), 2);
 
         assertEquals(classNode.getComment(), "Class5");
@@ -307,10 +306,10 @@ class ClassTest extends AbstractTest {
         assertEquals(classNode.getName(), Class5.class.getSimpleName());
         assertEquals(classNode.getQualified(), Class5.class.getName());
         assertEquals(classNode.getScope(), "public");
-        assertEquals(classNode.getMethod().size(), 0);
-        assertEquals(classNode.getField().size(), 0);
-        assertEquals(classNode.getAnnotation().size(), 0);
-        assertEquals(classNode.getInterface().size(), 0);
+        assertTrue(classNode.getMethod().isEmpty());
+        assertTrue(classNode.getField().isEmpty());
+        assertTrue(classNode.getAnnotation().isEmpty());
+        assertTrue(classNode.getInterface().isEmpty());
         assertEquals(classNode.getClazz().getQualified(), getElementPathFromSimpleDataPackage("Class3"));
         assertFalse(classNode.isAbstract());
         assertFalse(classNode.isExternalizable());
@@ -318,7 +317,7 @@ class ClassTest extends AbstractTest {
         assertFalse(classNode.isSerializable());
         assertFalse(classNode.isException());
         assertFalse(classNode.isError());
-        assertEquals(classNode.getGeneric().size(), 0);
+        assertTrue(classNode.getGeneric().isEmpty());
     }
 
     /**
@@ -335,9 +334,9 @@ class ClassTest extends AbstractTest {
         assertEquals(rootNode.getPackage().size(), 1);
         assertNull(packageNode.getComment());
         assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
         assertEquals(packageNode.getClazz().size(), 1);
 
         assertEquals(classNode.getComment(), "Class6");
@@ -345,8 +344,8 @@ class ClassTest extends AbstractTest {
         assertEquals(classNode.getName(), Class6.class.getSimpleName());
         assertEquals(classNode.getQualified(), Class6.class.getName());
         assertEquals(classNode.getScope(), "public");
-        assertEquals(classNode.getMethod().size(), 0);
-        assertEquals(classNode.getField().size(), 0);
+        assertTrue(classNode.getMethod().isEmpty());
+        assertTrue(classNode.getField().isEmpty());
         assertEquals(classNode.getAnnotation().size(), 1);
         assertEquals(classNode.getInterface().size(), 1);
         assertEquals(classNode.getClazz().getQualified(), Object.class.getName());
@@ -355,7 +354,7 @@ class ClassTest extends AbstractTest {
         assertTrue(classNode.isIncluded());
         assertFalse(classNode.isException());
         assertFalse(classNode.isError());
-        assertEquals(classNode.getGeneric().size(), 0);
+        assertTrue(classNode.getGeneric().isEmpty());
 
         // the particular interface chosen for this test also will change this flag to true!
         assertTrue(classNode.isSerializable());
@@ -379,9 +378,9 @@ class ClassTest extends AbstractTest {
         assertEquals(rootNode.getPackage().size(), 1);
         assertNull(packageNode.getComment());
         assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
         assertEquals(packageNode.getClazz().size(), 1);
 
         assertEquals(classNode.getComment(), "Class7");
@@ -389,10 +388,10 @@ class ClassTest extends AbstractTest {
         assertEquals(classNode.getName(), Class7.class.getSimpleName());
         assertEquals(classNode.getQualified(), Class7.class.getName());
         assertEquals(classNode.getScope(), "public");
-        assertEquals(classNode.getMethod().size(), 0);
-        assertEquals(classNode.getField().size(), 0);
+        assertTrue(classNode.getMethod().isEmpty());
+        assertTrue(classNode.getField().isEmpty());
         assertEquals(classNode.getAnnotation().size(), 1);
-        assertEquals(classNode.getInterface().size(), 0);
+        assertTrue(classNode.getInterface().isEmpty());
         assertEquals(classNode.getClazz().getQualified(), Object.class.getName());
         assertFalse(classNode.isAbstract());
         assertFalse(classNode.isExternalizable());
@@ -400,12 +399,12 @@ class ClassTest extends AbstractTest {
         assertFalse(classNode.isSerializable());
         assertFalse(classNode.isException());
         assertFalse(classNode.isError());
-        assertEquals(classNode.getGeneric().size(), 0);
+        assertTrue(classNode.getGeneric().isEmpty());
 
         // test annotation 'deprecated' on class
         assertEquals(annotationNode.getQualified(), "java.lang.Deprecated");
         assertEquals(annotationNode.getName(), "Deprecated");
-        assertEquals(annotationNode.getArgument().size(), 0);
+        assertTrue(annotationNode.getArgument().isEmpty());
     }
 
     /**
@@ -422,9 +421,9 @@ class ClassTest extends AbstractTest {
         assertEquals(rootNode.getPackage().size(), 1);
         assertNull(packageNode.getComment());
         assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
         assertEquals(packageNode.getClazz().size(), 1);
 
         assertEquals(classNode.getComment(), "Class8");
@@ -432,10 +431,10 @@ class ClassTest extends AbstractTest {
         assertEquals(classNode.getName(), Class8.class.getSimpleName());
         assertEquals(classNode.getQualified(), Class8.class.getName());
         assertEquals(classNode.getScope(), "public");
-        assertEquals(classNode.getMethod().size(), 0);
-        assertEquals(classNode.getField().size(), 0);
-        assertEquals(classNode.getAnnotation().size(), 0);
-        assertEquals(classNode.getInterface().size(), 0);
+        assertTrue(classNode.getMethod().isEmpty());
+        assertTrue(classNode.getField().isEmpty());
+        assertTrue(classNode.getAnnotation().isEmpty());
+        assertTrue(classNode.getInterface().isEmpty());
         assertEquals(classNode.getClazz().getQualified(), Object.class.getName());
         assertTrue(classNode.isAbstract());
         assertFalse(classNode.isExternalizable());
@@ -443,7 +442,7 @@ class ClassTest extends AbstractTest {
         assertFalse(classNode.isSerializable());
         assertFalse(classNode.isException());
         assertFalse(classNode.isError());
-        assertEquals(classNode.getGeneric().size(), 0);
+        assertTrue(classNode.getGeneric().isEmpty());
     }
 
     /**
@@ -459,9 +458,9 @@ class ClassTest extends AbstractTest {
         assertEquals(rootNode.getPackage().size(), 1);
         assertNull(packageNode.getComment());
         assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
         assertEquals(packageNode.getClazz().size(), 1);
 
         assertEquals(classNode.getComment(), "Class9");
@@ -470,8 +469,8 @@ class ClassTest extends AbstractTest {
         assertEquals(classNode.getQualified(), Class9.class.getName());
         assertEquals(classNode.getScope(), "public");
         assertEquals(classNode.getMethod().size(), 2);
-        assertEquals(classNode.getField().size(), 0);
-        assertEquals(classNode.getAnnotation().size(), 0);
+        assertTrue(classNode.getField().isEmpty());
+        assertTrue(classNode.getAnnotation().isEmpty());
         assertEquals(classNode.getInterface().size(), 1);
         assertEquals(classNode.getClazz().getQualified(), Object.class.getName());
         assertFalse(classNode.isAbstract());
@@ -480,7 +479,7 @@ class ClassTest extends AbstractTest {
         assertTrue(classNode.isSerializable());
         assertFalse(classNode.isException());
         assertFalse(classNode.isError());
-        assertEquals(classNode.getGeneric().size(), 0);
+        assertTrue(classNode.getGeneric().isEmpty());
     }
 
     /**
@@ -496,9 +495,9 @@ class ClassTest extends AbstractTest {
         assertEquals(rootNode.getPackage().size(), 1);
         assertNull(packageNode.getComment());
         assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
         assertEquals(packageNode.getClazz().size(), 1);
 
         assertEquals(classNode.getComment(), "Class10");
@@ -506,10 +505,10 @@ class ClassTest extends AbstractTest {
         assertEquals(classNode.getName(), "Class10");
         assertEquals(classNode.getQualified(), getElementPathFromSimpleDataPackage("Class10"));
         assertEquals(classNode.getScope(), "");
-        assertEquals(classNode.getMethod().size(), 0);
-        assertEquals(classNode.getField().size(), 0);
-        assertEquals(classNode.getAnnotation().size(), 0);
-        assertEquals(classNode.getInterface().size(), 0);
+        assertTrue(classNode.getMethod().isEmpty());
+        assertTrue(classNode.getField().isEmpty());
+        assertTrue(classNode.getAnnotation().isEmpty());
+        assertTrue(classNode.getInterface().isEmpty());
         assertEquals(classNode.getClazz().getQualified(), Object.class.getName());
         assertFalse(classNode.isAbstract());
         assertFalse(classNode.isExternalizable());
@@ -517,7 +516,7 @@ class ClassTest extends AbstractTest {
         assertFalse(classNode.isSerializable());
         assertFalse(classNode.isException());
         assertFalse(classNode.isError());
-        assertEquals(classNode.getGeneric().size(), 0);
+        assertTrue(classNode.getGeneric().isEmpty());
     }
 
     /**
@@ -533,9 +532,9 @@ class ClassTest extends AbstractTest {
         assertEquals(rootNode.getPackage().size(), 1);
         assertNull(packageNode.getComment());
         assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
         assertEquals(packageNode.getClazz().size(), 1);
 
         assertEquals(classNode.getComment(), "Class11");
@@ -543,10 +542,10 @@ class ClassTest extends AbstractTest {
         assertEquals(classNode.getName(), "Class11");
         assertEquals(classNode.getQualified(), getElementPathFromSimpleDataPackage("Class11"));
         assertEquals(classNode.getScope(), "public");
-        assertEquals(classNode.getMethod().size(), 0);
-        assertEquals(classNode.getField().size(), 0);
+        assertTrue(classNode.getMethod().isEmpty());
+        assertTrue(classNode.getField().isEmpty());
         assertEquals(classNode.getAnnotation().size(), 1);
-        assertEquals(classNode.getInterface().size(), 0);
+        assertTrue(classNode.getInterface().isEmpty());
         assertEquals(classNode.getClazz().getQualified(), Exception.class.getName());
         assertFalse(classNode.isAbstract());
         assertFalse(classNode.isExternalizable());
@@ -554,7 +553,7 @@ class ClassTest extends AbstractTest {
         assertTrue(classNode.isSerializable());
         assertTrue(classNode.isException());
         assertFalse(classNode.isError());
-        assertEquals(classNode.getGeneric().size(), 0);
+        assertTrue(classNode.getGeneric().isEmpty());
     }
 
     /**
@@ -571,9 +570,9 @@ class ClassTest extends AbstractTest {
         assertEquals(rootNode.getPackage().size(), 1);
         assertNull(packageNode.getComment());
         assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
         assertEquals(packageNode.getClazz().size(), 1);
 
         assertEquals(classNode.getComment(), "Class12");
@@ -581,10 +580,10 @@ class ClassTest extends AbstractTest {
         assertEquals(classNode.getName(), "Class12");
         assertEquals(classNode.getQualified(), getElementPathFromSimpleDataPackage("Class12"));
         assertEquals(classNode.getScope(), "public");
-        assertEquals(classNode.getMethod().size(), 0);
-        assertEquals(classNode.getField().size(), 0);
+        assertTrue(classNode.getMethod().isEmpty());
+        assertTrue(classNode.getField().isEmpty());
         assertEquals(classNode.getAnnotation().size(), 1);
-        assertEquals(classNode.getInterface().size(), 0);
+        assertTrue(classNode.getInterface().isEmpty());
         assertEquals(classNode.getClazz().getQualified(), Error.class.getName());
         assertFalse(classNode.isAbstract());
         assertFalse(classNode.isExternalizable());
@@ -592,7 +591,7 @@ class ClassTest extends AbstractTest {
         assertTrue(classNode.isSerializable());
         assertFalse(classNode.isException());
         assertTrue(classNode.isError());
-        assertEquals(classNode.getGeneric().size(), 0);
+        assertTrue(classNode.getGeneric().isEmpty());
     }
 
     /**
@@ -610,57 +609,15 @@ class ClassTest extends AbstractTest {
         assertEquals(rootNode.getPackage().size(), 1);
         assertNull(packageNode.getComment());
         assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 0);
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
         assertEquals(packageNode.getClazz().size(), 1);
 
         assertEquals(classNode.getComment(), "Class13");
         assertEquals(classNode.getConstructor().size(), 1);
         assertEquals(classNode.getName(), "Class13");
         assertEquals(classNode.getQualified(), getElementPathFromSimpleDataPackage("Class13"));
-        assertEquals(classNode.getScope(), "public");
-        assertEquals(classNode.getGeneric().size(), 1);
-        assertEquals(classNode.getMethod().size(), 0);
-        assertEquals(classNode.getField().size(), 0);
-        assertEquals(classNode.getAnnotation().size(), 0);
-        assertEquals(classNode.getInterface().size(), 0);
-        assertEquals(classNode.getClazz().getQualified(), Object.class.getName());
-        assertFalse(classNode.isAbstract());
-        assertFalse(classNode.isExternalizable());
-        assertTrue(classNode.isIncluded());
-        assertFalse(classNode.isSerializable());
-        assertFalse(classNode.isException());
-        assertFalse(classNode.isError());
-
-        // check the 'fun' type var
-        assertEquals(typeParameter.getName(), "Fun");
-        assertTrue(typeParameter.getBound().isEmpty());
-    }
-
-    /**
-     * testing if a single bounds can be determined
-     */
-    @Test
-    void testClass14() {
-        final var javaDocElements = newJavaDocElements("Class14.java");
-        final var rootNode = javaDocElements.rootNode();
-        final var packageNode = javaDocElements.packageNode();
-        final var classNode = javaDocElements.classNode();
-        final TypeParameter typeParameter = classNode.getGeneric().getFirst();
-
-        assertEquals(rootNode.getPackage().size(), 1);
-        assertNull(packageNode.getComment());
-        assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertTrue(packageNode.getAnnotation().isEmpty());
-        assertTrue(packageNode.getEnum().isEmpty());
-        assertTrue(packageNode.getInterface().isEmpty());
-        assertEquals(packageNode.getClazz().size(), 1);
-
-        assertEquals(classNode.getComment(), "Class14");
-        assertEquals(classNode.getConstructor().size(), 1);
-        assertEquals(classNode.getName(), "Class14");
-        assertEquals(classNode.getQualified(), getElementPathFromSimpleDataPackage("Class14"));
         assertEquals(classNode.getScope(), "public");
         assertEquals(classNode.getGeneric().size(), 1);
         assertTrue(classNode.getMethod().isEmpty());
@@ -676,9 +633,51 @@ class ClassTest extends AbstractTest {
         assertFalse(classNode.isError());
 
         // check the 'fun' type var
-        assertEquals(typeParameter.getName(), "Fun");
-        assertEquals(typeParameter.getBound().size(), 1);
-        assertEquals(typeParameter.getBound().getFirst(), Number.class.getName());
+        assertEquals("Fun", typeParameter.getName());
+        assertTrue(typeParameter.getBound().isEmpty());
+    }
+
+    /**
+     * testing if a single bounds can be determined
+     */
+    @Test
+    void testClass14() {
+        final var javaDocElements = newJavaDocElements("Class14.java");
+        final var rootNode = javaDocElements.rootNode();
+        final var packageNode = javaDocElements.packageNode();
+        final var classNode = javaDocElements.classNode();
+        final TypeParameter typeParameter = classNode.getGeneric().getFirst();
+
+        assertEquals(1, rootNode.getPackage().size());
+        assertNull(packageNode.getComment());
+        assertEquals(SIMPLE_DATA_PACKAGE, packageNode.getName());
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertTrue(packageNode.getInterface().isEmpty());
+        assertEquals(1, packageNode.getClazz().size());
+
+        assertEquals("Class14", classNode.getComment());
+        assertEquals(1, classNode.getConstructor().size());
+        assertEquals("Class14", classNode.getName());
+        assertEquals(getElementPathFromSimpleDataPackage("Class14"), classNode.getQualified());
+        assertEquals("public", classNode.getScope());
+        assertEquals(1, classNode.getGeneric().size());
+        assertTrue(classNode.getMethod().isEmpty());
+        assertTrue(classNode.getField().isEmpty());
+        assertTrue(classNode.getAnnotation().isEmpty());
+        assertTrue(classNode.getInterface().isEmpty());
+        assertEquals(classNode.getClazz().getQualified(), Object.class.getName());
+        assertFalse(classNode.isAbstract());
+        assertFalse(classNode.isExternalizable());
+        assertTrue(classNode.isIncluded());
+        assertFalse(classNode.isSerializable());
+        assertFalse(classNode.isException());
+        assertFalse(classNode.isError());
+
+        // check the 'fun' type var
+        assertEquals("Fun", typeParameter.getName());
+        assertEquals(1, typeParameter.getBound().size());
+        assertEquals(Number.class.getName(), typeParameter.getBound().getFirst());
     }
 
     /**
