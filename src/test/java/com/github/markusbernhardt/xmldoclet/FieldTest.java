@@ -119,7 +119,7 @@ class FieldTest extends AbstractTest {
     void testField9() {
         // field9 -- string final expression
         final var field = findByFieldName("field9", fields);
-        assertEquals("\"testy\"", field.getConstant());
+        assertEquals("testy", field.getConstant());
     }
 
     @Test
@@ -190,7 +190,7 @@ class FieldTest extends AbstractTest {
         // field15 - typed generic
         final var field = findByFieldName("field15", fields);
         assertNotNull(field.getType());
-        assertEquals("java.util.HashMap", field.getType().getQualified());
+        assertEquals("java.util.HashMap<java.lang.String,java.lang.Integer>", field.getType().getQualified());
         assertEquals(2, field.getType().getGeneric().size());
         assertEquals("java.lang.String", field.getType().getGeneric().get(0).getQualified());
         assertNull(field.getType().getGeneric().get(0).getWildcard());
@@ -203,8 +203,12 @@ class FieldTest extends AbstractTest {
         // field16 - array
         final var field = findByFieldName("field16", fields);
         assertNotNull(field.getType());
-        assertEquals("java.lang.String", field.getType().getQualified());
-        assertEquals("[]", field.getType().getDimension());
+        assertEquals("java.lang.String[]", field.getType().getQualified());
+
+        // The dimension is not longer the brackets, but the actual dimension size.
+        // For an array, the dimension is 1. For a 2D matrix, the dimension is 2, and so on.
+        // TODO: The dimension attribute type should be changed to int, but that will require changing the javadoc.xsd
+        assertEquals("1", field.getType().getDimension());
     }
 
     /**

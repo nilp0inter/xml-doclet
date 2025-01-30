@@ -40,7 +40,7 @@ abstract class AbstractMethodsTest extends AbstractTest {
     }
 
     protected static void checkParamType(final TypeInfo methodParamType, final String fullQualifiedParamType) {
-        assertEquals(methodParamType.getQualified(), fullQualifiedParamType);
+        assertEquals(fullQualifiedParamType, methodParamType.getQualified());
     }
 
     protected Method assertMethodSignature(
