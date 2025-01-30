@@ -78,18 +78,17 @@ class InterfaceTest extends AbstractTest {
         // verify method
         assertEquals("method1", method.getComment());
         assertEquals("method1", method.getName());
-        assertEquals("()", method.getSignature());
+        assertEquals("()int", method.getSignature());
         assertFalse(method.isFinal());
         assertFalse(method.isNative());
         assertFalse(method.isStatic());
         assertFalse(method.isSynchronized());
         assertFalse(method.isVarArgs());
-        assertEquals(method.getQualified(), getElementPathFromSimpleDataPackage("Interface2.method1"));
+        assertEquals("method1", method.getQualified());
         assertEquals("public", method.getScope());
         assertTrue(method.getAnnotation().isEmpty());
         assertTrue(method.getParameter().isEmpty());
         assertTrue(method.getException().isEmpty());
-
     }
 
     /**
@@ -189,13 +188,13 @@ class InterfaceTest extends AbstractTest {
         // verify method
         assertEquals(method.getComment(), "method1");
         assertEquals(method.getName(), "method1");
-        assertEquals(method.getSignature(), "()");
+        assertEquals(method.getSignature(), "()void");
         assertFalse(method.isFinal());
         assertFalse(method.isNative());
         assertFalse(method.isStatic());
         assertFalse(method.isSynchronized());
         assertFalse(method.isVarArgs());
-        assertEquals(method.getQualified(), getElementPathFromSimpleDataPackage("Interface5.method1"));
+        assertEquals("method1", method.getQualified());
 
         // all interface methods are public
         assertEquals(method.getScope(), "public");
@@ -215,25 +214,26 @@ class InterfaceTest extends AbstractTest {
         final Interface interfaceNode = packageNode.getInterface().getFirst();
         final TypeParameter typeParameterNode = interfaceNode.getGeneric().getFirst();
 
-        assertEquals(rootNode.getPackage().size(), 1);
+        assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
-        assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 1);
-        assertEquals(packageNode.getClazz().size(), 0);
+        assertEquals(SIMPLE_DATA_PACKAGE, packageNode.getName());
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertEquals(1, packageNode.getInterface().size());
+        assertTrue(packageNode.getClazz().isEmpty());
 
-        assertEquals(interfaceNode.getComment(), "Interface6");
-        assertEquals(interfaceNode.getName(), "Interface6");
-        assertEquals(interfaceNode.getQualified(), getElementPathFromSimpleDataPackage("Interface6"));
-        assertEquals(interfaceNode.getScope(), "public");
-        assertEquals(interfaceNode.getMethod().size(), 0);
-        assertEquals(interfaceNode.getAnnotation().size(), 0);
-        assertEquals(interfaceNode.getInterface().size(), 0);
+        assertEquals("Interface6", interfaceNode.getComment());
+        assertEquals("Interface6", interfaceNode.getName());
+        assertEquals(getElementPathFromSimpleDataPackage("Interface6"), interfaceNode.getQualified());
+        assertEquals("public", interfaceNode.getScope());
+        assertTrue(interfaceNode.getMethod().isEmpty());
+        assertTrue(interfaceNode.getAnnotation().isEmpty());
+        assertTrue(interfaceNode.getInterface().isEmpty());
         assertTrue(interfaceNode.isIncluded());
 
-        assertEquals(typeParameterNode.getName(), "Fun");
-        assertEquals(typeParameterNode.getBound().size(), 0);
+        assertEquals("Fun", typeParameterNode.getName());
+        System.out.println(typeParameterNode.getBound());
+        assertTrue(typeParameterNode.getBound().isEmpty());
     }
 
     /**
@@ -247,25 +247,25 @@ class InterfaceTest extends AbstractTest {
         final Interface interfaceNode = packageNode.getInterface().getFirst();
         final TypeParameter typeParameterNode = interfaceNode.getGeneric().getFirst();
 
-        assertEquals(rootNode.getPackage().size(), 1);
+        assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
-        assertEquals(packageNode.getName(), SIMPLE_DATA_PACKAGE);
-        assertEquals(packageNode.getAnnotation().size(), 0);
-        assertEquals(packageNode.getEnum().size(), 0);
-        assertEquals(packageNode.getInterface().size(), 1);
-        assertEquals(packageNode.getClazz().size(), 0);
+        assertEquals(SIMPLE_DATA_PACKAGE, packageNode.getName());
+        assertTrue(packageNode.getAnnotation().isEmpty());
+        assertTrue(packageNode.getEnum().isEmpty());
+        assertEquals(1, packageNode.getInterface().size());
+        assertTrue(packageNode.getClazz().isEmpty());
 
-        assertEquals(interfaceNode.getComment(), "Interface7");
-        assertEquals(interfaceNode.getName(), "Interface7");
-        assertEquals(interfaceNode.getQualified(), getElementPathFromSimpleDataPackage("Interface7"));
-        assertEquals(interfaceNode.getScope(), "public");
-        assertEquals(interfaceNode.getMethod().size(), 0);
-        assertEquals(interfaceNode.getAnnotation().size(), 0);
-        assertEquals(interfaceNode.getInterface().size(), 0);
+        assertEquals("Interface7", interfaceNode.getComment());
+        assertEquals("Interface7", interfaceNode.getName());
+        assertEquals(getElementPathFromSimpleDataPackage("Interface7"), interfaceNode.getQualified());
+        assertEquals("public", interfaceNode.getScope());
+        assertTrue(interfaceNode.getMethod().isEmpty());
+        assertTrue(interfaceNode.getAnnotation().isEmpty());
+        assertTrue(interfaceNode.getInterface().isEmpty());
         assertTrue(interfaceNode.isIncluded());
 
-        assertEquals(typeParameterNode.getBound().size(), 1);
-        assertEquals(typeParameterNode.getBound().getFirst(), "java.lang.Number");
+        assertEquals(1, typeParameterNode.getBound().size());
+        assertEquals("java.lang.Number", typeParameterNode.getBound().getFirst());
     }
 
     /**

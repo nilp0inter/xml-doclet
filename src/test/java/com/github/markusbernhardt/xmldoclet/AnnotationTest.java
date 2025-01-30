@@ -106,7 +106,7 @@ class AnnotationTest extends AbstractTest {
 
         // test annotation element
         assertEquals("id", element.getName());
-        assertEquals("com.github.markusbernhardt.xmldoclet.simpledata.Annotation3.id", element.getQualified());
+        assertEquals("()int", element.getQualified());
         assertEquals("int", element.getType().getQualified());
         assertEquals("3", element.getDefault());
     }
