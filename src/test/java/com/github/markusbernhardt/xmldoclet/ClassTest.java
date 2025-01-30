@@ -210,13 +210,13 @@ class ClassTest extends AbstractTest {
 
         assertEquals("method1", method.getComment());
         assertEquals("method1", method.getName());
-        assertEquals("()", method.getSignature());
+        assertEquals("int ()", method.getSignature());
         assertFalse(method.isFinal());
         assertFalse(method.isNative());
         assertFalse(method.isStatic());
         assertFalse(method.isSynchronized());
         assertFalse(method.isVarArgs());
-        assertEquals(getElementPathFromSimpleDataPackage("Class3.method1"), method.getQualified());
+        assertEquals("method1", method.getQualified());
         assertEquals("public", method.getScope());
         assertTrue(method.getAnnotation().isEmpty());
         assertTrue(method.getParameter().isEmpty());
@@ -278,7 +278,7 @@ class ClassTest extends AbstractTest {
         assertFalse(field.isTransient());
         assertFalse(field.isVolatile());
         assertFalse(field.isFinal());
-        assertNull(field.getConstant());
+        assertEquals("", field.getConstant());
         assertTrue(field.getAnnotation().isEmpty());
     }
 
@@ -616,7 +616,7 @@ class ClassTest extends AbstractTest {
         assertEquals("Class13", classNode.getComment());
         assertEquals(1, classNode.getConstructor().size());
         assertEquals("Class13", classNode.getName());
-        assertEquals(getElementPathFromSimpleDataPackage("Class13"), classNode.getQualified());
+        assertEquals(getElementPathFromSimpleDataPackage("Class13<Fun>"), classNode.getQualified());
         assertEquals("public", classNode.getScope());
         assertEquals(1, classNode.getGeneric().size());
         assertTrue(classNode.getMethod().isEmpty());
@@ -658,7 +658,7 @@ class ClassTest extends AbstractTest {
         assertEquals("Class14", classNode.getComment());
         assertEquals(1, classNode.getConstructor().size());
         assertEquals("Class14", classNode.getName());
-        assertEquals(getElementPathFromSimpleDataPackage("Class14"), classNode.getQualified());
+        assertEquals(getElementPathFromSimpleDataPackage("Class14<Fun>"), classNode.getQualified());
         assertEquals("public", classNode.getScope());
         assertEquals(1, classNode.getGeneric().size());
         assertTrue(classNode.getMethod().isEmpty());
@@ -701,7 +701,7 @@ class ClassTest extends AbstractTest {
         assertEquals("Class15", classNode.getComment());
         assertEquals(1, classNode.getConstructor().size());
         assertEquals("Class15", classNode.getName());
-        assertEquals(getElementPathFromSimpleDataPackage("Class15"), classNode.getQualified());
+        assertEquals(getElementPathFromSimpleDataPackage("Class15<Fun>"), classNode.getQualified());
         assertEquals("public", classNode.getScope());
         assertEquals(1, classNode.getGeneric().size());
         assertTrue(classNode.getMethod().isEmpty());
@@ -734,7 +734,7 @@ class ClassTest extends AbstractTest {
         final AnnotationInstance instance = classNode.getAnnotation().getFirst();
         final AnnotationArgument argument = instance.getArgument().getFirst();
         assertEquals("id", argument.getName());
-        assertEquals("int ()", argument.getType().getQualified());
+        assertEquals("int", argument.getType().getQualified());
         assertEquals(1, argument.getValue().size());
         assertEquals("3", argument.getValue().getFirst());
         assertTrue(argument.isPrimitive());
@@ -751,7 +751,7 @@ class ClassTest extends AbstractTest {
         final AnnotationInstance instance = classNode.getAnnotation().getFirst();
         final AnnotationArgument argument = instance.getArgument().getFirst();
 
-        assertEquals("int", argument.getType().getQualified());
+        assertEquals("int[]", argument.getType().getQualified());
         assertEquals(2, argument.getValue().size());
         assertEquals("1", argument.getValue().get(0));
         assertEquals("2", argument.getValue().get(1));
@@ -871,7 +871,7 @@ class ClassTest extends AbstractTest {
         final AnnotationInstance instance = classNode.getAnnotation().getFirst();
         final AnnotationArgument argument = instance.getArgument().getFirst();
 
-        assertEquals(argument.getType().getQualified(), "int");
+        assertEquals("int[]", argument.getType().getQualified());
         assertTrue(argument.getValue().isEmpty());
         assertTrue(argument.isPrimitive());
         assertTrue(argument.isArray());

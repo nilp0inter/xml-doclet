@@ -119,6 +119,9 @@ public class TypeUtils {
         /* The TypeMirror.toString() method returns the fully qualified name of the type.
          * If the type is a method signature, it places the parameters list (parenteses)
          * before the return type (that is void if none), which is an odd convention for Java Code.
+         * Instead of returning "void (int)" for a method that receives an int and returns void,
+         * it returns "(int)void" (the return type before the parameters list).
+         *
          * This way, we invert that order for a conventional representation of a method signature. */
         final var regex = Pattern.compile("^(\\(.*\\))(.*)$");
         final var matcher = regex.matcher(qualified);

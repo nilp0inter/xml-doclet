@@ -9,10 +9,7 @@ import com.sun.source.util.DocTrees;
 import jdk.javadoc.doclet.DocletEnvironment;
 
 import javax.lang.model.element.*;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.type.TypeVariable;
-import javax.lang.model.type.WildcardType;
+import javax.lang.model.type.*;
 import javax.lang.model.util.ElementFilter;
 import java.util.List;
 import java.util.Map;
@@ -195,10 +192,8 @@ public class Parser {
      * @param programElement the name of a program element to parse
      * @return representation of annotations
      */
-    protected AnnotationInstance parseAnnotationDesc(final AnnotationMirror annotationDesc,
-            final Name programElement) {
-
-        final var annotationInstance=objectFactory.createAnnotationInstance();
+    protected AnnotationInstance parseAnnotationDesc(final AnnotationMirror annotationDesc, final Name programElement) {
+        final var annotationInstance = objectFactory.createAnnotationInstance();
 
         try {
             final var annotTypeInfo = annotationDesc.getAnnotationType();
@@ -211,9 +206,12 @@ public class Parser {
 
         for (final var elementValuesPair : annotationDesc.getElementValues().entrySet()) {
             final AnnotationArgument annotationArgumentNode = objectFactory.createAnnotationArgument();
-            annotationArgumentNode.setName(elementValuesPair.getKey().getSimpleName().toString());
+            // The key is an element that represents the method defined in the annotation interface
+            // which enables setting a value to the argument
+            final ExecutableElement annotationArgumentSetter = elementValuesPair.getKey();
+            annotationArgumentNode.setName(annotationArgumentSetter.getSimpleName().toString());
 
-            final TypeMirror annotationArgumentType = elementValuesPair.getKey().asType();
+            final TypeMirror annotationArgumentType = getAnnotationArgumentType(annotationArgumentSetter);
             annotationArgumentNode.setType(parseTypeInfo(annotationArgumentType));
             annotationArgumentNode.setPrimitive(annotationArgumentType.getKind().isPrimitive());
             annotationArgumentNode.setArray(isArray(annotationArgumentType));
@@ -243,9 +241,22 @@ public class Parser {
 
             annotationInstance.getArgument().add(annotationArgumentNode);
         }
-        //@formatter:on
 
         return annotationInstance;
+    }
+
+    /**
+     * Gets the data type for an annotation argument value from
+     * the method that sets the value for the argument (the annotation argument definition method).
+     * @param annotationArgumentSetter a type that represents the method that sets the value for the argument,
+     *                                 specified in the interface that defines the annotation.
+     * @return a type that represents the argument value type
+     */
+    private static TypeMirror getAnnotationArgumentType(final ExecutableElement annotationArgumentSetter) {
+        final TypeMirror argumentSetterType = annotationArgumentSetter.asType();
+        return argumentSetterType instanceof ExecutableType setterExecutableType ?
+                setterExecutableType.getReturnType() :
+                argumentSetterType;
     }
 
     private static String getSimpleName(final VariableElement element) {
@@ -536,6 +547,11 @@ public class Parser {
         return fieldNode;
     }
 
+    /**
+     * Parses a {@link TypeMirror} into a {@link TypeInfo} object used by the XmlDoclet.
+     * @param type the {@link TypeMirror} to parse.
+     * @return the created {@link TypeInfo} object
+     */
     protected TypeInfo parseTypeInfo(final TypeMirror type) {
         final TypeInfo typeInfoNode = objectFactory.createTypeInfo();
         typeInfoNode.setQualified(getQualifiedName(type));
