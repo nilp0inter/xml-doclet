@@ -233,7 +233,7 @@ public class Parser {
                                 annotationArgumentNode.getValue().add(((AnnotationValue)value).getValue().toString());
                             }
                         }
-                    }
+                    } else annotationArgumentNode.getValue().add(annotationValue.getValue().toString());
                 }
                 case null -> {}
                 default -> annotationArgumentNode.getValue().add(objValue.toString());

@@ -755,7 +755,7 @@ class ClassTest extends AbstractTest {
         assertEquals(2, argument.getValue().size());
         assertEquals("1", argument.getValue().get(0));
         assertEquals("2", argument.getValue().get(1));
-        assertTrue(argument.isPrimitive());
+        assertFalse(argument.isPrimitive());
         assertTrue(argument.isArray());
     }
 
@@ -821,8 +821,7 @@ class ClassTest extends AbstractTest {
 
         assertEquals("char", argument.getType().getQualified());
         assertEquals(1, argument.getValue().size());
-        final int ascii = 'a';
-        assertEquals(Integer.toString(ascii), argument.getValue().getFirst());
+        assertEquals("a", argument.getValue().getFirst());
         assertTrue(argument.isPrimitive());
         assertFalse(argument.isArray());
     }
@@ -839,7 +838,7 @@ class ClassTest extends AbstractTest {
 
         assertEquals("char", argument.getType().getQualified());
         assertEquals(1, argument.getValue().size());
-        assertEquals("0", argument.getValue().getFirst());
+        assertEquals("\u0000", argument.getValue().getFirst());
         assertTrue(argument.isPrimitive());
         assertFalse(argument.isArray());
     }
@@ -873,7 +872,7 @@ class ClassTest extends AbstractTest {
 
         assertEquals("int[]", argument.getType().getQualified());
         assertTrue(argument.getValue().isEmpty());
-        assertTrue(argument.isPrimitive());
+        assertFalse(argument.isPrimitive());
         assertTrue(argument.isArray());
     }
 }
