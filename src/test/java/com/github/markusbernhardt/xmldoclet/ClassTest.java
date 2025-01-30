@@ -734,7 +734,7 @@ class ClassTest extends AbstractTest {
         final AnnotationInstance instance = classNode.getAnnotation().getFirst();
         final AnnotationArgument argument = instance.getArgument().getFirst();
         assertEquals("id", argument.getName());
-        assertEquals("int", argument.getType().getQualified());
+        assertEquals("int ()", argument.getType().getQualified());
         assertEquals(1, argument.getValue().size());
         assertEquals("3", argument.getValue().getFirst());
         assertTrue(argument.isPrimitive());

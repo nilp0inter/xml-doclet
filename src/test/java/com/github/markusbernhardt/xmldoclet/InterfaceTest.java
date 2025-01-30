@@ -78,7 +78,7 @@ class InterfaceTest extends AbstractTest {
         // verify method
         assertEquals("method1", method.getComment());
         assertEquals("method1", method.getName());
-        assertEquals("()int", method.getSignature());
+        assertEquals("int ()", method.getSignature());
         assertFalse(method.isFinal());
         assertFalse(method.isNative());
         assertFalse(method.isStatic());
@@ -188,7 +188,7 @@ class InterfaceTest extends AbstractTest {
         // verify method
         assertEquals("method1", method.getComment());
         assertEquals("method1", method.getName());
-        assertEquals("()void", method.getSignature());
+        assertEquals("void ()", method.getSignature());
         assertFalse(method.isFinal());
         assertFalse(method.isNative());
         assertFalse(method.isStatic());
@@ -224,7 +224,7 @@ class InterfaceTest extends AbstractTest {
 
         assertEquals("Interface6", interfaceNode.getComment());
         assertEquals("Interface6", interfaceNode.getName());
-        assertEquals(getElementPathFromSimpleDataPackage("Interface6"), interfaceNode.getQualified());
+        assertEquals(getElementPathFromSimpleDataPackage("Interface6<Fun>"), interfaceNode.getQualified());
         assertEquals("public", interfaceNode.getScope());
         assertTrue(interfaceNode.getMethod().isEmpty());
         assertTrue(interfaceNode.getAnnotation().isEmpty());
@@ -256,7 +256,7 @@ class InterfaceTest extends AbstractTest {
 
         assertEquals("Interface7", interfaceNode.getComment());
         assertEquals("Interface7", interfaceNode.getName());
-        assertEquals(getElementPathFromSimpleDataPackage("Interface7"), interfaceNode.getQualified());
+        assertEquals(getElementPathFromSimpleDataPackage("Interface7<Fun>"), interfaceNode.getQualified());
         assertEquals("public", interfaceNode.getScope());
         assertTrue(interfaceNode.getMethod().isEmpty());
         assertTrue(interfaceNode.getAnnotation().isEmpty());
@@ -288,7 +288,7 @@ class InterfaceTest extends AbstractTest {
 
         assertEquals("Interface8", interfaceNode.getComment());
         assertEquals("Interface8", interfaceNode.getName());
-        assertEquals(getElementPathFromSimpleDataPackage("Interface8"), interfaceNode.getQualified());
+        assertEquals(getElementPathFromSimpleDataPackage("Interface8<Fun>"), interfaceNode.getQualified());
         assertEquals("public", interfaceNode.getScope());
         assertTrue(interfaceNode.getMethod().isEmpty());
         assertTrue(interfaceNode.getAnnotation().isEmpty());

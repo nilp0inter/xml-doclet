@@ -248,14 +248,6 @@ public class Parser {
         return annotationInstance;
     }
 
-    private static String getQualifiedName(final TypeElement typeElement) {
-        return typeElement.getQualifiedName().toString();
-    }
-
-    private static String getQualifiedName(final Element element) {
-        return element.asType().toString();
-    }
-
     private static String getSimpleName(final VariableElement element) {
         return element.getSimpleName().toString();
     }
@@ -546,7 +538,7 @@ public class Parser {
 
     protected TypeInfo parseTypeInfo(final TypeMirror type) {
         final TypeInfo typeInfoNode = objectFactory.createTypeInfo();
-        typeInfoNode.setQualified(type.toString());
+        typeInfoNode.setQualified(getQualifiedName(type));
         final String dimension = getArrayDimension(type);
         if (!dimension.isEmpty()) {
             typeInfoNode.setDimension(dimension);

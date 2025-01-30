@@ -5,8 +5,8 @@ import javax.lang.model.type.*;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import java.lang.reflect.Type;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author Manoel Campos
@@ -21,7 +21,7 @@ public class TypeUtils {
     }
 
     public static String getMethodSignature(final ExecutableElement methodDoc) {
-        return methodDoc.asType().toString();
+        return getQualifiedName(methodDoc);
     }
 
     /**
@@ -109,17 +109,21 @@ public class TypeUtils {
         return dimension == -1 ? "" : String.valueOf(dimension + 1);
     }
 
-    /**
-     * {@return a TypeMirror for a given Type instance}
-     *
-     * @param type the {@link Type} instance to get a {@link TypeMirror}
-     */
-    public TypeMirror getTypeMirror(final Type type) {
-        if (type instanceof java.lang.Class<?>) {
-            return elements.getTypeElement(((java.lang.Class<?>) type).getCanonicalName()).asType();
-        }
+    static String getQualifiedName(final Element element) {
+        return getQualifiedName(element.asType());
+    }
 
-        throw new IllegalArgumentException("Unsupported type: " + type);
+    static String getQualifiedName(final TypeMirror typeMirror) {
+        final String qualified = typeMirror.toString();
+
+        /* The TypeMirror.toString() method returns the fully qualified name of the type.
+         * If the type is a method signature, it places the parameters list (parenteses)
+         * before the return type (that is void if none), which is an odd convention for Java Code.
+         * This way, we invert that order for a conventional representation of a method signature. */
+        final var regex = Pattern.compile("^(\\(.*\\))(.*)$");
+        final var matcher = regex.matcher(qualified);
+
+        return matcher.matches() ? matcher.group(2) + " " + matcher.group(1) : qualified;
     }
 
     /**
