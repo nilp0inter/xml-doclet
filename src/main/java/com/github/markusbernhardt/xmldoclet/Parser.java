@@ -201,14 +201,12 @@ public class Parser {
 
         final var annotationInstance=objectFactory.createAnnotationInstance();
 
-        //@formatter:off
         try {
             final var annotTypeInfo = annotationDesc.getAnnotationType();
             annotationInstance.setName(annotTypeInfo.asElement().getSimpleName().toString());
             annotationInstance.setQualified(getQualifiedName(annotTypeInfo.asElement()));
         } catch (ClassCastException castException) {
-            LOGGER.severe(
-                    "Unable to obtain type data about an annotation found on: " + programElement);
+            LOGGER.severe("Unable to obtain type data about an annotation found on: " + programElement);
             LOGGER.severe("Add to the classpath the class/jar that defines this annotation.");
         }
 
