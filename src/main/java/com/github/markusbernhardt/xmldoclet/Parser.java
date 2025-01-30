@@ -248,15 +248,13 @@ public class Parser {
     /**
      * Gets the data type for an annotation argument value from
      * the method that sets the value for the argument (the annotation argument definition method).
-     * @param annotationArgumentSetter a type that represents the method that sets the value for the argument,
+     * @param annotationArgumentGetter a type that represents the method that gets the value for the argument,
      *                                 specified in the interface that defines the annotation.
      * @return a type that represents the argument value type
      */
-    private static TypeMirror getAnnotationArgumentType(final ExecutableElement annotationArgumentSetter) {
-        final TypeMirror argumentSetterType = annotationArgumentSetter.asType();
-        return argumentSetterType instanceof ExecutableType setterExecutableType ?
-                setterExecutableType.getReturnType() :
-                argumentSetterType;
+    private static TypeMirror getAnnotationArgumentType(final ExecutableElement annotationArgumentGetter) {
+        final TypeMirror annotationArgumentGetterType = annotationArgumentGetter.asType();
+        return ((ExecutableType) annotationArgumentGetterType).getReturnType();
     }
 
     private static String getSimpleName(final VariableElement element) {
