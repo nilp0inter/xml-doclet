@@ -247,7 +247,7 @@ public class Parser {
 
     /**
      * Gets the data type for an annotation argument value from
-     * the method that sets the value for the argument (the annotation argument definition method).
+     * the method that gets the argument value (the annotation argument definition method).
      * @param annotationArgumentGetter a type that represents the method that gets the value for the argument,
      *                                 specified in the interface that defines the annotation.
      * @return a type that represents the argument value type
