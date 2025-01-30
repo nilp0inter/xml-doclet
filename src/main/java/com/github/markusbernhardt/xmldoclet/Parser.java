@@ -597,10 +597,30 @@ public class Parser {
         typeParameter.setName(typeVariable.toString());
 
         final List<String> bounds = typeParameter.getBound();
-        bounds.add(typeVariable.getLowerBound().toString());
-        bounds.add(typeVariable.getUpperBound().toString());
+        final var lowerBound = typeVariable.getLowerBound();
+
+        // If the lower bound is equal to the null type, it means that there is no actual lower bound
+        if(!"<nulltype>".equals(lowerBound.toString()))
+            bounds.addAll(parseTypeParameterBound(lowerBound));
+
+        final var upperBound = typeVariable.getUpperBound();
+        // If upper bound is Object, it means that there is no actual upper bound (since Object means "anything")
+        if(!"java.lang.Object".equals(upperBound.toString()))
+            bounds.addAll(parseTypeParameterBound(upperBound));
 
         return typeParameter;
+    }
+
+    /**
+     * Gets a type parameter bound for a generic type (such as <T extends Number> or <T extends Comparable<E> & Serializable>)
+     * and splits the name of each type into a list of strings
+     * @param bound the type parameter bound
+     * @return a list of strings representing each type parameter bound
+     */
+    private List<String> parseTypeParameterBound(final TypeMirror bound) {
+        final String typesSeparator = "&";
+        final var boundName = bound.toString();
+        return boundName.contains(typesSeparator) ? List.of(boundName.split(typesSeparator)) : List.of(boundName);
     }
 
     protected TagInfo parseTag(final DocTree tagDoc) {
