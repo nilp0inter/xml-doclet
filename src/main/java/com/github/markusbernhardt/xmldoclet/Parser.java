@@ -426,7 +426,7 @@ public class Parser {
     protected Constructor parseConstructor(final ExecutableElement constructorDoc) {
         final Constructor constructorNode = objectFactory.createConstructor();
 
-        constructorNode.setName(constructorDoc.getSimpleName().toString());
+        constructorNode.setName(constructorDoc.getEnclosingElement().getSimpleName().toString());
         constructorNode.setQualified(constructorDoc.getSimpleName().toString());
         final String comment = getJavaDoc(constructorDoc);
         if (!comment.isEmpty()) {
