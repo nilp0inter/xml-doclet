@@ -20,7 +20,9 @@ import static com.github.markusbernhardt.xmldoclet.TypeUtils.isArray;
  * @author Manoel Campos
  */
 public class AnnotationParser {
-    private final static Logger LOGGER = Logger.getLogger(Parser.class.getName());
+    // For some odd reason, the spotless plugin is crazily joining multiple lines on this file. Formatting was disabled.
+    // @formatter:off
+    private final static Logger LOGGER = Logger.getLogger(AnnotationParser.class.getName());
 
     private final AnnotationMirror annotationDesc;
     private final Parser parser;
@@ -121,4 +123,6 @@ public class AnnotationParser {
         final TypeMirror annotationArgumentGetterType = annotationArgumentGetter.asType();
         return ((ExecutableType) annotationArgumentGetterType).getReturnType();
     }
+
+    // @formatter:on
 }
