@@ -19,7 +19,7 @@ import static com.github.markusbernhardt.xmldoclet.TypeUtils.isArray;
 /**
  * @author Manoel Campos
  */
-public class AnnotationParser {
+class AnnotationParser {
     // For some odd reason, the spotless plugin is crazily joining multiple lines on this file. Formatting was disabled.
     // @formatter:off
     private final static Logger LOGGER = Logger.getLogger(AnnotationParser.class.getName());
@@ -27,7 +27,7 @@ public class AnnotationParser {
     private final Parser parser;
     private final ObjectFactory objectFactory;
 
-    public AnnotationParser(final  Parser parser) {
+    AnnotationParser(final Parser parser) {
         this.parser = parser;
         this.objectFactory = parser.objectFactory;
     }
