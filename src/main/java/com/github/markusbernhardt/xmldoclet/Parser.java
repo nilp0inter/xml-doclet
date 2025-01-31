@@ -217,32 +217,52 @@ public class Parser {
             annotationArgumentNode.setArray(isArray(annotationArgumentType));
 
             final Object objValue = elementValuesPair.getValue();
-            switch (objValue) {
-                case AnnotationValue annotationValue -> {
-                    if (annotationValue.getValue() instanceof List<?> valueList) {
-                        for (final Object value : valueList) {
-                            if (value instanceof AnnotationMirror annoDesc) {
-                                annotationArgumentNode.getAnnotation().add(parseAnnotationDesc(annoDesc, programElement));
-                            } else {
-                                /*
-                                Consider the annotation @Annotation1("A") or @Annotation1({"A", "B"}}).
-                                The annotation value is an AnnotationValue object with value attribute.
-                                This attribute is a List (even if there is a single value).
-                                But each value is not the actual value, but another AnnotationValue object with a value attribute.
-                                 */
-                                annotationArgumentNode.getValue().add(((AnnotationValue) value).getValue().toString());
-                            }
-                        }
-                    } else annotationArgumentNode.getValue().add(annotationValue.getValue().toString());
-                }
-                case null -> {}
-                default -> annotationArgumentNode.getValue().add(objValue.toString());
-            }
+            parseAnnotationArgValue(programElement, annotationArgumentNode, objValue);
 
             annotationInstance.getArgument().add(annotationArgumentNode);
         }
 
         return annotationInstance;
+    }
+
+    /**
+     * Parses the value of a given annotation argument.
+     * @param programElement the name of a program element to parse
+     * @param arg  annotation argument to parse its value
+     * @param argValue the value for an annotation argument
+     */
+    private void parseAnnotationArgValue(final Name programElement, final AnnotationArgument arg, final Object argValue) {
+        switch (argValue) {
+            case AnnotationValue annotationValue -> {
+                if (annotationValue.getValue() instanceof List<?> valueList) {
+                    parseAnnotationArgListValue(programElement, arg, valueList);
+                } else arg.getValue().add(annotationValue.getValue().toString());
+            }
+            case null -> {}
+            default -> arg.getValue().add(argValue.toString());
+        }
+    }
+
+    /**
+     * Parses the value of a given annotation argument when such a value is a List,
+     * indicating there are multiple values for that argumento (such as {@code @Annotation1({"A", "B"})}).
+     * @param programElement the name of a program element to parse
+     * @param arg  annotation argument to parse its value list
+     */
+    private void parseAnnotationArgListValue(final Name programElement, final AnnotationArgument arg, final List<?> valueList) {
+        for (final Object value : valueList) {
+            if (value instanceof AnnotationMirror annoDesc) {
+                arg.getAnnotation().add(parseAnnotationDesc(annoDesc, programElement));
+            } else {
+                /*
+                Consider the annotation @Annotation1("A") or @Annotation1({"A", "B"}}).
+                The annotation value is an AnnotationValue object with value attribute.
+                This attribute is a List (even if there is a single value).
+                But each value is not the actual value, but another AnnotationValue object with a value attribute.
+                 */
+                arg.getValue().add(((AnnotationValue) value).getValue().toString());
+            }
+        }
     }
 
     /**
