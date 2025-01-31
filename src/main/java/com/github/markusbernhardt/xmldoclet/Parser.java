@@ -9,13 +9,15 @@ import com.sun.source.util.DocTrees;
 import jdk.javadoc.doclet.DocletEnvironment;
 
 import javax.lang.model.element.*;
-import javax.lang.model.type.*;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
+import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.ElementFilter;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.logging.Logger;
 
 import static com.github.markusbernhardt.xmldoclet.TypeUtils.*;
 import static java.util.Objects.requireNonNullElse;
@@ -26,21 +28,19 @@ import static java.util.Objects.requireNonNullElse;
  * @author markus
  */
 public class Parser {
-    private final static Logger LOGGER = Logger.getLogger(Parser.class.getName());
-
     /**
      * A map where each key is a package name and each value is an object containing a package's JavaDoc.
      */
-    protected Map<String, Package> packages = new ConcurrentSkipListMap<>();
+    protected final Map<String, Package> packages = new ConcurrentSkipListMap<>();
 
-    protected ObjectFactory objectFactory = new ObjectFactory();
+    protected final ObjectFactory objectFactory = new ObjectFactory();
 
     /**
      * The operating environment of a single invocation of the doclet
      */
     private final DocletEnvironment env;
     private final DocTrees docTrees;
-    private final TypeUtils typeUtils;
+    protected final TypeUtils typeUtils;
 
     /**
      * @param env the operating environment of a single invocation of the doclet
@@ -152,8 +152,7 @@ public class Parser {
         }
 
         for (final AnnotationMirror annotationDesc : annotationTypeDoc.getAnnotationMirrors()) {
-            final var annotationInstance =
-                    parseAnnotationDesc(annotationDesc, annotationTypeDoc.getQualifiedName());
+            final var annotationInstance = new AnnotationParser(annotationDesc, this).parse(annotationTypeDoc.getQualifiedName());
             annotationNode.getAnnotation().add(annotationInstance);
         }
 
@@ -170,8 +169,7 @@ public class Parser {
      * @param annotationTypeElementDoc A AnnotationTypeElementDoc instance
      * @return the annotation element node
      */
-    protected AnnotationElement parseAnnotationTypeElementDoc(
-            final ExecutableElement annotationTypeElementDoc) {
+    protected AnnotationElement parseAnnotationTypeElementDoc(final ExecutableElement annotationTypeElementDoc) {
         final AnnotationElement annotationElementNode = objectFactory.createAnnotationElement();
         annotationElementNode.setName(annotationTypeElementDoc.getSimpleName().toString());
         annotationElementNode.setQualified(getQualifiedName(annotationTypeElementDoc));
@@ -183,97 +181,6 @@ public class Parser {
         }
 
         return annotationElementNode;
-    }
-
-    /**
-     * Parses annotation instances of an annotable program element
-     *
-     * @param annotationDesc annotationDesc
-     * @param programElement the name of a program element to parse
-     * @return representation of annotations
-     */
-    protected AnnotationInstance parseAnnotationDesc(final AnnotationMirror annotationDesc, final Name programElement) {
-        final var annotationInstance = objectFactory.createAnnotationInstance();
-
-        try {
-            final var annotTypeInfo = annotationDesc.getAnnotationType();
-            annotationInstance.setName(annotTypeInfo.asElement().getSimpleName().toString());
-            annotationInstance.setQualified(getQualifiedName(annotTypeInfo.asElement()));
-        } catch (ClassCastException castException) {
-            LOGGER.severe("Unable to obtain type data about an annotation found on: " + programElement);
-            LOGGER.severe("Add to the classpath the class/jar that defines this annotation.");
-        }
-
-        for (final var elementValuesPair : annotationDesc.getElementValues().entrySet()) {
-            final AnnotationArgument annotationArgumentNode = objectFactory.createAnnotationArgument();
-            // The key is an element that represents the method defined in the annotation interface
-            // which enables setting a value to the argument
-            final ExecutableElement annotationArgumentSetter = elementValuesPair.getKey();
-            annotationArgumentNode.setName(annotationArgumentSetter.getSimpleName().toString());
-
-            final TypeMirror annotationArgumentType = getAnnotationArgumentType(annotationArgumentSetter);
-            annotationArgumentNode.setType(parseTypeInfo(annotationArgumentType));
-            annotationArgumentNode.setPrimitive(annotationArgumentType.getKind().isPrimitive());
-            annotationArgumentNode.setArray(isArray(annotationArgumentType));
-
-            final Object objValue = elementValuesPair.getValue();
-            parseAnnotationArgValue(programElement, annotationArgumentNode, objValue);
-
-            annotationInstance.getArgument().add(annotationArgumentNode);
-        }
-
-        return annotationInstance;
-    }
-
-    /**
-     * Parses the value of a given annotation argument.
-     * @param programElement the name of a program element to parse
-     * @param arg  annotation argument to parse its value
-     * @param argValue the value for an annotation argument
-     */
-    private void parseAnnotationArgValue(final Name programElement, final AnnotationArgument arg, final Object argValue) {
-        switch (argValue) {
-            case AnnotationValue annotationValue -> {
-                if (annotationValue.getValue() instanceof List<?> valueList) {
-                    parseAnnotationArgListValue(programElement, arg, valueList);
-                } else arg.getValue().add(annotationValue.getValue().toString());
-            }
-            case null -> {}
-            default -> arg.getValue().add(argValue.toString());
-        }
-    }
-
-    /**
-     * Parses the value of a given annotation argument when such a value is a List,
-     * indicating there are multiple values for that argumento (such as {@code @Annotation1({"A", "B"})}).
-     * @param programElement the name of a program element to parse
-     * @param arg  annotation argument to parse its value list
-     */
-    private void parseAnnotationArgListValue(final Name programElement, final AnnotationArgument arg, final List<?> valueList) {
-        for (final Object value : valueList) {
-            if (value instanceof AnnotationMirror annoDesc) {
-                arg.getAnnotation().add(parseAnnotationDesc(annoDesc, programElement));
-            } else {
-                /*
-                Consider the annotation @Annotation1("A") or @Annotation1({"A", "B"}}).
-                The annotation value is an AnnotationValue object with value attribute.
-                This attribute is a List (even if there is a single value).
-                But each value is not the actual value, but another AnnotationValue object with a value attribute.
-                 */
-                arg.getValue().add(((AnnotationValue) value).getValue().toString());
-            }
-        }
-    }
-
-    /**
-     * {@return the data type of an annotation argument value from
-     *          the method that gets such a value (the annotation argument definition method)}
-     * @param annotationArgumentGetter a type that represents the method that gets the value for the argument,
-     *                                 specified in the interface that defines the annotation.
-     */
-    private static TypeMirror getAnnotationArgumentType(final ExecutableElement annotationArgumentGetter) {
-        final TypeMirror annotationArgumentGetterType = annotationArgumentGetter.asType();
-        return ((ExecutableType) annotationArgumentGetterType).getReturnType();
     }
 
     private static String getSimpleName(final VariableElement element) {
@@ -308,7 +215,7 @@ public class Parser {
         }
 
         for (final AnnotationMirror annotationDesc : classDoc.getAnnotationMirrors()) {
-            enumNode.getAnnotation().add(parseAnnotationDesc(annotationDesc, classDoc.getQualifiedName()));
+            enumNode.getAnnotation().add(new AnnotationParser(annotationDesc, this).parse(classDoc.getQualifiedName()));
         }
 
         for (final DocTree tag : getTags(classDoc)) {
@@ -333,7 +240,7 @@ public class Parser {
         }
 
         for (final AnnotationMirror annotationDesc : fieldDoc.getAnnotationMirrors()) {
-            enumConstant.getAnnotation().add(parseAnnotationDesc(annotationDesc, fieldDoc.getSimpleName()));
+            enumConstant.getAnnotation().add(new AnnotationParser(annotationDesc, this).parse(fieldDoc.getSimpleName()));
         }
 
         for (final DocTree tag : getTags(fieldDoc)) {
@@ -370,7 +277,7 @@ public class Parser {
         }
 
         for (final AnnotationMirror annotationDesc : classDoc.getAnnotationMirrors()) {
-            interfaceNode.getAnnotation().add(parseAnnotationDesc(annotationDesc, classDoc.getQualifiedName()));
+            interfaceNode.getAnnotation().add(new AnnotationParser(annotationDesc, this).parse(classDoc.getQualifiedName()));
         }
 
         for (final DocTree tag : getTags(classDoc)) {
@@ -421,7 +328,7 @@ public class Parser {
         }
 
         for (final AnnotationMirror annotationDesc : classDoc.getAnnotationMirrors()) {
-            final var annotationInstance = parseAnnotationDesc(annotationDesc, classDoc.getQualifiedName());
+            final var annotationInstance = new AnnotationParser(annotationDesc, this).parse(classDoc.getQualifiedName());
             classNode.getAnnotation().add(annotationInstance);
         }
 
@@ -470,7 +377,7 @@ public class Parser {
         }
 
         for (final AnnotationMirror annotationDesc : constructorDoc.getAnnotationMirrors()) {
-            final var annotationInstance = parseAnnotationDesc(annotationDesc, constructorDoc.getSimpleName());
+            final var annotationInstance = new AnnotationParser(annotationDesc, this).parse(constructorDoc.getSimpleName());
             constructorNode.getAnnotation().add(annotationInstance);
         }
 
@@ -513,7 +420,7 @@ public class Parser {
         }
 
         for (final AnnotationMirror annotationDesc : methodDoc.getAnnotationMirrors()) {
-            final var annotationInstance = parseAnnotationDesc(annotationDesc, methodDoc.getSimpleName());
+            final var annotationInstance = new AnnotationParser(annotationDesc, this).parse( methodDoc.getSimpleName());
             methodNode.getAnnotation().add(annotationInstance);
         }
 
@@ -530,7 +437,7 @@ public class Parser {
         parameterMethodNode.setType(parseTypeInfo(parameter.asType()));
 
         for (final AnnotationMirror annotationDesc : parameter.getAnnotationMirrors()) {
-            final var annotationInstance = parseAnnotationDesc(annotationDesc, parameter.getSimpleName());
+            final var annotationInstance = new AnnotationParser(annotationDesc, this).parse(parameter.getSimpleName());
             parameterMethodNode.getAnnotation().add(annotationInstance);
         }
 
@@ -554,7 +461,7 @@ public class Parser {
         fieldNode.setConstant(requireNonNullElse(fieldDoc.getConstantValue(), "").toString());
 
         for (final AnnotationMirror annotationDesc : fieldDoc.getAnnotationMirrors()) {
-            fieldNode.getAnnotation().add(parseAnnotationDesc(annotationDesc, fieldDoc.getSimpleName()));
+            fieldNode.getAnnotation().add(new AnnotationParser(annotationDesc, this).parse(fieldDoc.getSimpleName()));
         }
 
         for (final DocTree tag : getTags(fieldDoc)) {
@@ -562,35 +469,6 @@ public class Parser {
         }
 
         return fieldNode;
-    }
-
-    /**
-     * Parses a {@link TypeMirror} into a {@link TypeInfo} object used by the XmlDoclet.
-     * @param type the {@link TypeMirror} to parse.
-     * @return the created {@link TypeInfo} object
-     */
-    protected TypeInfo parseTypeInfo(final TypeMirror type) {
-        final TypeInfo typeInfoNode = objectFactory.createTypeInfo();
-        typeInfoNode.setQualified(getQualifiedName(type));
-        final String dimension = getArrayDimension(type);
-        if (!dimension.isEmpty()) {
-            typeInfoNode.setDimension(dimension);
-        }
-
-        final WildcardType wildcard = getWildcardType(type);
-        if (wildcard != null) {
-            typeInfoNode.setWildcard(parseWildcard(wildcard));
-        }
-
-        final DeclaredType parameterized = getParameterizedType(type);
-
-        if (parameterized != null) {
-            for (final TypeMirror typeArgument : parameterized.getTypeArguments()) {
-                typeInfoNode.getGeneric().add(parseTypeInfo(typeArgument));
-            }
-        }
-
-        return typeInfoNode;
     }
 
     protected Wildcard parseWildcard(final WildcardType wildcard) {
@@ -670,5 +548,35 @@ public class Parser {
         }
 
         return "";
+    }
+
+    /**
+     * Parses a {@link TypeMirror} into a {@link TypeInfo} object used by the XmlDoclet.
+     *
+     * @param type the {@link TypeMirror} to parse.
+     * @return the created {@link TypeInfo} object
+     */
+    protected TypeInfo parseTypeInfo(final TypeMirror type) {
+        final TypeInfo typeInfoNode = objectFactory.createTypeInfo();
+        typeInfoNode.setQualified(getQualifiedName(type));
+        final String dimension = getArrayDimension(type);
+        if (!dimension.isEmpty()) {
+            typeInfoNode.setDimension(dimension);
+        }
+
+        final WildcardType wildcard = getWildcardType(type);
+        if (wildcard != null) {
+            typeInfoNode.setWildcard(parseWildcard(wildcard));
+        }
+
+        final DeclaredType parameterized = getParameterizedType(type);
+
+        if (parameterized != null) {
+            for (final TypeMirror typeArgument : parameterized.getTypeArguments()) {
+                typeInfoNode.getGeneric().add(parseTypeInfo(typeArgument));
+            }
+        }
+
+        return typeInfoNode;
     }
 }

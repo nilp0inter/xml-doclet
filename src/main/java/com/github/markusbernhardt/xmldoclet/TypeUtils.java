@@ -14,6 +14,16 @@ import java.util.regex.Pattern;
 public class TypeUtils {
     private final Types types;
     private final Elements elements;
+    /*
+     * The TypeMirror.toString() method returns the fully qualified name of the type.
+     * If the type is a method signature, it places the parameters list (parenteses)
+     * before the return type (that is void if none), which is an odd convention for Java Code.
+     * Instead of returning "void (int)" for a method that receives an int and returns void,
+     * it returns "(int)void" (the return type before the parameters list).
+     *
+     * This way, we invert that order for a conventional representation of a method signature.
+     */
+    private static final Pattern methodSignatureWithReturnTypeAtRightSide = Pattern.compile("^(\\(.*\\))(.*)");
 
     public TypeUtils(final Types types, final Elements elements) {
         this.types = types;
@@ -77,7 +87,7 @@ public class TypeUtils {
 
     /**
      * Gets a type as DeclaredType if the typeMirror has type arguments (such a {@code List<String>}).
-     * 
+     *
      * @param typeMirror the type to get it as a wildcard type
      * @return the type as DeclaredType if it has type arguments, or null otherwise
      */
@@ -116,18 +126,7 @@ public class TypeUtils {
 
     static String getQualifiedName(final TypeMirror typeMirror) {
         final String qualified = typeMirror.toString();
-
-        /*
-         * The TypeMirror.toString() method returns the fully qualified name of the type.
-         * If the type is a method signature, it places the parameters list (parenteses)
-         * before the return type (that is void if none), which is an odd convention for Java Code.
-         * Instead of returning "void (int)" for a method that receives an int and returns void,
-         * it returns "(int)void" (the return type before the parameters list).
-         *
-         * This way, we invert that order for a conventional representation of a method signature.
-         */
-        final var regex = Pattern.compile("^(\\(.*\\))(.*)$");
-        final var matcher = regex.matcher(qualified);
+        final var matcher = methodSignatureWithReturnTypeAtRightSide.matcher(qualified);
 
         return matcher.matches() ? matcher.group(2) + " " + matcher.group(1) : qualified;
     }
