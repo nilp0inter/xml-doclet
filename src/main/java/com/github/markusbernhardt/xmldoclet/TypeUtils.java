@@ -23,7 +23,7 @@ public class TypeUtils {
      *
      * This way, we invert that order for a conventional representation of a method signature.
      */
-    private static final Pattern methodSignatureWithReturnTypeAtRightSide = Pattern.compile("^(\\(.*\\))(.*)");
+    private static final Pattern METHOD_SIGNATURE_WITH_RETURN_TYPE_AT_RIGHT_SIDE = Pattern.compile("^(\\(.*\\))(.*)");
 
     public TypeUtils(final Types types, final Elements elements) {
         this.types = types;
@@ -126,7 +126,7 @@ public class TypeUtils {
 
     static String getQualifiedName(final TypeMirror typeMirror) {
         final String qualified = typeMirror.toString();
-        final var matcher = methodSignatureWithReturnTypeAtRightSide.matcher(qualified);
+        final var matcher = METHOD_SIGNATURE_WITH_RETURN_TYPE_AT_RIGHT_SIDE.matcher(qualified);
 
         return matcher.matches() ? matcher.group(2) + " " + matcher.group(1) : qualified;
     }
