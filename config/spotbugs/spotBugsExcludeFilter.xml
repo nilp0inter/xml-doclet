@@ -12,4 +12,9 @@
         <!-- Disabled due to false positives. See https://github.com/spotbugs/spotbugs/issues/2083 -->
         <Bug pattern="EI_EXPOSE_REP" />
     </Match>
+    <Match>
+        <!-- Disabled due lack of way to get the XmlDoclet instance created by the javadoc CLI,
+        without storing the instance as a static field. Check https://bugs.openjdk.org/browse/JDK-8263219 -->
+        <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD" />
+    </Match>
 </FindBugsFilter>
