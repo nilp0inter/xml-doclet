@@ -230,7 +230,7 @@ public class Parser {
                                 This attribute is a List (even if there is a single value).
                                 But each value is not the actual value, but another AnnotationValue object with a value attribute.
                                  */
-                                annotationArgumentNode.getValue().add(((AnnotationValue)value).getValue().toString());
+                                annotationArgumentNode.getValue().add(((AnnotationValue) value).getValue().toString());
                             }
                         }
                     } else annotationArgumentNode.getValue().add(annotationValue.getValue().toString());
@@ -605,12 +605,12 @@ public class Parser {
         final var lowerBound = typeVariable.getLowerBound();
 
         // If the lower bound is equal to the null type, it means that there is no actual lower bound
-        if(!"<nulltype>".equals(lowerBound.toString()))
+        if (!"<nulltype>".equals(lowerBound.toString()))
             bounds.addAll(parseTypeParameterBound(lowerBound));
 
         final var upperBound = typeVariable.getUpperBound();
         // If upper bound is Object, it means that there is no actual upper bound (since Object means "anything")
-        if(!"java.lang.Object".equals(upperBound.toString()))
+        if (!"java.lang.Object".equals(upperBound.toString()))
             bounds.addAll(parseTypeParameterBound(upperBound));
 
         return typeParameter;
