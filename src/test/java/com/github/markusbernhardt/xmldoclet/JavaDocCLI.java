@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 /**
  * Execute the javadoc command line tool to process source code files.
+ * 
  * @author Manoel Campos
  */
 public class JavaDocCLI {
@@ -40,27 +41,27 @@ public class JavaDocCLI {
 
     /**
      *
-     * @param extendedClassPath   Any classpath information required to help along javadoc. Javadoc
-     *                            will actually compile the source code you specify; so if there are any jars or classes
-     *                            that are referenced by the source code to process, then including those compiled items
-     *                            in the classpath will give you more complete data in the resulting XML.
-     * @param sourcePaths         Usually sourcePaths is specified in conjunction with either/both packages &
-     *                            subpackages. The sourcepaths value should be the path of the source files right before
-     *                            the standard package-based folder layout of projects begins. For example, if you have
-     *                            code that exists in package foo.bar, and your code is physically in /MyFolder/foo/bar/,
-     *                            then the sourcePaths would be /MyFolder
-     * @param packages            Use if you want to detail specific packages to process (contrast with
-     *                            subpackages, which is probably the easiest/most brute force way of using xml-doclet).
-     *                            If you have within your code two packages, foo.bar and bar.foo, but only wanted
-     *                            foo.bar processed, then specify just 'foo.bar' for this argument.
-     * @param sourceFiles         You can specify source files individually. This usually is used instead of
-     *                            sourcePaths/subPackages/packages. If you use this parameter, specify the full path of
-     *                            any java file you want processed.
-     * @param subPackages         You can specify 'subPackages', which simply gives one an easy way to
-     *                            specify the root package, and have javadoc recursively look through everything under
-     *                            that package. So for instance, if you had foo.bar, foo.bar.bar, and bar.foo,
-     *                            specifying 'foo' will process foo.bar and foo.bar.bar packages, but not bar.foo
-     *                            (unless you specify 'bar' as a subpackage, too)
+     * @param extendedClassPath Any classpath information required to help along javadoc. Javadoc
+     *        will actually compile the source code you specify; so if there are any jars or classes
+     *        that are referenced by the source code to process, then including those compiled items
+     *        in the classpath will give you more complete data in the resulting XML.
+     * @param sourcePaths Usually sourcePaths is specified in conjunction with either/both packages &
+     *        subpackages. The sourcepaths value should be the path of the source files right before
+     *        the standard package-based folder layout of projects begins. For example, if you have
+     *        code that exists in package foo.bar, and your code is physically in /MyFolder/foo/bar/,
+     *        then the sourcePaths would be /MyFolder
+     * @param packages Use if you want to detail specific packages to process (contrast with
+     *        subpackages, which is probably the easiest/most brute force way of using xml-doclet).
+     *        If you have within your code two packages, foo.bar and bar.foo, but only wanted
+     *        foo.bar processed, then specify just 'foo.bar' for this argument.
+     * @param sourceFiles You can specify source files individually. This usually is used instead of
+     *        sourcePaths/subPackages/packages. If you use this parameter, specify the full path of
+     *        any java file you want processed.
+     * @param subPackages You can specify 'subPackages', which simply gives one an easy way to
+     *        specify the root package, and have javadoc recursively look through everything under
+     *        that package. So for instance, if you had foo.bar, foo.bar.bar, and bar.foo,
+     *        specifying 'foo' will process foo.bar and foo.bar.bar packages, but not bar.foo
+     *        (unless you specify 'bar' as a subpackage, too)
      * @param additionalArguments Additional Arguments.
      */
     private JavaDocCLI(
@@ -127,12 +128,14 @@ public class JavaDocCLI {
 
     /**
      * Actually starts the javadoc CLI.
+     * 
      * @param task javadoc task to run
      */
     private static void runJavaDocTask(final DocumentationTool.DocumentationTask task) {
         if (task.call())
             System.out.println("Doclet ran successfully");
-        else System.err.println("Doclet execution failed");
+        else
+            System.err.println("Doclet execution failed");
     }
 
     /** Aggregate arguments (including package names). */

@@ -420,7 +420,7 @@ public class Parser {
         }
 
         for (final AnnotationMirror annotationDesc : methodDoc.getAnnotationMirrors()) {
-            final var annotationInstance = new AnnotationParser(annotationDesc, this).parse( methodDoc.getSimpleName());
+            final var annotationInstance = new AnnotationParser(annotationDesc, this).parse(methodDoc.getSimpleName());
             methodNode.getAnnotation().add(annotationInstance);
         }
 
@@ -517,6 +517,7 @@ public class Parser {
     /**
      * Gets a type parameter bound for a generic type (such as <T extends Number> or <T extends Comparable<E> & Serializable>)
      * and splits the name of each type into a list of strings
+     * 
      * @param bound the type parameter bound
      * @return a list of strings representing each type parameter bound
      */
