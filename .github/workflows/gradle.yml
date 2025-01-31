@@ -25,4 +25,4 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
       - name: Build with Gradle
-        run: ./gradlew build check
+        run: ./gradlew build check --warning-mode none
