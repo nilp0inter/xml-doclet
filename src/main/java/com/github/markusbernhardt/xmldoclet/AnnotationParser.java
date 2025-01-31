@@ -24,12 +24,10 @@ public class AnnotationParser {
     // @formatter:off
     private final static Logger LOGGER = Logger.getLogger(AnnotationParser.class.getName());
 
-    private final AnnotationMirror annotationDesc;
     private final Parser parser;
     private final ObjectFactory objectFactory;
 
-    public AnnotationParser(final  AnnotationMirror annotationDesc, final  Parser parser) {
-        this.annotationDesc = annotationDesc;
+    public AnnotationParser(final  Parser parser) {
         this.parser = parser;
         this.objectFactory = parser.objectFactory;
     }
@@ -38,9 +36,10 @@ public class AnnotationParser {
      * Parses annotation instances of an annotable program element
      *
      * @param programElement the name of a program element to parse its annotations
+     * @param annotationDesc the annotation to parse
      * @return representation of annotations
      */
-    protected AnnotationInstance parse(final Name programElement) {
+    protected AnnotationInstance parse(final Name programElement, final  AnnotationMirror annotationDesc) {
         final var annotationInstance = objectFactory.createAnnotationInstance();
 
         try {
@@ -100,7 +99,7 @@ public class AnnotationParser {
     private void parseAnnotationArgListValue(final Name programElement, final AnnotationArgument arg, final List<?> valueList) {
         for (final Object value : valueList) {
             if (value instanceof AnnotationMirror annoDesc) {
-                arg.getAnnotation().add(new AnnotationParser(annoDesc, parser).parse(programElement));
+                arg.getAnnotation().add(parse(programElement, annoDesc));
             } else {
                 /*
                 Consider the annotation @Annotation1("A") or @Annotation1({"A", "B"}}).

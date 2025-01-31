@@ -151,8 +151,9 @@ public class Parser {
             annotationNode.getElement().add(annotationElement);
         }
 
+        final var annotationParser = new AnnotationParser(this);
         for (final AnnotationMirror annotationDesc : annotationTypeDoc.getAnnotationMirrors()) {
-            final var annotationInstance = new AnnotationParser(annotationDesc, this).parse(annotationTypeDoc.getQualifiedName());
+            final var annotationInstance = annotationParser.parse(annotationTypeDoc.getQualifiedName(), annotationDesc);
             annotationNode.getAnnotation().add(annotationInstance);
         }
 
@@ -214,8 +215,9 @@ public class Parser {
             enumNode.getConstant().add(parseEnumConstant(field));
         }
 
+        final var annotationParser = new AnnotationParser(this);
         for (final AnnotationMirror annotationDesc : classDoc.getAnnotationMirrors()) {
-            enumNode.getAnnotation().add(new AnnotationParser(annotationDesc, this).parse(classDoc.getQualifiedName()));
+            enumNode.getAnnotation().add(annotationParser.parse(classDoc.getQualifiedName(), annotationDesc));
         }
 
         for (final DocTree tag : getTags(classDoc)) {
@@ -239,8 +241,9 @@ public class Parser {
             enumConstant.setComment(comment);
         }
 
+        final var annotationParser = new AnnotationParser(this);
         for (final AnnotationMirror annotationDesc : fieldDoc.getAnnotationMirrors()) {
-            enumConstant.getAnnotation().add(new AnnotationParser(annotationDesc, this).parse(fieldDoc.getSimpleName()));
+            enumConstant.getAnnotation().add(annotationParser.parse(fieldDoc.getSimpleName(), annotationDesc));
         }
 
         for (final DocTree tag : getTags(fieldDoc)) {
@@ -276,8 +279,9 @@ public class Parser {
             interfaceNode.getMethod().add(parseMethod(method));
         }
 
+        final var annotationParser = new AnnotationParser(this);
         for (final AnnotationMirror annotationDesc : classDoc.getAnnotationMirrors()) {
-            interfaceNode.getAnnotation().add(new AnnotationParser(annotationDesc, this).parse(classDoc.getQualifiedName()));
+            interfaceNode.getAnnotation().add(annotationParser.parse(classDoc.getQualifiedName(), annotationDesc));
         }
 
         for (final DocTree tag : getTags(classDoc)) {
@@ -327,8 +331,9 @@ public class Parser {
             classNode.getMethod().add(parseMethod(method));
         }
 
+        final var annotationParser = new AnnotationParser(this);
         for (final AnnotationMirror annotationDesc : classDoc.getAnnotationMirrors()) {
-            final var annotationInstance = new AnnotationParser(annotationDesc, this).parse(classDoc.getQualifiedName());
+            final var annotationInstance = annotationParser.parse(classDoc.getQualifiedName(), annotationDesc);
             classNode.getAnnotation().add(annotationInstance);
         }
 
@@ -376,8 +381,9 @@ public class Parser {
             constructorNode.getException().add(parseTypeInfo(exceptionType));
         }
 
+        final var annotationParser = new AnnotationParser(this);
         for (final AnnotationMirror annotationDesc : constructorDoc.getAnnotationMirrors()) {
-            final var annotationInstance = new AnnotationParser(annotationDesc, this).parse(constructorDoc.getSimpleName());
+            final var annotationInstance = annotationParser.parse(constructorDoc.getSimpleName(), annotationDesc);
             constructorNode.getAnnotation().add(annotationInstance);
         }
 
@@ -419,8 +425,9 @@ public class Parser {
             methodNode.getException().add(parseTypeInfo(exceptionType));
         }
 
+        final var annotationParser = new AnnotationParser(this);
         for (final AnnotationMirror annotationDesc : methodDoc.getAnnotationMirrors()) {
-            final var annotationInstance = new AnnotationParser(annotationDesc, this).parse(methodDoc.getSimpleName());
+            final var annotationInstance = annotationParser.parse(methodDoc.getSimpleName(), annotationDesc);
             methodNode.getAnnotation().add(annotationInstance);
         }
 
@@ -436,8 +443,9 @@ public class Parser {
         parameterMethodNode.setName(getSimpleName(parameter));
         parameterMethodNode.setType(parseTypeInfo(parameter.asType()));
 
+        final var annotationParser = new AnnotationParser(this);
         for (final AnnotationMirror annotationDesc : parameter.getAnnotationMirrors()) {
-            final var annotationInstance = new AnnotationParser(annotationDesc, this).parse(parameter.getSimpleName());
+            final var annotationInstance = annotationParser.parse(parameter.getSimpleName(), annotationDesc);
             parameterMethodNode.getAnnotation().add(annotationInstance);
         }
 
@@ -460,8 +468,9 @@ public class Parser {
         fieldNode.setTransient(hasModifier(fieldDoc, Modifier.TRANSIENT));
         fieldNode.setConstant(requireNonNullElse(fieldDoc.getConstantValue(), "").toString());
 
+        final var annotationParser = new AnnotationParser(this);
         for (final AnnotationMirror annotationDesc : fieldDoc.getAnnotationMirrors()) {
-            fieldNode.getAnnotation().add(new AnnotationParser(annotationDesc, this).parse(fieldDoc.getSimpleName()));
+            fieldNode.getAnnotation().add(annotationParser.parse(fieldDoc.getSimpleName(), annotationDesc));
         }
 
         for (final DocTree tag : getTags(fieldDoc)) {
@@ -517,7 +526,7 @@ public class Parser {
     /**
      * Gets a type parameter bound for a generic type (such as <T extends Number> or <T extends Comparable<E> & Serializable>)
      * and splits the name of each type into a list of strings
-     * 
+     *
      * @param bound the type parameter bound
      * @return a list of strings representing each type parameter bound
      */
