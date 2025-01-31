@@ -85,10 +85,6 @@ abstract class AbstractTest {
             final String extendedClassPath, final String[] sourcePaths, final String[] packages,
             final String[] sourceFiles, final String[] subPackages, final String[] additionalArguments) {
         try {
-
-            final var errorWriter = new PrintWriter(System.err, true, Charset.defaultCharset());
-            final var infoWriter = new PrintWriter(System.out, true, Charset.defaultCharset());
-
             // aggregate arguments and packages
             final var argumentList = new ArrayList<String>();
 
