@@ -6,7 +6,8 @@ package com.github.markusbernhardt.xmldoclet.simpledata;
 @AnnotationCascade(
         children = {
                 @AnnotationCascadeChild(name = "primitive", dummyData = {"A", "B", "C"}),
-                @AnnotationCascadeChild(name = "nested",
+                @AnnotationCascadeChild(
+                        name = "nested",
                         subAnnotations = {
                                 @Annotation3(id = 4),
                                 @Annotation3(id = 5),

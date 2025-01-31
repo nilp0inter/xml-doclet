@@ -221,12 +221,12 @@ public class Parser {
                 case AnnotationValue annotationValue -> {
                     if (annotationValue.getValue() instanceof List<?> valueList) {
                         for (final Object value : valueList) {
-                            if (annotationValue.getValue() instanceof AnnotationMirror annoDesc) {
+                            if (value instanceof AnnotationMirror annoDesc) {
                                 annotationArgumentNode.getAnnotation().add(parseAnnotationDesc(annoDesc, programElement));
                             } else {
                                 /*
                                 Consider the annotation @Annotation1("A") or @Annotation1({"A", "B"}}).
-                                The annotation value is an AnnototionValue object with value attribute.
+                                The annotation value is an AnnotationValue object with value attribute.
                                 This attribute is a List (even if there is a single value).
                                 But each value is not the actual value, but another AnnotationValue object with a value attribute.
                                  */

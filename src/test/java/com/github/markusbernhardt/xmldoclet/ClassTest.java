@@ -70,7 +70,7 @@ class ClassTest extends AbstractTest {
         // Primitive
         final AnnotationArgument annArgNodePrimitive = annonNodePrimitive.getArgument().get(1);
         assertEquals("dummyData", annArgNodePrimitive.getName());
-        assertEquals("java.lang.String", annArgNodePrimitive.getType().getQualified());
+        assertEquals("java.lang.String[]", annArgNodePrimitive.getType().getQualified());
         assertEquals(0, annArgNodePrimitive.getAnnotation().size());
         assertEquals(3, annArgNodePrimitive.getValue().size());
         assertEquals("A", annArgNodePrimitive.getValue().get(0));
@@ -80,7 +80,7 @@ class ClassTest extends AbstractTest {
         // Nested
         final AnnotationArgument annArgNodeNested = annonNodeNested.getArgument().get(1);
         assertEquals("subAnnotations", annArgNodeNested.getName());
-        assertEquals(Annotation3.class.getName(), annArgNodeNested.getType().getQualified());
+        assertEquals(Annotation3.class.getName() + "[]", annArgNodeNested.getType().getQualified());
         assertEquals(3, annArgNodeNested.getAnnotation().size());
         assertEquals(0, annArgNodeNested.getValue().size());
         assertEquals(Annotation3.class.getSimpleName(), annArgNodeNested.getAnnotation().get(0).getName());
