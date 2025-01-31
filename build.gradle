@@ -312,6 +312,9 @@ spotbugs {
 
     // do not run over the test, although we should do that eventually
     spotbugsTest.enabled = false
+
+    // Without an explicit version, even using "latest.release" at the plugin configuration above, an older version
+    toolVersion = '4.9.0'
 }
 
 pmd {
