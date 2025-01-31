@@ -2,7 +2,7 @@ package com.github.markusbernhardt.xmldoclet.simpledata;
 
 /**
  * Tag1
- * 
+ *
  * @author author
  * @deprecated deprecated
  * @category category
@@ -11,10 +11,11 @@ package com.github.markusbernhardt.xmldoclet.simpledata;
  * @since since
  * @version version
  */
+@Deprecated
 public class Tag1 {
     /**
      * The famous <code>foo</code> method.
-     * 
+     *
      * @param bar bar
      * @return object
      * @throws NullPointerException exception

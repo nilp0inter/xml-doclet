@@ -64,6 +64,7 @@ dependencies {
     testImplementation 'org.slf4j:slf4j-simple:+'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:+'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:+'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:+'
 
     // https://mvnrepository.com/artifact/net.sf.saxon/Saxon-HE
     implementation 'net.sf.saxon:Saxon-HE:+'
