@@ -26,4 +26,4 @@ jobs:
           java-version: ${{ matrix.java }}
           distribution: 'temurin'
       - name: Build with Gradle
-        run: ./gradlew build check --warning-mode none
+        run: ./gradlew build check
