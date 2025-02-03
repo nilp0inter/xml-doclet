@@ -25,7 +25,9 @@ import java.util.logging.Logger;
 /// - [Doclet](https://docs.oracle.com/en/java/javase/21/docs/api/jdk.javadoc/jdk/javadoc/doclet/package-summary.html)
 /// - [Using the new JDK 9 Doclet API (refined in JDK 13)](https://openjdk.org/groups/compiler/using-new-doclet.html)
 ///
-/// @author markus
+/// @author Markus Bernhardt
+/// @author Andreas Reichel
+/// @author Manoel Campos
 public final class XmlDoclet implements Doclet {
     private static final Logger LOGGER = Logger.getLogger(XmlDoclet.class.getName());
 

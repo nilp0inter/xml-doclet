@@ -25,7 +25,9 @@ import static java.util.Objects.requireNonNullElse;
 /**
  * The main parser class. It scans the given Doclet document root and creates the XML tree.
  *
- * @author markus
+ * @author Markus Bernhardt
+ * @author Andreas Reichel
+ * @author Manoel Campos
  */
 public class Parser {
     /**
