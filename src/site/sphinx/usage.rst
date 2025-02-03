@@ -119,12 +119,12 @@ Sphinx Integration
             // beware: Gradle deletes this folder automatically and there is no switch-off
             destinationDir = reporting.file("xmlDoclet")
             options.docletpath = configurations.xmlDoclet.files.asType(List)
-            options.doclet = "com.github.markusbernhardt.xmldoclet.XmlDoclet"
+            options.doclet = "com.manticoreprojects.tools.xmldoclet.XmlDoclet"
 
             // optional: transform into Restructured Text for Sphinx
             options.addBooleanOption("rst", true)
             options.addBooleanOption("withFloatingToc", true)
-            options.addStringOption("basePackage", "com.github.markusbernhardt.xmldoclet")
+            options.addStringOption("basePackage", "com.manticoreprojects.tools.xmldoclet")
 
             // optional: copy the generated RST file into the Sphinx Folder
             doLast {
@@ -152,7 +152,7 @@ Sphinx Integration
                         <goal>javadoc</goal>
                     </goals>
                     <configuration>
-                        <doclet>com.github.markusbernhardt.xmldoclet.XmlDoclet</doclet>
+                        <doclet>com.manticoreprojects.tools.xmldoclet.XmlDoclet</doclet>
                         <additionalparam>-d ${project.build.directory} -filename ${project.artifactId}-${project.version}-javadoc.xml</additionalparam>
                         <useStandardDocletOptions>false</useStandardDocletOptions>
                         <docletArtifact>
@@ -200,7 +200,7 @@ Then you can provide the `Floating TOC` Option together with the `Restructured T
         // optional: transform into Restructured Text for Sphinx
         options.addBooleanOption("rst", true)
         options.addBooleanOption("withFloatingToc", true)
-        options.addStringOption("basePackage", "com.github.markusbernhardt.xmldoclet")
+        options.addStringOption("basePackage", "com.manticoreprojects.tools.xmldoclet")
 
     }
 
