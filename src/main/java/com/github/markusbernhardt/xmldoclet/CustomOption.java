@@ -1,7 +1,6 @@
 package com.github.markusbernhardt.xmldoclet;
 
 import jdk.javadoc.doclet.Doclet;
-import org.apache.commons.cli.Option;
 
 import java.util.List;
 import java.util.Objects;
@@ -14,13 +13,13 @@ public class CustomOption implements Doclet.Option {
     private final String description;
 
     /**
-     * The names of the option, such as {@code d} or {@code debug},
+     * The name of the option, such as {@code d} or {@code debug},
      * without a preceding hyphen (included automatically).
      */
-    private final List<String> names;
+    private final String name;
 
     /**
-     * A user-friendly string description of the option's parameters, or the empty string if this option has no parameters.
+     * A user-friendly string description of the option's parameters (arguments), or the empty string if this option has no parameters.
      * This is used to generate the help message for the option.
      * If the option expectes a file name as parameter, the description may include the word "file"
      * to indicate that.
@@ -46,35 +45,46 @@ public class CustomOption implements Doclet.Option {
     private final int argumentCount;
 
     /**
-     * Creates a Custom {@link Doclet.Option} based on a {@link org.apache.commons.cli.Option} instance.
-     *
-     * @param cliOption Apache Commons CLI Option instance
-     * @return the created {@link CustomOption}
+     * Creates an Option with a single argument value and a given specification.
+     * @param argName the name of the single argument to be passed to the option, used in the help message
      */
-    public static CustomOption of(final Option cliOption) {
-        return new CustomOption(
-                cliOption.getDescription(), List.of(cliOption.getOpt()),
-                cliOption.getArgName(), cliOption.getArgs()
-        );
+    public static CustomOption newOneArg(
+            final String name, final String description,
+            final String argName,
+            final BiPredicate<String, List<String>> argumentsProcessor) {
+        return new CustomOption(name, description, argName, 1, argumentsProcessor);
     }
 
-    public CustomOption(
-            final String description, final List<String> names, final String parameters, final int argumentCount) {
-        this(description, names, parameters, argumentCount, (option, args) -> args.size() == argumentCount);
+    /**
+     * Creates an Option with no arguments and a given specification
+     */
+    public static CustomOption newNoArgs(final String name, final String description, final BiPredicate<String, List<String>> argumentsProcessor) {
+        return new CustomOption(name, description, "", 0, argumentsProcessor);
     }
 
-    public CustomOption(
-            final String description, final List<String> names,
+    /**
+     * Creates an Option with a given specification and a default arguments processor.
+     * @param argName the name of the single argument to be passed to the option, used in the help message
+     */
+    private CustomOption(final String name, final String description, final String argName, final int argumentCount) {
+        this(name, description, argName, argumentCount, (option, args) -> args.size() == argumentCount);
+    }
+
+    /**
+     * Creates an Option with a given specification.
+     */
+    private CustomOption(
+            final String name, final String description,
             final String parameters, final int argumentCount,
             final BiPredicate<String, List<String>> argumentsProcessor) {
+        this.name = addHyphenPrefix(name);
         this.description = description;
-        this.names = names.stream().map(this::addHyphenPrefix).toList();
         this.parameters = Objects.requireNonNullElse(parameters, "");
         this.argumentCount = argumentCount;
         this.argumentsProcessor = argumentsProcessor;
     }
 
-    private String addHyphenPrefix(final String name) {
+    static String addHyphenPrefix(final String name) {
         return name.startsWith("-") ? name : "-" + name;
     }
 
@@ -93,23 +103,34 @@ public class CustomOption implements Doclet.Option {
         return Kind.STANDARD;
     }
 
+    /**
+     * {@inheritDoc}
+     * In the case of this class, the list has only one element, the single option name.
+     * @return a list with a single element containing the name of the option
+     * @see #getName()
+     */
     @Override
     public List<String> getNames() {
-        return names;
-    }
-
-    @Override
-    public String getParameters() {
-        return parameters;
+        return List.of(name);
     }
 
     /**
-     * Gets the list of parameters as an array of strings.
-     *
-     * @see #getParameters()
+     * {@return the name of the option}
+     * This class provides a single name for the option.
+     * Therefore, no alternative names are supported.
      */
-    public String[] getParameterArray() {
-        return parameters.split(" ");
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * {@return a String with the name of the single parameter expected by the option (if any)}
+     * The number of parameter for this option class can be 0 or 1, according to {@link #argumentCount}.
+     * That is why this attribute is a single parameter name as a String.
+     */
+    @Override
+    public String getParameters() {
+        return parameters;
     }
 
     /**
