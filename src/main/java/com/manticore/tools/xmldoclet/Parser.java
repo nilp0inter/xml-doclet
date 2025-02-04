@@ -17,7 +17,6 @@ import com.manticore.tools.xmldoclet.xjc.TagInfo;
 import com.manticore.tools.xmldoclet.xjc.TypeInfo;
 import com.manticore.tools.xmldoclet.xjc.TypeParameter;
 import com.manticore.tools.xmldoclet.xjc.Wildcard;
-import com.manticoreprojects.tools.xmldoclet.xjc.*;
 import com.sun.source.doctree.DocTree;
 import com.sun.source.util.DocTrees;
 import jdk.javadoc.doclet.DocletEnvironment;
