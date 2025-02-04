@@ -132,6 +132,8 @@ publish {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId='xml-doclet'
+
             from components.java
             versionMapping {
                 usage('java-api') {
@@ -189,14 +191,10 @@ publishing {
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials(PasswordCredentials)
         }
-        maven {
-            name = "GitHubPackages"
-
-            url = uri("https://maven.pkg.github.com/manticore-projects/xml-doclet")
-            credentials(PasswordCredentials)
-        }
     }
 }
+
+
 
 signing {
     sign publishing.publications.mavenJava
@@ -222,11 +220,7 @@ jar {
 shadowJar {
     minimize()
     mergeServiceFiles()
-    archiveClassifier.set('all')
-
     archiveBaseName = 'xml-doclet-shadow'
-    archiveClassifier = ''
-    archiveVersion = ''
 }
 
 xsd2java {
@@ -405,11 +399,5 @@ tasks.register('upload') {
 tasks.register('gitChangelogTask', GitChangelogTask) {
     fromRepo.set("$projectDir")
     file.set(file("${projectDir}/src/site/sphinx/changelog.md"))
-}
-
-tasks.register('printModulePath') {
-    doLast {
-        println "Module Path: ${configurations.runtimeClasspath.asPath}"
-    }
 }
 
