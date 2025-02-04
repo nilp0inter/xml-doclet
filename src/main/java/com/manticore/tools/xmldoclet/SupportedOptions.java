@@ -48,7 +48,7 @@ final class SupportedOptions {
 
     /**
      * Creates an option with one argument that has the same name of the option itself.
-     * 
+     *
      * @param optionName name of the option and its own single argument
      * @param description option description
      */
@@ -58,7 +58,7 @@ final class SupportedOptions {
 
     /**
      * Creates an option with one argument.
-     * 
+     *
      * @param optionName name of the option
      * @param argName name of the argument to be passed to the option, used in the help message
      * @param description option description
@@ -68,7 +68,7 @@ final class SupportedOptions {
     }
 
     private CustomOption newNoArgOption(final String optionName, final String description) {
-        return CustomOption.newNoArgs(optionName, description, (optionName1, argValues) -> processNoArgValue(optionName1));
+        return CustomOption.newNoArgs(optionName, description, (option, __) -> processNoArgValue(option));
     }
 
     /**
@@ -79,14 +79,14 @@ final class SupportedOptions {
      * @return true to indicate the option was successfully processed.
      */
     private boolean processNoArgValue(final String optionName) {
-        givenCliOptionsMap.put(addHyphenPrefix(optionName), null);
+        storeParsedOption(optionName, null);
         return true;
     }
 
     /**
      * Process and stores the first argument value passed in the command line for a given option
      * when that option is being processed by {@link CustomOption#process(String, List)}.
-     * 
+     *
      * @param optionName name of the option to store the argument value
      * @param argValues list of arguments to get the first value to store
      * @return true if there was one argument value in the argument list, false otherwise, indicating no value was stored
@@ -96,8 +96,12 @@ final class SupportedOptions {
             return false;
         }
 
-        givenCliOptionsMap.put(addHyphenPrefix(optionName), argValues.get(0));
+        storeParsedOption(optionName, argValues.get(0));
         return true;
+    }
+
+    private void storeParsedOption(final String optionName, final String argValue) {
+        givenCliOptionsMap.put(addHyphenPrefix(optionName), argValue);
     }
 
     public boolean hasOption(final String optionName) {
