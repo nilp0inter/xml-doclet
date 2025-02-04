@@ -120,7 +120,10 @@ def getVersion = { boolean considerSnapshot ->
             ? "${major}.${minor}.${patch}${snapshot}"
             :  "${major}.${minor}${snapshot}"
 }
-version = getVersion(true)
+
+// for publishing a release, call Gradle with Environment Variable RELEASE:
+// RELEASE=true gradle publish
+version = getVersion( !System.getenv("RELEASE") )
 group = 'com.manticore-projects.tools'
 description = 'XML Doclet'
 
