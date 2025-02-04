@@ -32,11 +32,12 @@ public class CustomOption implements Doclet.Option {
     private final String parameters;
 
     /**
-     * A function ({@link java.util.function.Predicate}) to validate the option arguments.
+     * A function ({@link java.util.function.BiPredicate}) to validate the option arguments given in the command line.
      * The function can check the number of required arguments, try to convert them to the expected type
-     * and perform any validation operation required.
+     * and perform any validation required.
      * If the arguments are valid, the Predicate must return true.
-     * 
+     * The first parameter of the Predicate is the option name and the second one is the list of arguments.
+     *
      * @see #process(String, List)
      */
     private final BiPredicate<String, List<String>> argumentsProcessor;
@@ -49,7 +50,7 @@ public class CustomOption implements Doclet.Option {
 
     /**
      * Creates an Option with a single argument value and a given specification.
-     * 
+     *
      * @param argName the name of the single argument to be passed to the option, used in the help message
      */
     public static CustomOption newOneArg(
@@ -69,7 +70,7 @@ public class CustomOption implements Doclet.Option {
 
     /**
      * Creates an Option with a given specification and a default arguments processor.
-     * 
+     *
      * @param argName the name of the single argument to be passed to the option, used in the help message
      */
     private CustomOption(final String name, final String description, final String argName, final int argumentCount) {
@@ -112,7 +113,7 @@ public class CustomOption implements Doclet.Option {
     /**
      * {@inheritDoc}
      * In the case of this class, the list has only one element, the single option name.
-     * 
+     *
      * @return a list with a single element containing the name of the option
      * @see #getName()
      */
@@ -144,7 +145,7 @@ public class CustomOption implements Doclet.Option {
     /**
      * {@inheritDoc}
      * It must check if the given option arguments are valid.
-     * 
+     *
      * @param option {@inheritDoc}
      * @param arguments {@inheritDoc} received during the doclet execution
      * @return if the option has the expected number of arguments and they are valid
