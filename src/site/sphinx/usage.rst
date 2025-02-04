@@ -124,7 +124,7 @@ Sphinx Integration
             // optional: transform into Restructured Text for Sphinx
             options.addBooleanOption("rst", true)
             options.addBooleanOption("withFloatingToc", true)
-            options.addStringOption("basePackage", "com.manticoreprojects.tools.xmldoclet")
+            options.addStringOption("basePackage", "com.manticore.tools.xmldoclet")
 
             // optional: copy the generated RST file into the Sphinx Folder
             doLast {
@@ -200,7 +200,7 @@ Then you can provide the `Floating TOC` Option together with the `Restructured T
         // optional: transform into Restructured Text for Sphinx
         options.addBooleanOption("rst", true)
         options.addBooleanOption("withFloatingToc", true)
-        options.addStringOption("basePackage", "com.manticoreprojects.tools.xmldoclet")
+        options.addStringOption("basePackage", "com.manticore.tools.xmldoclet")
 
     }
 

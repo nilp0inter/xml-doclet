@@ -214,8 +214,8 @@ java {
 
 jar {
     manifest {
-        attributes('Main-Class': 'com.manticoreprojects.tools.xmldoclet.XmlDoclet')
-        attributes('ModuleMainClass': 'com.manticoreprojects.tools.xmldoclet.XmlDoclet')
+        attributes('Main-Class': 'com.manticore.tools.xmldoclet.XmlDoclet')
+        attributes('ModuleMainClass': 'com.manticore.tools.xmldoclet.XmlDoclet')
     }
 }
 
@@ -234,7 +234,7 @@ xsd2java {
     // https://github.com/qaware/xsd2java-gradle-plugin
     schemas {
         javadoc {
-            packageName = 'com.manticoreprojects.tools.xmldoclet.xjc'
+            packageName = 'com.manticore.tools.xmldoclet.xjc'
             schemaDirPath = file('src/main/resources/xjc').toPath()
         }
     }
@@ -270,11 +270,11 @@ tasks.register('xmldoc', Javadoc) {
     // beware: Gradle deletes this folder automatically and there is no switch-off
     destinationDir = reporting.file("xmlDoclet")
     options.docletpath = configurations.xmlDoclet.files.asType(List)
-    options.doclet = "com.manticoreprojects.tools.xmldoclet.XmlDoclet"
+    options.doclet = "com.manticore.tools.xmldoclet.XmlDoclet"
     title = "API $version"
     options.addBooleanOption("rst", true)
     options.addBooleanOption("withFloatingToc", true)
-    options.addStringOption("basePackage", "com.manticoreprojects.tools.xmldoclet")
+    options.addStringOption("basePackage", "com.manticore.tools.xmldoclet")
 
     doLast {
         copy {

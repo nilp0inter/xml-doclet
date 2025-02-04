@@ -20,7 +20,7 @@ public abstract class AbstractTest {
     private final static Logger LOGGER = Logger.getLogger(AbstractTest.class.getName());
 
     protected static final String[] TEST_DIR = {"./src/test/java/"};
-    protected static final String SIMPLE_DATA_PACKAGE = "com.manticoreprojects.tools.xmldoclet.simpledata";
+    protected static final String SIMPLE_DATA_PACKAGE = "com.manticore.tools.xmldoclet.simpledata";
     protected static final String SIMPLE_DATA_DIR = TEST_DIR[0] + SIMPLE_DATA_PACKAGE.replaceAll("\\.", "/");
 
     protected static final String[] ARGS = {"-dryrun"};

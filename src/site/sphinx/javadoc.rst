@@ -15,15 +15,15 @@
 API 1.4.0-SNAPSHOT
 #######################################################################
 
-Base Package: com.manticoreprojects.tools.xmldoclet.xmldoclet
+Base Package: com.manticore.tools.xmldoclet.xmldoclet
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet:
+..  _com.manticore.tools.xmldoclet.xmldoclet:
 ***********************************************************************
 Base
 ***********************************************************************
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.Parser:
+..  _com.manticore.tools.xmldoclet.xmldoclet.Parser:
 
 =======================================================================
 Parser
@@ -36,17 +36,17 @@ Parser
 | **Parser** ()
 
 
-| **parseRootDoc** (rootDoc) → :ref:`Root<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Root>`
+| **parseRootDoc** (rootDoc) → :ref:`Root<com.manticore.tools.xmldoclet.xmldoclet.xjc.Root>`
 | The entry point into parsing the javadoc.
 |          :ref:`RootDoc<com.sun.javadoc.RootDoc>` rootDoc  | rootDoc The RootDoc intstance obtained via the doclet API
-|          returns :ref:`Root<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Root>`  | The root node, containing everything parsed from javadoc doclet
+|          returns :ref:`Root<com.manticore.tools.xmldoclet.xmldoclet.xjc.Root>`  | The root node, containing everything parsed from javadoc doclet
 
 
 
 
                 |          :ref:`PackageDoc<com.sun.javadoc.PackageDoc>` packageDoc
 
-                |          returns :ref:`Package<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Package>`
+                |          returns :ref:`Package<com.manticore.tools.xmldoclet.xmldoclet.xjc.Package>`
 
 
 
@@ -55,7 +55,7 @@ Parser
 
                 |          :ref:`AnnotationTypeDoc<com.sun.javadoc.AnnotationTypeDoc>` annotationTypeDoc  | annotationTypeDoc A AnnotationTypeDoc instance
 
-                |          returns :ref:`Annotation<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Annotation>`  | the annotation node
+                |          returns :ref:`Annotation<com.manticore.tools.xmldoclet.xmldoclet.xjc.Annotation>`  | the annotation node
 
 
 
@@ -64,7 +64,7 @@ Parser
 
                 |          :ref:`AnnotationTypeElementDoc<com.sun.javadoc.AnnotationTypeElementDoc>` annotationTypeElementDoc  | annotationTypeElementDoc A AnnotationTypeElementDoc instance
 
-                |          returns :ref:`AnnotationElement<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.AnnotationElement>`  | the annotation element node
+                |          returns :ref:`AnnotationElement<com.manticore.tools.xmldoclet.xmldoclet.xjc.AnnotationElement>`  | the annotation element node
 
 
 
@@ -76,13 +76,13 @@ Parser
 
                 |          :ref:`String<java.lang.String>` programElement  | programElement programElement
 
-                |          returns :ref:`AnnotationInstance<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.AnnotationInstance>`  | representation of annotations
+                |          returns :ref:`AnnotationInstance<com.manticore.tools.xmldoclet.xmldoclet.xjc.AnnotationInstance>`  | representation of annotations
 
 
 
                 |          :ref:`ClassDoc<com.sun.javadoc.ClassDoc>` classDoc
 
-                |          returns :ref:`Enum<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Enum>`
+                |          returns :ref:`Enum<com.manticore.tools.xmldoclet.xmldoclet.xjc.Enum>`
 
 
 
@@ -91,55 +91,55 @@ Parser
 
                 |          :ref:`FieldDoc<com.sun.javadoc.FieldDoc>` fieldDoc
 
-                |          returns :ref:`EnumConstant<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.EnumConstant>`  |
+                |          returns :ref:`EnumConstant<com.manticore.tools.xmldoclet.xmldoclet.xjc.EnumConstant>`  |
 
 
 
                 |          :ref:`ClassDoc<com.sun.javadoc.ClassDoc>` classDoc
 
-                |          returns :ref:`Interface<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Interface>`
+                |          returns :ref:`Interface<com.manticore.tools.xmldoclet.xmldoclet.xjc.Interface>`
 
 
 
                 |          :ref:`ClassDoc<com.sun.javadoc.ClassDoc>` classDoc
 
-                |          returns :ref:`Class<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Class>`
+                |          returns :ref:`Class<com.manticore.tools.xmldoclet.xmldoclet.xjc.Class>`
 
 
 
                 |          :ref:`ConstructorDoc<com.sun.javadoc.ConstructorDoc>` constructorDoc
 
-                |          returns :ref:`Constructor<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Constructor>`
+                |          returns :ref:`Constructor<com.manticore.tools.xmldoclet.xmldoclet.xjc.Constructor>`
 
 
 
                 |          :ref:`MethodDoc<com.sun.javadoc.MethodDoc>` methodDoc
 
-                |          returns :ref:`Method<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Method>`
+                |          returns :ref:`Method<com.manticore.tools.xmldoclet.xmldoclet.xjc.Method>`
 
 
 
                 |          :ref:`Parameter<com.sun.javadoc.Parameter>` parameter
 
-                |          returns :ref:`MethodParameter<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.MethodParameter>`
+                |          returns :ref:`MethodParameter<com.manticore.tools.xmldoclet.xmldoclet.xjc.MethodParameter>`
 
 
 
                 |          :ref:`FieldDoc<com.sun.javadoc.FieldDoc>` fieldDoc
 
-                |          returns :ref:`Field<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Field>`
+                |          returns :ref:`Field<com.manticore.tools.xmldoclet.xmldoclet.xjc.Field>`
 
 
 
                 |          :ref:`Type<com.sun.javadoc.Type>` type
 
-                |          returns :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
+                |          returns :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
 
 
 
                 |          :ref:`WildcardType<com.sun.javadoc.WildcardType>` wildcard
 
-                |          returns :ref:`Wildcard<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Wildcard>`
+                |          returns :ref:`Wildcard<com.manticore.tools.xmldoclet.xmldoclet.xjc.Wildcard>`
 
 
 
@@ -148,13 +148,13 @@ Parser
 
                 |          :ref:`TypeVariable<com.sun.javadoc.TypeVariable>` typeVariable
 
-                |          returns :ref:`TypeParameter<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeParameter>`  |
+                |          returns :ref:`TypeParameter<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeParameter>`  |
 
 
 
                 |          :ref:`Tag<com.sun.javadoc.Tag>` tagDoc
 
-                |          returns :ref:`TagInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TagInfo>`
+                |          returns :ref:`TagInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TagInfo>`
 
 
 
@@ -167,7 +167,7 @@ Parser
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.XmlDoclet:
+..  _com.manticore.tools.xmldoclet.xmldoclet.XmlDoclet:
 
 =======================================================================
 XmlDoclet
@@ -216,7 +216,7 @@ XmlDoclet
 | **save** (commandLine, root)
 | Save XML object model to a file via JAXB.
 |          CommandLine commandLine  | commandLine the parsed command line arguments
-|          :ref:`Root<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Root>` root  | root the document root
+|          :ref:`Root<com.manticore.tools.xmldoclet.xmldoclet.xjc.Root>` root  | root the document root
 
 
 | **languageVersion** () → :ref:`LanguageVersion<com.sun.javadoc.LanguageVersion>`
@@ -235,12 +235,12 @@ XmlDoclet
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc:
 ***********************************************************************
 xjc
 ***********************************************************************
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Annotation:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.Annotation:
 
 =======================================================================
 Annotation
@@ -338,7 +338,7 @@ Annotation
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.AnnotationArgument:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.AnnotationArgument:
 
 =======================================================================
 AnnotationArgument
@@ -353,15 +353,15 @@ AnnotationArgument
 | **AnnotationArgument** ()
 
 
-| **getType** () → :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
+| **getType** () → :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
 | Gets the value of the type property.
-|          returns :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`  | possible object is `TypeInfo`
+|          returns :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`  | possible object is `TypeInfo`
 
 
 
 | **setType** (value)
 | Sets the value of the type property.
-|          :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>` value
+|          :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>` value
 
 
 | **getValue** () → :ref:`List<java.util.List>`
@@ -416,7 +416,7 @@ AnnotationArgument
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.AnnotationElement:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.AnnotationElement:
 
 =======================================================================
 AnnotationElement
@@ -431,15 +431,15 @@ AnnotationElement
 | **AnnotationElement** ()
 
 
-| **getType** () → :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
+| **getType** () → :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
 | Gets the value of the type property.
-|          returns :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`  | possible object is `TypeInfo`
+|          returns :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`  | possible object is `TypeInfo`
 
 
 
 | **setType** (value)
 | Sets the value of the type property.
-|          :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>` value
+|          :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>` value
 
 
 | **getName** () → :ref:`String<java.lang.String>`
@@ -476,7 +476,7 @@ AnnotationElement
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.AnnotationInstance:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.AnnotationInstance:
 
 =======================================================================
 AnnotationInstance
@@ -523,7 +523,7 @@ AnnotationInstance
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Class:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.Class:
 
 =======================================================================
 Class
@@ -567,15 +567,15 @@ Class
 
 
 
-| **getClazz** () → :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
+| **getClazz** () → :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
 | Gets the value of the clazz property.
-|          returns :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`  | possible object is `TypeInfo`
+|          returns :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`  | possible object is `TypeInfo`
 
 
 
 | **setClazz** (value)
 | Sets the value of the clazz property.
-|          :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>` value
+|          :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>` value
 
 
 | **getInterface** () → :ref:`List<java.util.List>`
@@ -723,7 +723,7 @@ Class
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Constructor:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.Constructor:
 
 =======================================================================
 Constructor
@@ -896,7 +896,7 @@ Constructor
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Enum:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.Enum:
 
 =======================================================================
 Enum
@@ -931,15 +931,15 @@ Enum
 
 
 
-| **getClazz** () → :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
+| **getClazz** () → :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
 | Gets the value of the clazz property.
-|          returns :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`  | possible object is `TypeInfo`
+|          returns :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`  | possible object is `TypeInfo`
 
 
 
 | **setClazz** (value)
 | Sets the value of the clazz property.
-|          :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>` value
+|          :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>` value
 
 
 | **getInterface** () → :ref:`List<java.util.List>`
@@ -1014,7 +1014,7 @@ Enum
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.EnumConstant:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.EnumConstant:
 
 =======================================================================
 EnumConstant
@@ -1070,7 +1070,7 @@ EnumConstant
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Field:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.Field:
 
 =======================================================================
 Field
@@ -1085,15 +1085,15 @@ Field
 | **Field** ()
 
 
-| **getType** () → :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
+| **getType** () → :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
 | Gets the value of the type property.
-|          returns :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`  | possible object is `TypeInfo`
+|          returns :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`  | possible object is `TypeInfo`
 
 
 
 | **setType** (value)
 | Sets the value of the type property.
-|          :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>` value
+|          :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>` value
 
 
 | **getComment** () → :ref:`String<java.lang.String>`
@@ -1214,7 +1214,7 @@ Field
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Interface:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.Interface:
 
 =======================================================================
 Interface
@@ -1339,7 +1339,7 @@ Interface
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Method:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.Method:
 
 =======================================================================
 Method
@@ -1383,15 +1383,15 @@ Method
 
 
 
-| **getReturn** () → :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
+| **getReturn** () → :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
 | Gets the value of the return property.
-|          returns :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`  | possible object is `TypeInfo`
+|          returns :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`  | possible object is `TypeInfo`
 
 
 
 | **setReturn** (value)
 | Sets the value of the return property.
-|          :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>` value
+|          :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>` value
 
 
 | **getException** () → :ref:`List<java.util.List>`
@@ -1534,7 +1534,7 @@ Method
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.MethodParameter:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.MethodParameter:
 
 =======================================================================
 MethodParameter
@@ -1549,15 +1549,15 @@ MethodParameter
 | **MethodParameter** ()
 
 
-| **getType** () → :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
+| **getType** () → :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
 | Gets the value of the type property.
-|          returns :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`  | possible object is `TypeInfo`
+|          returns :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`  | possible object is `TypeInfo`
 
 
 
 | **setType** (value)
 | Sets the value of the type property.
-|          :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>` value
+|          :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>` value
 
 
 | **getAnnotation** () → :ref:`List<java.util.List>`
@@ -1581,7 +1581,7 @@ MethodParameter
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.ObjectFactory:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.ObjectFactory:
 
 =======================================================================
 ObjectFactory
@@ -1589,123 +1589,123 @@ ObjectFactory
 
 *extends:* :ref:`Object<java.lang.Object>`
 
-| This object contains factory methods for each  Java content interface and Java element interface  generated in the com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc package.
+| This object contains factory methods for each  Java content interface and Java element interface  generated in the com.manticore.tools.xmldoclet.xmldoclet.xjc package.
 | An ObjectFactory allows you to programatically  construct new instances of the Java representation  for XML content. The Java representation of XML  content can consist of schema derived interfaces  and classes representing the binding of schema  type definitions, element declarations and model  groups.  Factory methods for each of these are  provided in this class.
 
 | **ObjectFactory** ()
-| Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc
+| Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.manticore.tools.xmldoclet.xmldoclet.xjc
 
 
-| **createRoot** () → :ref:`Root<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Root>`
+| **createRoot** () → :ref:`Root<com.manticore.tools.xmldoclet.xmldoclet.xjc.Root>`
 | Create an instance of `Root`
-|          returns :ref:`Root<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Root>`
+|          returns :ref:`Root<com.manticore.tools.xmldoclet.xmldoclet.xjc.Root>`
 
 
 
-| **createPackage** () → :ref:`Package<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Package>`
+| **createPackage** () → :ref:`Package<com.manticore.tools.xmldoclet.xmldoclet.xjc.Package>`
 | Create an instance of `Package`
-|          returns :ref:`Package<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Package>`
+|          returns :ref:`Package<com.manticore.tools.xmldoclet.xmldoclet.xjc.Package>`
 
 
 
-| **createAnnotation** () → :ref:`Annotation<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Annotation>`
+| **createAnnotation** () → :ref:`Annotation<com.manticore.tools.xmldoclet.xmldoclet.xjc.Annotation>`
 | Create an instance of `Annotation`
-|          returns :ref:`Annotation<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Annotation>`
+|          returns :ref:`Annotation<com.manticore.tools.xmldoclet.xmldoclet.xjc.Annotation>`
 
 
 
-| **createAnnotationElement** () → :ref:`AnnotationElement<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.AnnotationElement>`
+| **createAnnotationElement** () → :ref:`AnnotationElement<com.manticore.tools.xmldoclet.xmldoclet.xjc.AnnotationElement>`
 | Create an instance of `AnnotationElement`
-|          returns :ref:`AnnotationElement<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.AnnotationElement>`
+|          returns :ref:`AnnotationElement<com.manticore.tools.xmldoclet.xmldoclet.xjc.AnnotationElement>`
 
 
 
-| **createAnnotationInstance** () → :ref:`AnnotationInstance<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.AnnotationInstance>`
+| **createAnnotationInstance** () → :ref:`AnnotationInstance<com.manticore.tools.xmldoclet.xmldoclet.xjc.AnnotationInstance>`
 | Create an instance of `AnnotationInstance`
-|          returns :ref:`AnnotationInstance<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.AnnotationInstance>`
+|          returns :ref:`AnnotationInstance<com.manticore.tools.xmldoclet.xmldoclet.xjc.AnnotationInstance>`
 
 
 
-| **createAnnotationArgument** () → :ref:`AnnotationArgument<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.AnnotationArgument>`
+| **createAnnotationArgument** () → :ref:`AnnotationArgument<com.manticore.tools.xmldoclet.xmldoclet.xjc.AnnotationArgument>`
 | Create an instance of `AnnotationArgument`
-|          returns :ref:`AnnotationArgument<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.AnnotationArgument>`
+|          returns :ref:`AnnotationArgument<com.manticore.tools.xmldoclet.xmldoclet.xjc.AnnotationArgument>`
 
 
 
-| **createEnum** () → :ref:`Enum<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Enum>`
+| **createEnum** () → :ref:`Enum<com.manticore.tools.xmldoclet.xmldoclet.xjc.Enum>`
 | Create an instance of `Enum`
-|          returns :ref:`Enum<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Enum>`
+|          returns :ref:`Enum<com.manticore.tools.xmldoclet.xmldoclet.xjc.Enum>`
 
 
 
-| **createEnumConstant** () → :ref:`EnumConstant<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.EnumConstant>`
+| **createEnumConstant** () → :ref:`EnumConstant<com.manticore.tools.xmldoclet.xmldoclet.xjc.EnumConstant>`
 | Create an instance of `EnumConstant`
-|          returns :ref:`EnumConstant<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.EnumConstant>`
+|          returns :ref:`EnumConstant<com.manticore.tools.xmldoclet.xmldoclet.xjc.EnumConstant>`
 
 
 
-| **createInterface** () → :ref:`Interface<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Interface>`
+| **createInterface** () → :ref:`Interface<com.manticore.tools.xmldoclet.xmldoclet.xjc.Interface>`
 | Create an instance of `Interface`
-|          returns :ref:`Interface<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Interface>`
+|          returns :ref:`Interface<com.manticore.tools.xmldoclet.xmldoclet.xjc.Interface>`
 
 
 
-| **createClass** () → :ref:`Class<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Class>`
+| **createClass** () → :ref:`Class<com.manticore.tools.xmldoclet.xmldoclet.xjc.Class>`
 | Create an instance of `Class`
-|          returns :ref:`Class<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Class>`
+|          returns :ref:`Class<com.manticore.tools.xmldoclet.xmldoclet.xjc.Class>`
 
 
 
-| **createConstructor** () → :ref:`Constructor<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Constructor>`
+| **createConstructor** () → :ref:`Constructor<com.manticore.tools.xmldoclet.xmldoclet.xjc.Constructor>`
 | Create an instance of `Constructor`
-|          returns :ref:`Constructor<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Constructor>`
+|          returns :ref:`Constructor<com.manticore.tools.xmldoclet.xmldoclet.xjc.Constructor>`
 
 
 
-| **createMethod** () → :ref:`Method<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Method>`
+| **createMethod** () → :ref:`Method<com.manticore.tools.xmldoclet.xmldoclet.xjc.Method>`
 | Create an instance of `Method`
-|          returns :ref:`Method<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Method>`
+|          returns :ref:`Method<com.manticore.tools.xmldoclet.xmldoclet.xjc.Method>`
 
 
 
-| **createMethodParameter** () → :ref:`MethodParameter<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.MethodParameter>`
+| **createMethodParameter** () → :ref:`MethodParameter<com.manticore.tools.xmldoclet.xmldoclet.xjc.MethodParameter>`
 | Create an instance of `MethodParameter`
-|          returns :ref:`MethodParameter<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.MethodParameter>`
+|          returns :ref:`MethodParameter<com.manticore.tools.xmldoclet.xmldoclet.xjc.MethodParameter>`
 
 
 
-| **createField** () → :ref:`Field<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Field>`
+| **createField** () → :ref:`Field<com.manticore.tools.xmldoclet.xmldoclet.xjc.Field>`
 | Create an instance of `Field`
-|          returns :ref:`Field<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Field>`
+|          returns :ref:`Field<com.manticore.tools.xmldoclet.xmldoclet.xjc.Field>`
 
 
 
-| **createTypeInfo** () → :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
+| **createTypeInfo** () → :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
 | Create an instance of `TypeInfo`
-|          returns :ref:`TypeInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
+|          returns :ref:`TypeInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo>`
 
 
 
-| **createTypeParameter** () → :ref:`TypeParameter<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeParameter>`
+| **createTypeParameter** () → :ref:`TypeParameter<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeParameter>`
 | Create an instance of `TypeParameter`
-|          returns :ref:`TypeParameter<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeParameter>`
+|          returns :ref:`TypeParameter<com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeParameter>`
 
 
 
-| **createWildcard** () → :ref:`Wildcard<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Wildcard>`
+| **createWildcard** () → :ref:`Wildcard<com.manticore.tools.xmldoclet.xmldoclet.xjc.Wildcard>`
 | Create an instance of `Wildcard`
-|          returns :ref:`Wildcard<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Wildcard>`
+|          returns :ref:`Wildcard<com.manticore.tools.xmldoclet.xmldoclet.xjc.Wildcard>`
 
 
 
-| **createTagInfo** () → :ref:`TagInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TagInfo>`
+| **createTagInfo** () → :ref:`TagInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TagInfo>`
 | Create an instance of `TagInfo`
-|          returns :ref:`TagInfo<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TagInfo>`
+|          returns :ref:`TagInfo<com.manticore.tools.xmldoclet.xmldoclet.xjc.TagInfo>`
 
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Package:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.Package:
 
 =======================================================================
 Package
@@ -1788,7 +1788,7 @@ Package
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Root:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.Root:
 
 =======================================================================
 Root
@@ -1813,7 +1813,7 @@ Root
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TagInfo:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.TagInfo:
 
 =======================================================================
 TagInfo
@@ -1851,7 +1851,7 @@ TagInfo
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeInfo:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeInfo:
 
 =======================================================================
 TypeInfo
@@ -1866,15 +1866,15 @@ TypeInfo
 | **TypeInfo** ()
 
 
-| **getWildcard** () → :ref:`Wildcard<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Wildcard>`
+| **getWildcard** () → :ref:`Wildcard<com.manticore.tools.xmldoclet.xmldoclet.xjc.Wildcard>`
 | Gets the value of the wildcard property.
-|          returns :ref:`Wildcard<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Wildcard>`  | possible object is `Wildcard`
+|          returns :ref:`Wildcard<com.manticore.tools.xmldoclet.xmldoclet.xjc.Wildcard>`  | possible object is `Wildcard`
 
 
 
 | **setWildcard** (value)
 | Sets the value of the wildcard property.
-|          :ref:`Wildcard<com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Wildcard>` value
+|          :ref:`Wildcard<com.manticore.tools.xmldoclet.xmldoclet.xjc.Wildcard>` value
 
 
 | **getGeneric** () → :ref:`List<java.util.List>`
@@ -1909,7 +1909,7 @@ TypeInfo
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.TypeParameter:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.TypeParameter:
 
 =======================================================================
 TypeParameter
@@ -1945,7 +1945,7 @@ TypeParameter
 
 
 
-..  _com.manticoreprojects.tools.xmldoclet.xmldoclet.xjc.Wildcard:
+..  _com.manticore.tools.xmldoclet.xmldoclet.xjc.Wildcard:
 
 =======================================================================
 Wildcard
