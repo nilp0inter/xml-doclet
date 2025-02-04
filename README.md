@@ -45,7 +45,7 @@ tasks.register('xmldoc', Javadoc) {
     // beware, that this folder will be overwritten hard by Gradle
     destinationDir = reporting.file("xmlDoclet")
     options.docletpath = configurations.xmlDoclet.files.asType(List)
-    options.doclet = "com.manticoreprojects.tools.xmldoclet.XmlDoclet"
+    options.doclet = "com.manticore.tools.xmldoclet.XmlDoclet"
 
     // transform to Restructured Text and copy to Sphinx Source folder
     options.addBooleanOption("rst", true)
@@ -86,7 +86,7 @@ If you are using maven you can use this library by adding the following report t
                 <goal>javadoc</goal>
             </goals>
             <configuration>
-                <doclet>com.manticoreprojects.tools.xmldoclet.XmlDoclet</doclet>
+                <doclet>com.manticore.tools.xmldoclet.XmlDoclet</doclet>
                 <additionalparam>-d ${project.build.directory} -filename ${project.artifactId}-${project.version}-javadoc.xml</additionalparam>
                 <useStandardDocletOptions>false</useStandardDocletOptions>
                 <docletArtifact>
