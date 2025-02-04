@@ -29,6 +29,6 @@ class TagTest extends AbstractTest {
         assertEquals(1, packageNode.getClazz().size());
 
         assertEquals(7, classNode.getTag().size());
-        assertEquals(3, classNode.getMethod().getFirst().getTag().size());
+        assertEquals(3, classNode.getMethod().get(0).getTag().size());
     }
 }

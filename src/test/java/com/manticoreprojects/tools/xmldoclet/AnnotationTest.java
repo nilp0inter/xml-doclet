@@ -25,7 +25,7 @@ class AnnotationTest extends AbstractTest {
         final var javaDocElements = newJavaDocElements("Annotation1.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
-        final Annotation annotationNode = packageNode.getAnnotation().getFirst();
+        final Annotation annotationNode = packageNode.getAnnotation().get(0);
 
         assertEquals(rootNode.getPackage().size(), 1);
         assertEquals(packageNode.getComment(), null);
@@ -52,8 +52,8 @@ class AnnotationTest extends AbstractTest {
         final var javaDocElements = newJavaDocElements("Annotation2.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
-        final Annotation annotationNode = packageNode.getAnnotation().getFirst();
-        final AnnotationInstance annotationInstance = annotationNode.getAnnotation().getFirst();
+        final Annotation annotationNode = packageNode.getAnnotation().get(0);
+        final AnnotationInstance annotationInstance = annotationNode.getAnnotation().get(0);
 
         assertEquals(rootNode.getPackage().size(), 1);
         assertEquals(packageNode.getComment(), null);
@@ -85,8 +85,8 @@ class AnnotationTest extends AbstractTest {
         final var javaDocElements = newJavaDocElements("Annotation3.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
-        final Annotation annotationNode = packageNode.getAnnotation().getFirst();
-        final AnnotationElement element = annotationNode.getElement().getFirst();
+        final Annotation annotationNode = packageNode.getAnnotation().get(0);
+        final AnnotationElement element = annotationNode.getElement().get(0);
 
         assertEquals(rootNode.getPackage().size(), 1);
         assertEquals(packageNode.getComment(), null);
@@ -119,7 +119,7 @@ class AnnotationTest extends AbstractTest {
         final var javaDocElements = newJavaDocElements("Annotation4.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
-        final Annotation annotationNode = packageNode.getAnnotation().getFirst();
+        final Annotation annotationNode = packageNode.getAnnotation().get(0);
 
         assertEquals(rootNode.getPackage().size(), 1);
         assertEquals(packageNode.getComment(), null);

@@ -64,7 +64,7 @@ public class Parser {
     }
 
     /**
-     * {@return the tags inside a JavaDoc comment}
+     * @return the tags inside a JavaDoc comment
      *
      * @param element the Java element to get its JavaDoc tags
      */
@@ -85,18 +85,27 @@ public class Parser {
             final Package packageNode = getPackage(rootNode, classDoc);
 
             switch (classDoc.getKind()) {
-                case ANNOTATION_TYPE -> packageNode.getAnnotation().add(parseAnnotationTypeDoc(classDoc));
-                case ENUM -> packageNode.getEnum().add(parseEnum(classDoc));
-                case INTERFACE -> packageNode.getInterface().add(parseInterface(classDoc));
-                default -> packageNode.getClazz().add(parseClass(classDoc));
+                case ANNOTATION_TYPE:
+                    packageNode.getAnnotation().add(parseAnnotationTypeDoc(classDoc));
+                    break;
+                case ENUM:
+                    packageNode.getEnum().add(parseEnum(classDoc));
+                    break;
+                case INTERFACE:
+                    packageNode.getInterface().add(parseInterface(classDoc));
+                    break;
+                default:
+                    packageNode.getClazz().add(parseClass(classDoc));
+                    break;
             }
         }
+
 
         return rootNode;
     }
 
     /**
-     * {@return the package node for the given class element}
+     * @return the package node for the given class element
      *
      * @param rootNode
      * @param classElement class to get its package
@@ -546,7 +555,7 @@ public class Parser {
     }
 
     /**
-     * {@return string representation of the element scope}
+     * @return string representation of the element scope
      *
      * @param doc the element to get its scope
      */

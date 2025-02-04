@@ -19,7 +19,7 @@ plugins {
     id "org.owasp.dependencycheck" version "latest.release"
     id 'org.sonatype.gradle.plugins.scan' version "latest.release"
 
-    id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "latest.release"
+    id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "2.0.0"
     id "org.hidetake.ssh" version "latest.release"
 }
 
@@ -168,7 +168,7 @@ publishing {
                     }
                     developer {
                         id = 'maca'
-                        name = 'Manoel Campos '
+                        name = 'Manoel Campos'
                         email = ''
                     }
                 }
@@ -206,12 +206,9 @@ java {
     withSourcesJar()
     withJavadocJar()
 
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    }
     modularity.inferModulePath = true
 }
 

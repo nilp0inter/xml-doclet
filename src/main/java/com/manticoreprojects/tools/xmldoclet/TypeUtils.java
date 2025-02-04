@@ -7,6 +7,7 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author Manoel Campos
@@ -46,7 +47,7 @@ public class TypeUtils {
     }
 
     /**
-     * {@return the list of fields from a given class element}
+     * @return the list of fields from a given class element
      *
      * @param classElement the class to get its fields
      */
@@ -55,7 +56,7 @@ public class TypeUtils {
     }
 
     /**
-     * {@return the list of constructors from a given class element}
+     * @return the list of constructors from a given class element
      *
      * @param classElement the class to get its constructors
      */
@@ -64,7 +65,7 @@ public class TypeUtils {
     }
 
     /**
-     * {@return the list of methods from a given class element}
+     * @return the list of methods from a given class element
      *
      * @param classElement the class to get its methods
      */
@@ -73,7 +74,7 @@ public class TypeUtils {
     }
 
     /**
-     * {@return a type as WildcardType if it is such a type, or null otherwise}
+     * @return a type as WildcardType if it is such a type, or null otherwise
      *
      * @param typeMirror the type to get it as a wildcard type
      */
@@ -92,7 +93,8 @@ public class TypeUtils {
      * @return the type as DeclaredType if it has type arguments, or null otherwise
      */
     public static DeclaredType getParameterizedType(TypeMirror typeMirror) {
-        if (typeMirror instanceof DeclaredType declaredType) {
+        if (typeMirror instanceof DeclaredType) {
+            DeclaredType declaredType = (DeclaredType) typeMirror;
             if (!declaredType.getTypeArguments().isEmpty()) {
                 return declaredType;
             }
@@ -106,7 +108,7 @@ public class TypeUtils {
     }
 
     /**
-     * {@return the dimension of type that represents an array, or an empty string if the type is not an array}
+     * @return the dimension of type that represents an array, or an empty string if the type is not an array
      *
      * @param typeMirror the array type to get its dimension
      */
@@ -141,7 +143,7 @@ public class TypeUtils {
         return ElementFilter.fieldsIn(enumTypeElement.getEnclosedElements())
                 .stream()
                 .filter(field -> field.getKind() == ElementKind.ENUM_CONSTANT)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public boolean isException(final TypeElement typeElement) {

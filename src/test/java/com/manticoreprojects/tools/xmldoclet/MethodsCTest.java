@@ -79,7 +79,7 @@ class MethodsCTest extends AbstractMethodsTest {
         final Method method = findByMethodName("method9");
         assertEquals(1, method.getException().size());
 
-        final TypeInfo exception = method.getException().getFirst();
+        final TypeInfo exception = method.getException().get(0);
         checkParamType(exception, "java.lang.Exception");
         paramHasNoGenericsNoDimensionNoWildcard(exception);
     }
@@ -105,7 +105,7 @@ class MethodsCTest extends AbstractMethodsTest {
         final Method method = findByMethodName("method11");
         assertEquals(1, method.getAnnotation().size());
 
-        final AnnotationInstance annotation = method.getAnnotation().getFirst();
+        final AnnotationInstance annotation = method.getAnnotation().get(0);
         assertEquals("java.lang.Deprecated", annotation.getQualified());
         assertTrue(annotation.getArgument().isEmpty());
     }
@@ -122,9 +122,9 @@ class MethodsCTest extends AbstractMethodsTest {
         final var annotation2 = method.getAnnotation().get(1);
         assertEquals(Annotation12.class.getName(), annotation2.getQualified());
         assertEquals(1, annotation2.getArgument().size());
-        final AnnotationArgument annotationArgument = annotation2.getArgument().getFirst();
+        final AnnotationArgument annotationArgument = annotation2.getArgument().get(0);
         assertEquals("value", annotationArgument.getName());
-        assertEquals("java.lang.Warning", annotationArgument.getValue().getFirst());
+        assertEquals("java.lang.Warning", annotationArgument.getValue().get(0));
     }
 
     private static void assertMethodScope(final Method method, final String scope) {

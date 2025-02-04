@@ -24,8 +24,10 @@ public class CustomOption implements Doclet.Option {
      * If the option expectes a file name as parameter, the description may include the word "file"
      * to indicate that.
      *
-     * <p>If the option has multiple parameters, this attribute should provide
-     * a string representation of all of them, such as: file1 file2</p>
+     * <p>
+     * If the option has multiple parameters, this attribute should provide
+     * a string representation of all of them, such as: file1 file2
+     * </p>
      */
     private final String parameters;
 
@@ -34,6 +36,7 @@ public class CustomOption implements Doclet.Option {
      * The function can check the number of required arguments, try to convert them to the expected type
      * and perform any validation operation required.
      * If the arguments are valid, the Predicate must return true.
+     * 
      * @see #process(String, List)
      */
     private final BiPredicate<String, List<String>> argumentsProcessor;
@@ -46,6 +49,7 @@ public class CustomOption implements Doclet.Option {
 
     /**
      * Creates an Option with a single argument value and a given specification.
+     * 
      * @param argName the name of the single argument to be passed to the option, used in the help message
      */
     public static CustomOption newOneArg(
@@ -58,12 +62,14 @@ public class CustomOption implements Doclet.Option {
     /**
      * Creates an Option with no arguments and a given specification
      */
-    public static CustomOption newNoArgs(final String name, final String description, final BiPredicate<String, List<String>> argumentsProcessor) {
+    public static CustomOption newNoArgs(final String name, final String description,
+            final BiPredicate<String, List<String>> argumentsProcessor) {
         return new CustomOption(name, description, "", 0, argumentsProcessor);
     }
 
     /**
      * Creates an Option with a given specification and a default arguments processor.
+     * 
      * @param argName the name of the single argument to be passed to the option, used in the help message
      */
     private CustomOption(final String name, final String description, final String argName, final int argumentCount) {
@@ -106,6 +112,7 @@ public class CustomOption implements Doclet.Option {
     /**
      * {@inheritDoc}
      * In the case of this class, the list has only one element, the single option name.
+     * 
      * @return a list with a single element containing the name of the option
      * @see #getName()
      */
@@ -115,18 +122,19 @@ public class CustomOption implements Doclet.Option {
     }
 
     /**
-     * {@return the name of the option}
      * This class provides a single name for the option.
      * Therefore, no alternative names are supported.
+     *
+     * @return the name of the option
      */
     public String getName() {
         return name;
     }
 
     /**
-     * {@return a String with the name of the single parameter expected by the option (if any)}
-     * The number of parameter for this option class can be 0 or 1, according to {@link #argumentCount}.
-     * That is why this attribute is a single parameter name as a String.
+     * @return a String with the name of the single parameter expected by the option (if any)
+     *         The number of parameter for this option class can be 0 or 1, according to {@link #argumentCount}.
+     *         That is why this attribute is a single parameter name as a String.
      */
     @Override
     public String getParameters() {
@@ -136,6 +144,7 @@ public class CustomOption implements Doclet.Option {
     /**
      * {@inheritDoc}
      * It must check if the given option arguments are valid.
+     * 
      * @param option {@inheritDoc}
      * @param arguments {@inheritDoc} received during the doclet execution
      * @return if the option has the expected number of arguments and they are valid

@@ -62,11 +62,11 @@ class MethodsBTest extends AbstractMethodsTest {
         assertEquals(1, method.getParameter().size());
         assertEquals("void (java.util.ArrayList<java.lang.String>)", method.getSignature());
 
-        final var parameter = method.getParameter().getFirst();
+        final var parameter = method.getParameter().get(0);
         checkParamNameAndType(parameter, "arg1", "java.util.ArrayList<java.lang.String>");
         paramHasNoDimensionNoWildcard(parameter.getType(), 1);
 
-        final TypeInfo genericParamType = parameter.getType().getGeneric().getFirst();
+        final TypeInfo genericParamType = parameter.getType().getGeneric().get(0);
         checkParamType(genericParamType, "java.lang.String");
         paramHasNoGenericsNoDimensionNoWildcard(genericParamType);
     }
@@ -78,11 +78,11 @@ class MethodsBTest extends AbstractMethodsTest {
         assertEquals(1, method.getParameter().size());
         assertEquals("void (java.util.ArrayList<?>)", method.getSignature());
 
-        final var parameter = method.getParameter().getFirst();
+        final var parameter = method.getParameter().get(0);
         checkParamNameAndType(parameter, "arg1", "java.util.ArrayList<?>");
         paramHasNoDimensionNoWildcard(parameter.getType(), 1);
 
-        final TypeInfo genericParamType = parameter.getType().getGeneric().getFirst();
+        final TypeInfo genericParamType = parameter.getType().getGeneric().get(0);
         checkParamType(genericParamType, "?");
         paramHasNoGenericsNoDimensionSomeWildcard(genericParamType);
 
@@ -98,11 +98,11 @@ class MethodsBTest extends AbstractMethodsTest {
         assertEquals(1, method.getParameter().size());
         assertEquals("void (java.util.ArrayList<? extends java.lang.String>)", method.getSignature());
 
-        final var parameter = method.getParameter().getFirst();
+        final var parameter = method.getParameter().get(0);
         checkParamNameAndType(parameter, "arg1", "java.util.ArrayList<? extends java.lang.String>");
         paramHasNoDimensionNoWildcard(parameter.getType(), 1);
 
-        final var genericParamType = parameter.getType().getGeneric().getFirst();
+        final var genericParamType = parameter.getType().getGeneric().get(0);
         checkParamType(genericParamType, "? extends java.lang.String");
         paramHasNoGenericsNoDimensionSomeWildcard(genericParamType);
 
@@ -110,7 +110,7 @@ class MethodsBTest extends AbstractMethodsTest {
         assertEquals(1, genericParamWildcard.getExtendsBound().size());
         assertTrue(genericParamWildcard.getSuperBound().isEmpty());
 
-        final TypeInfo extendsBound = genericParamWildcard.getExtendsBound().getFirst();
+        final TypeInfo extendsBound = genericParamWildcard.getExtendsBound().get(0);
         checkParamType(extendsBound, "java.lang.String");
         paramHasNoGenericsNoDimensionNoWildcard(extendsBound);
     }
@@ -122,11 +122,11 @@ class MethodsBTest extends AbstractMethodsTest {
         assertEquals(1, method.getParameter().size());
         assertEquals("void (java.util.ArrayList<? super java.lang.String>)", method.getSignature());
 
-        final var parameter = method.getParameter().getFirst();
+        final var parameter = method.getParameter().get(0);
         checkParamNameAndType(parameter, "arg1", "java.util.ArrayList<? super java.lang.String>");
         paramHasNoDimensionNoWildcard(parameter.getType(), 1);
 
-        final var genericParamType = parameter.getType().getGeneric().getFirst();
+        final var genericParamType = parameter.getType().getGeneric().get(0);
         checkParamType(genericParamType, "? super java.lang.String");
         paramHasNoGenericsNoDimensionSomeWildcard(genericParamType);
 
@@ -134,7 +134,7 @@ class MethodsBTest extends AbstractMethodsTest {
         assertEquals(1, genericParamWildcard.getSuperBound().size());
         assertTrue(genericParamWildcard.getExtendsBound().isEmpty());
 
-        final TypeInfo superBounds = genericParamWildcard.getSuperBound().getFirst();
+        final TypeInfo superBounds = genericParamWildcard.getSuperBound().get(0);
         checkParamType(superBounds, "java.lang.String");
         paramHasNoGenericsNoDimensionNoWildcard(superBounds);
     }
@@ -146,15 +146,15 @@ class MethodsBTest extends AbstractMethodsTest {
         assertEquals(1, method.getParameter().size());
         assertEquals("void (java.util.ArrayList<java.util.ArrayList<java.lang.String>>)", method.getSignature());
 
-        final var parameter = method.getParameter().getFirst();
+        final var parameter = method.getParameter().get(0);
         checkParamNameAndType(parameter, "arg1", "java.util.ArrayList<java.util.ArrayList<java.lang.String>>");
         paramHasNoDimensionNoWildcard(parameter.getType(), 1);
 
-        final var genericParamTypeLevel1 = parameter.getType().getGeneric().getFirst();
+        final var genericParamTypeLevel1 = parameter.getType().getGeneric().get(0);
         checkParamType(genericParamTypeLevel1, "java.util.ArrayList<java.lang.String>");
         paramHasNoDimensionNoWildcard(genericParamTypeLevel1, 1);
 
-        final var genericParamTypeLevel2 = genericParamTypeLevel1.getGeneric().getFirst();
+        final var genericParamTypeLevel2 = genericParamTypeLevel1.getGeneric().get(0);
         checkParamType(genericParamTypeLevel2, "java.lang.String");
         paramHasNoGenericsNoDimensionNoWildcard(genericParamTypeLevel2);
 
@@ -170,12 +170,13 @@ class MethodsBTest extends AbstractMethodsTest {
         assertEquals("void (java.lang.Object[])", method.getSignature());
         assertTrue(method.isVarArgs());
 
-        final var parameter = method.getParameter().getFirst();
+        final var parameter = method.getParameter().get(0);
         checkParamNameAndType(parameter, "object", "java.lang.Object[]");
         assertEquals("1", parameter.getType().getDimension());
     }
 
-    private static void checkParamNameAndType(final MethodParameter methodParam, final String paramName, final String fullQualifiedParamType) {
+    private static void checkParamNameAndType(final MethodParameter methodParam, final String paramName,
+            final String fullQualifiedParamType) {
         assertEquals(methodParam.getName(), paramName);
         checkParamType(methodParam.getType(), fullQualifiedParamType);
     }

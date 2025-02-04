@@ -23,7 +23,7 @@ class EnumTest extends AbstractTest {
         final var javaDocElements = newJavaDocElements("Enum1.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
-        final Enum enumNode = packageNode.getEnum().getFirst();
+        final Enum enumNode = packageNode.getEnum().get(0);
 
         assertEquals(rootNode.getPackage().size(), 1);
         assertNull(packageNode.getComment());
@@ -49,7 +49,7 @@ class EnumTest extends AbstractTest {
     void testEnum2() {
         final var javaDocElements = newJavaDocElements("Enum2.java");
         final var packageNode = javaDocElements.packageNode();
-        final Enum enumNode = packageNode.getEnum().getFirst();
+        final Enum enumNode = packageNode.getEnum().get(0);
 
         assertEquals(enumNode.getName(), "Enum2");
         assertEquals(enumNode.getComment(), "Enum2");
@@ -64,7 +64,7 @@ class EnumTest extends AbstractTest {
     void testEnum3() {
         final var javaDocElements = newJavaDocElements("Enum3.java");
         final var packageNode = javaDocElements.packageNode();
-        final Enum enumNode = packageNode.getEnum().getFirst();
+        final Enum enumNode = packageNode.getEnum().get(0);
         assertEquals(enumNode.getComment(), "Enum3");
     }
 
@@ -75,9 +75,9 @@ class EnumTest extends AbstractTest {
     void testEnum4() {
         final var javaDocElements = newJavaDocElements("Enum4.java");
         final var packageNode = javaDocElements.packageNode();
-        final Enum enumNode = packageNode.getEnum().getFirst();
+        final Enum enumNode = packageNode.getEnum().get(0);
 
-        final EnumConstant enumConstantNode = enumNode.getConstant().getFirst();
+        final EnumConstant enumConstantNode = enumNode.getConstant().get(0);
         assertEquals(enumConstantNode.getComment(), "field1");
     }
 
@@ -88,9 +88,9 @@ class EnumTest extends AbstractTest {
     void testEnum5() {
         final var javaDocElements = newJavaDocElements("Enum5.java");
         final var packageNode = javaDocElements.packageNode();
-        final Enum enumNode = packageNode.getEnum().getFirst();
+        final Enum enumNode = packageNode.getEnum().get(0);
         assertEquals(enumNode.getAnnotation().size(), 1);
-        AnnotationInstance annotationInstanceNode = enumNode.getAnnotation().getFirst();
+        AnnotationInstance annotationInstanceNode = enumNode.getAnnotation().get(0);
         assertEquals(annotationInstanceNode.getQualified(), "java.lang.Deprecated");
     }
 
@@ -101,7 +101,7 @@ class EnumTest extends AbstractTest {
     void testEnum6() {
         final var javaDocElements = newJavaDocElements("Enum6.java");
         final var packageNode = javaDocElements.packageNode();
-        final Enum enumNode = packageNode.getEnum().getFirst();
+        final Enum enumNode = packageNode.getEnum().get(0);
         assertEquals(enumNode.getAnnotation().size(), 2);
 
         final AnnotationInstance annotationInstance1 = enumNode.getAnnotation().get(0);
@@ -114,9 +114,9 @@ class EnumTest extends AbstractTest {
         assertEquals(annotationInstance2.getName(), Annotation12.class.getSimpleName());
         assertEquals(annotationInstance2.getArgument().size(), 1);
 
-        final AnnotationArgument annotationArgumentNode = annotationInstance2.getArgument().getFirst();
+        final AnnotationArgument annotationArgumentNode = annotationInstance2.getArgument().get(0);
         assertEquals(annotationArgumentNode.getName(), "value");
-        assertEquals(annotationArgumentNode.getValue().getFirst(), "mister");
+        assertEquals(annotationArgumentNode.getValue().get(0), "mister");
 
     }
 }

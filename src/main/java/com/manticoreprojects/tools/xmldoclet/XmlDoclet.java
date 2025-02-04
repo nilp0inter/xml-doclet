@@ -180,13 +180,13 @@ public final class XmlDoclet implements Doclet {
 
             final var parameters = new HashMap<String, String>();
             for (final var option : options.get()) {
-                final String optionValue = options.getOptionValue(option,  "true");
+                final String optionValue = options.getOptionValue(option, "true");
                 parameters.put(option.getParameters(), optionValue);
             }
 
             if (options.hasOption("rst")) {
                 final var outFile = new File(xmlFile.getParent(), basename + ".rst");
-                try (final var inputStream = XmlDoclet.class.getResourceAsStream(RESTRUCTURED_XSL)) {
+                try (var inputStream = XmlDoclet.class.getResourceAsStream(RESTRUCTURED_XSL)) {
                     transform(inputStream, xmlFile, outFile, parameters);
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, "Failed to write Restructured Text", ex);
@@ -196,7 +196,7 @@ public final class XmlDoclet implements Doclet {
 
             if (options.hasOption("md")) {
                 final var outFile = new File(xmlFile.getParent(), basename + ".md");
-                try (final var inputStream = XmlDoclet.class.getResourceAsStream(MARKDOWN_XSL);) {
+                try (var inputStream = XmlDoclet.class.getResourceAsStream(MARKDOWN_XSL);) {
                     transform(inputStream, xmlFile, outFile, parameters);
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, "Failed to write Markdown", ex);

@@ -27,7 +27,7 @@ class InterfaceTest extends AbstractTest {
         final var javaDocElements = newJavaDocElements("Interface1.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
-        final Interface interfaceNode = packageNode.getInterface().getFirst();
+        final Interface interfaceNode = packageNode.getInterface().get(0);
 
         assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
@@ -55,8 +55,8 @@ class InterfaceTest extends AbstractTest {
         final var javaDocElements = newJavaDocElements("Interface2.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
-        final Interface interfaceNode = packageNode.getInterface().getFirst();
-        final Method method = interfaceNode.getMethod().getFirst();
+        final Interface interfaceNode = packageNode.getInterface().get(0);
+        final Method method = interfaceNode.getMethod().get(0);
 
         assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
@@ -99,7 +99,7 @@ class InterfaceTest extends AbstractTest {
         final var javaDocElements = newJavaDocElements("Interface3.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
-        final Interface interfaceNode = packageNode.getInterface().getFirst();
+        final Interface interfaceNode = packageNode.getInterface().get(0);
 
         assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
@@ -119,7 +119,7 @@ class InterfaceTest extends AbstractTest {
         assertTrue(interfaceNode.isIncluded());
 
         // verify interface
-        assertEquals(interfaceNode.getInterface().getFirst().getQualified(), Serializable.class.getName());
+        assertEquals(interfaceNode.getInterface().get(0).getQualified(), Serializable.class.getName());
     }
 
     /**
@@ -130,8 +130,8 @@ class InterfaceTest extends AbstractTest {
         final var javaDocElements = newJavaDocElements("Interface4.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
-        final Interface interfaceNode = packageNode.getInterface().getFirst();
-        final AnnotationInstance annotationInstanceNode = interfaceNode.getAnnotation().getFirst();
+        final Interface interfaceNode = packageNode.getInterface().get(0);
+        final AnnotationInstance annotationInstanceNode = interfaceNode.getAnnotation().get(0);
 
         assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
@@ -165,8 +165,8 @@ class InterfaceTest extends AbstractTest {
         final var javaDocElements = newJavaDocElements("Interface5.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
-        final Interface interfaceNode = packageNode.getInterface().getFirst();
-        final Method method = interfaceNode.getMethod().getFirst();
+        final Interface interfaceNode = packageNode.getInterface().get(0);
+        final Method method = interfaceNode.getMethod().get(0);
 
         assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
@@ -211,8 +211,8 @@ class InterfaceTest extends AbstractTest {
         final var javaDocElements = newJavaDocElements("Interface6.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
-        final Interface interfaceNode = packageNode.getInterface().getFirst();
-        final TypeParameter typeParameterNode = interfaceNode.getGeneric().getFirst();
+        final Interface interfaceNode = packageNode.getInterface().get(0);
+        final TypeParameter typeParameterNode = interfaceNode.getGeneric().get(0);
 
         assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
@@ -243,8 +243,8 @@ class InterfaceTest extends AbstractTest {
         final var javaDocElements = newJavaDocElements("Interface7.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
-        final Interface interfaceNode = packageNode.getInterface().getFirst();
-        final TypeParameter typeParameterNode = interfaceNode.getGeneric().getFirst();
+        final Interface interfaceNode = packageNode.getInterface().get(0);
+        final TypeParameter typeParameterNode = interfaceNode.getGeneric().get(0);
 
         assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
@@ -264,7 +264,7 @@ class InterfaceTest extends AbstractTest {
         assertTrue(interfaceNode.isIncluded());
 
         assertEquals(1, typeParameterNode.getBound().size());
-        assertEquals("java.lang.Number", typeParameterNode.getBound().getFirst());
+        assertEquals("java.lang.Number", typeParameterNode.getBound().get(0));
     }
 
     /**
@@ -275,8 +275,8 @@ class InterfaceTest extends AbstractTest {
         final var javaDocElements = newJavaDocElements("Interface8.java");
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
-        final Interface interfaceNode = packageNode.getInterface().getFirst();
-        TypeParameter typeParameterNode = interfaceNode.getGeneric().getFirst();
+        final Interface interfaceNode = packageNode.getInterface().get(0);
+        TypeParameter typeParameterNode = interfaceNode.getGeneric().get(0);
 
         assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());

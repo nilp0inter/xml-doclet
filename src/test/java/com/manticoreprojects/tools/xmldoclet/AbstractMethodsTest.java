@@ -53,17 +53,19 @@ abstract class AbstractMethodsTest extends AbstractTest {
 
     /**
      * Asserts that the first parameter of the given method has the provided full qualified name
+     * 
      * @param method method to check
      * @param fullQualifiedParamType full qualified name of the first parameter
      * @return the method's first parameter
      */
     protected MethodParameter assertParamTypes(final Method method, final String fullQualifiedParamType) {
         assertParamTypes(method, new String[] {fullQualifiedParamType});
-        return method.getParameter().getFirst();
+        return method.getParameter().get(0);
     }
 
     /**
      * Asserts that the parameters of the given method have the provided full qualified names
+     * 
      * @param method method to check
      * @param fullQualifiedParamTypes full qualified names of the method's parameters
      */
@@ -82,6 +84,7 @@ abstract class AbstractMethodsTest extends AbstractTest {
     /**
      * Asserts that a method parameter has no dimension, no wildcard and a given number of
      * generic types (types between &lt; and &gt;).
+     * 
      * @param paramTypeInfo type information for a method parameter
      * @param paramGenericTypes number of generic types expected for the parameter type
      */

@@ -79,15 +79,18 @@ class AnnotationParser {
      * @param argValue the value for an annotation argument
      */
     private void parseAnnotationArgValue(final Name programElement, final AnnotationArgument arg, final Object argValue) {
-        switch (argValue) {
-            case AnnotationValue annotationValue -> {
-                if (annotationValue.getValue() instanceof List<?> valueList) {
-                    parseAnnotationArgListValue(programElement, arg, valueList);
-                } else arg.getValue().add(annotationValue.getValue().toString());
+        if (argValue instanceof AnnotationValue) {
+            AnnotationValue annotationValue = (AnnotationValue) argValue;
+            if (annotationValue.getValue() instanceof List<?>) {
+                List<?> valueList = (List<?>) annotationValue.getValue();
+                parseAnnotationArgListValue(programElement, arg, valueList);
+            } else {
+                arg.getValue().add(annotationValue.getValue().toString());
             }
-            case null -> {}
-            default -> arg.getValue().add(argValue.toString());
+        } else if (argValue != null) {
+            arg.getValue().add(argValue.toString());
         }
+
     }
 
     /**
@@ -98,18 +101,21 @@ class AnnotationParser {
      */
     private void parseAnnotationArgListValue(final Name programElement, final AnnotationArgument arg, final List<?> valueList) {
         for (final Object value : valueList) {
-            if (value instanceof AnnotationMirror annoDesc) {
+            if (value instanceof AnnotationMirror) {
+                AnnotationMirror annoDesc = (AnnotationMirror) value;
                 arg.getAnnotation().add(parse(programElement, annoDesc));
             } else {
                 /*
-                Consider the annotation @Annotation1("A") or @Annotation1({"A", "B"}}).
+                Consider the annotation @Annotation1("A") or @Annotation1({"A", "B"}).
                 The annotation value is an AnnotationValue object with value attribute.
                 This attribute is a List (even if there is a single value).
                 But each value is not the actual value, but another AnnotationValue object with a value attribute.
-                 */
-                arg.getValue().add(((AnnotationValue) value).getValue().toString());
+                */
+                AnnotationValue annotationValue = (AnnotationValue) value;
+                arg.getValue().add(annotationValue.getValue().toString());
             }
         }
+
     }
 
     /**

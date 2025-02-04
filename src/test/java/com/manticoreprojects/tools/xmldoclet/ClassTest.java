@@ -42,12 +42,12 @@ class ClassTest extends AbstractTest {
         assertEquals(ClassAnnotationCascade.class.getName(), classNode.getQualified());
 
         assertEquals(1, classNode.getAnnotation().size());
-        final AnnotationInstance annotationNode = classNode.getAnnotation().getFirst();
+        final AnnotationInstance annotationNode = classNode.getAnnotation().get(0);
 
         assertEquals("AnnotationCascade", annotationNode.getName());
         assertEquals(1, annotationNode.getArgument().size());
 
-        final AnnotationArgument annotationArgNode = annotationNode.getArgument().getFirst();
+        final AnnotationArgument annotationArgNode = annotationNode.getArgument().get(0);
 
         // Two nested annotations in child attribute
         assertEquals("children", annotationArgNode.getName());
@@ -64,8 +64,8 @@ class ClassTest extends AbstractTest {
         assertEquals(AnnotationCascadeChild.class.getName(), annonNodeNested.getQualified());
         assertEquals(2, annonNodePrimitive.getArgument().size());
         assertEquals(2, annonNodeNested.getArgument().size());
-        assertEquals("name", annonNodePrimitive.getArgument().getFirst().getName());
-        assertEquals("name", annonNodeNested.getArgument().getFirst().getName());
+        assertEquals("name", annonNodePrimitive.getArgument().get(0).getName());
+        assertEquals("name", annonNodeNested.getArgument().get(0).getName());
 
         // Primitive
         final AnnotationArgument annArgNodePrimitive = annonNodePrimitive.getArgument().get(1);
@@ -87,7 +87,7 @@ class ClassTest extends AbstractTest {
         assertEquals(Annotation3.class.getName(), annArgNodeNested.getAnnotation().get(1).getQualified());
         assertEquals(1, annArgNodeNested.getAnnotation().get(2).getArgument().size());
 
-        assertEquals("666", annArgNodeNested.getAnnotation().get(2).getArgument().getFirst().getValue().getFirst());
+        assertEquals("666", annArgNodeNested.getAnnotation().get(2).getArgument().get(0).getValue().get(0));
     }
 
     /**
@@ -137,7 +137,7 @@ class ClassTest extends AbstractTest {
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
         final var classNode = javaDocElements.classNode();
-        final var constructor = classNode.getConstructor().getFirst();
+        final var constructor = classNode.getConstructor().get(0);
 
         assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
@@ -180,7 +180,7 @@ class ClassTest extends AbstractTest {
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
         final var classNode = javaDocElements.classNode();
-        final var method = classNode.getMethod().getFirst();
+        final var method = classNode.getMethod().get(0);
 
         assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
@@ -238,7 +238,7 @@ class ClassTest extends AbstractTest {
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
         final var classNode = javaDocElements.classNode();
-        final var field = classNode.getField().getFirst();
+        final var field = classNode.getField().get(0);
 
         assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
@@ -328,7 +328,7 @@ class ClassTest extends AbstractTest {
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
         final var classNode = javaDocElements.classNode();
-        final TypeInfo interfaceNode = classNode.getInterface().getFirst();
+        final TypeInfo interfaceNode = classNode.getInterface().get(0);
 
         assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
@@ -372,7 +372,7 @@ class ClassTest extends AbstractTest {
         final var packageNode = javaDocElements.packageNode();
         final var classNode = javaDocElements.classNode();
 
-        final AnnotationInstance annotationNode = classNode.getAnnotation().getFirst();
+        final AnnotationInstance annotationNode = classNode.getAnnotation().get(0);
 
         assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
@@ -603,7 +603,7 @@ class ClassTest extends AbstractTest {
         final var packageNode = javaDocElements.packageNode();
         final var classNode = javaDocElements.classNode();
 
-        final TypeParameter typeParameter = classNode.getGeneric().getFirst();
+        final TypeParameter typeParameter = classNode.getGeneric().get(0);
 
         assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
@@ -645,7 +645,7 @@ class ClassTest extends AbstractTest {
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
         final var classNode = javaDocElements.classNode();
-        final TypeParameter typeParameter = classNode.getGeneric().getFirst();
+        final TypeParameter typeParameter = classNode.getGeneric().get(0);
 
         assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
@@ -676,7 +676,7 @@ class ClassTest extends AbstractTest {
         // check the 'fun' type var
         assertEquals("Fun", typeParameter.getName());
         assertEquals(1, typeParameter.getBound().size());
-        assertEquals(Number.class.getName(), typeParameter.getBound().getFirst());
+        assertEquals(Number.class.getName(), typeParameter.getBound().get(0));
     }
 
     /**
@@ -688,7 +688,7 @@ class ClassTest extends AbstractTest {
         final var rootNode = javaDocElements.rootNode();
         final var packageNode = javaDocElements.packageNode();
         final var classNode = javaDocElements.classNode();
-        final TypeParameter typeParameter = classNode.getGeneric().getFirst();
+        final TypeParameter typeParameter = classNode.getGeneric().get(0);
 
         assertEquals(1, rootNode.getPackage().size());
         assertNull(packageNode.getComment());
@@ -731,12 +731,12 @@ class ClassTest extends AbstractTest {
         final var javaDocElements = newJavaDocElements("Class16.java", "Annotation3.java");
         final var classNode = javaDocElements.classNode();
 
-        final AnnotationInstance instance = classNode.getAnnotation().getFirst();
-        final AnnotationArgument argument = instance.getArgument().getFirst();
+        final AnnotationInstance instance = classNode.getAnnotation().get(0);
+        final AnnotationArgument argument = instance.getArgument().get(0);
         assertEquals("id", argument.getName());
         assertEquals("int", argument.getType().getQualified());
         assertEquals(1, argument.getValue().size());
-        assertEquals("3", argument.getValue().getFirst());
+        assertEquals("3", argument.getValue().get(0));
         assertTrue(argument.isPrimitive());
         assertFalse(argument.isArray());
     }
@@ -748,8 +748,8 @@ class ClassTest extends AbstractTest {
     void testClass17() {
         final var javaDocElements = newJavaDocElements("Class17.java", "Annotation5.java");
         final var classNode = javaDocElements.classNode();
-        final AnnotationInstance instance = classNode.getAnnotation().getFirst();
-        final AnnotationArgument argument = instance.getArgument().getFirst();
+        final AnnotationInstance instance = classNode.getAnnotation().get(0);
+        final AnnotationArgument argument = instance.getArgument().get(0);
 
         assertEquals("int[]", argument.getType().getQualified());
         assertEquals(2, argument.getValue().size());
@@ -766,12 +766,12 @@ class ClassTest extends AbstractTest {
     void testClass18() {
         final var javaDocElements = newJavaDocElements("Class18.java", "Annotation6.java");
         final var classNode = javaDocElements.classNode();
-        final AnnotationInstance instance = classNode.getAnnotation().getFirst();
-        final AnnotationArgument argument = instance.getArgument().getFirst();
+        final AnnotationInstance instance = classNode.getAnnotation().get(0);
+        final AnnotationArgument argument = instance.getArgument().get(0);
 
         assertEquals("java.lang.String", argument.getType().getQualified());
         assertEquals(1, argument.getValue().size());
-        assertEquals("hey", argument.getValue().getFirst());
+        assertEquals("hey", argument.getValue().get(0));
         assertFalse(argument.isPrimitive());
         assertFalse(argument.isArray());
     }
@@ -783,12 +783,12 @@ class ClassTest extends AbstractTest {
     void testClass19() {
         final var javaDocElements = newJavaDocElements("Class19.java", "Annotation7.java", "Enum1.java");
         final var classNode = javaDocElements.classNode();
-        final AnnotationInstance instance = classNode.getAnnotation().getFirst();
-        final AnnotationArgument argument = instance.getArgument().getFirst();
+        final AnnotationInstance instance = classNode.getAnnotation().get(0);
+        final AnnotationArgument argument = instance.getArgument().get(0);
 
         assertEquals(getElementPathFromSimpleDataPackage("Enum1"), argument.getType().getQualified());
         assertEquals(1, argument.getValue().size());
-        assertEquals("a", argument.getValue().getFirst());
+        assertEquals("a", argument.getValue().get(0));
         assertFalse(argument.isPrimitive());
         assertFalse(argument.isArray());
     }
@@ -800,11 +800,11 @@ class ClassTest extends AbstractTest {
     void testClass20() {
         final var javaDocElements = newJavaDocElements("Class20.java", "Annotation8.java");
         final var classNode = javaDocElements.classNode();
-        final AnnotationInstance instance = classNode.getAnnotation().getFirst();
-        final AnnotationArgument argument = instance.getArgument().getFirst();
+        final AnnotationInstance instance = classNode.getAnnotation().get(0);
+        final AnnotationArgument argument = instance.getArgument().get(0);
         assertEquals("java.lang.Class", argument.getType().getQualified());
         assertEquals(1, argument.getValue().size());
-        assertEquals("java.lang.String", argument.getValue().getFirst());
+        assertEquals("java.lang.String", argument.getValue().get(0));
         assertFalse(argument.isPrimitive());
         assertFalse(argument.isArray());
     }
@@ -816,12 +816,12 @@ class ClassTest extends AbstractTest {
     void testClass21() {
         final var javaDocElements = newJavaDocElements("Class21.java", "Annotation10.java");
         final var classNode = javaDocElements.classNode();
-        final AnnotationInstance instance = classNode.getAnnotation().getFirst();
-        final AnnotationArgument argument = instance.getArgument().getFirst();
+        final AnnotationInstance instance = classNode.getAnnotation().get(0);
+        final AnnotationArgument argument = instance.getArgument().get(0);
 
         assertEquals("char", argument.getType().getQualified());
         assertEquals(1, argument.getValue().size());
-        assertEquals("a", argument.getValue().getFirst());
+        assertEquals("a", argument.getValue().get(0));
         assertTrue(argument.isPrimitive());
         assertFalse(argument.isArray());
     }
@@ -833,12 +833,12 @@ class ClassTest extends AbstractTest {
     void testClass22() {
         final var javaDocElements = newJavaDocElements("Class22.java", "Annotation10.java");
         final var classNode = javaDocElements.classNode();
-        final AnnotationInstance instance = classNode.getAnnotation().getFirst();
-        final AnnotationArgument argument = instance.getArgument().getFirst();
+        final AnnotationInstance instance = classNode.getAnnotation().get(0);
+        final AnnotationArgument argument = instance.getArgument().get(0);
 
         assertEquals("char", argument.getType().getQualified());
         assertEquals(1, argument.getValue().size());
-        assertEquals("\u0000", argument.getValue().getFirst());
+        assertEquals("\u0000", argument.getValue().get(0));
         assertTrue(argument.isPrimitive());
         assertFalse(argument.isArray());
     }
@@ -850,12 +850,12 @@ class ClassTest extends AbstractTest {
     void testClass23() {
         final var javaDocElements = newJavaDocElements("Class23.java", "Annotation11.java");
         final var classNode = javaDocElements.classNode();
-        final AnnotationInstance instance = classNode.getAnnotation().getFirst();
-        final AnnotationArgument argument = instance.getArgument().getFirst();
+        final AnnotationInstance instance = classNode.getAnnotation().get(0);
+        final AnnotationArgument argument = instance.getArgument().get(0);
 
         assertEquals("boolean", argument.getType().getQualified());
         assertEquals(1, argument.getValue().size());
-        assertEquals("true", argument.getValue().getFirst());
+        assertEquals("true", argument.getValue().get(0));
         assertTrue(argument.isPrimitive());
         assertFalse(argument.isArray());
     }
@@ -867,8 +867,8 @@ class ClassTest extends AbstractTest {
     void testClass24() {
         final var javaDocElements = newJavaDocElements("Class24.java", "Annotation5.java");
         final var classNode = javaDocElements.classNode();
-        final AnnotationInstance instance = classNode.getAnnotation().getFirst();
-        final AnnotationArgument argument = instance.getArgument().getFirst();
+        final AnnotationInstance instance = classNode.getAnnotation().get(0);
+        final AnnotationArgument argument = instance.getArgument().get(0);
 
         assertEquals("int[]", argument.getType().getQualified());
         assertTrue(argument.getValue().isEmpty());

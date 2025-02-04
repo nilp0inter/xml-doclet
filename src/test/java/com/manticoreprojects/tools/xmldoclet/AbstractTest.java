@@ -35,8 +35,8 @@ public abstract class AbstractTest {
         final var sourceFiles = stream(sourceFileName).map(this::getFilePathFromSimpleDataDir).toArray(String[]::new);
         final var rootNode = new JavaDocCLI(sourceFiles, ARGS).execute();
 
-        final var packageNode = rootNode.getPackage().getFirst();
-        final var classNode = packageNode.getClazz().isEmpty() ? null : packageNode.getClazz().getFirst();
+        final var packageNode = rootNode.getPackage().get(0);
+        final var classNode = packageNode.getClazz().isEmpty() ? null : packageNode.getClazz().get(0);
         return new JavaDocElements(rootNode, packageNode, classNode);
     }
 

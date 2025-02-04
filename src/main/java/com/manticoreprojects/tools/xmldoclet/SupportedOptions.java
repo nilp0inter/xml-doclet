@@ -27,20 +27,19 @@ final class SupportedOptions {
 
     public SupportedOptions() {
         this.supportedOptionsSet = Set.of(
-            newArgOption("d", "directory", "Destination directory for output file.\nDefault: ."),
-            newArgOption("docencoding", "encoding", "Encoding of the output file.\nDefault: UTF8"),
-            newNoArgOption("dryrun", "Parse javadoc, but don't write output file.\nDefault: false"),
-            newNoArgOption("rst", "Transform the XML into a Restructured Text file (*.rst).\nDefault: false"),
-            newNoArgOption("md", "Transform the XML into a Markdown file (*.md).\nDefault: false"),
-            newNoArgOption("docbook", "Transform the XML into a DocBook file (*.db.xml).\nDefault: false"),
-            newNoArgOption("adoc", "Transform the XML into an Ascii Doctor file (*.adoc).\nDefault: false"),
-            newOneArgOption("filename", "Name of the output file.\nDefault: javadoc.xml"),
-            newOneArgOption("basePackage", "Name of the base package.\n"),
-            newOneArgOption("doctitle", "Document Title\n"),
-            newOneArgOption("windowtitle", "Window Title\n"),
-            newNoArgOption("noTimestamp", "No Timestamp.\n"),
-            newNoArgOption("withFloatingToc", "Renders a Floating TOC on the right side.\n")
-        );
+                newArgOption("d", "directory", "Destination directory for output file.\nDefault: ."),
+                newArgOption("docencoding", "encoding", "Encoding of the output file.\nDefault: UTF8"),
+                newNoArgOption("dryrun", "Parse javadoc, but don't write output file.\nDefault: false"),
+                newNoArgOption("rst", "Transform the XML into a Restructured Text file (*.rst).\nDefault: false"),
+                newNoArgOption("md", "Transform the XML into a Markdown file (*.md).\nDefault: false"),
+                newNoArgOption("docbook", "Transform the XML into a DocBook file (*.db.xml).\nDefault: false"),
+                newNoArgOption("adoc", "Transform the XML into an Ascii Doctor file (*.adoc).\nDefault: false"),
+                newOneArgOption("filename", "Name of the output file.\nDefault: javadoc.xml"),
+                newOneArgOption("basePackage", "Name of the base package.\n"),
+                newOneArgOption("doctitle", "Document Title\n"),
+                newOneArgOption("windowtitle", "Window Title\n"),
+                newNoArgOption("noTimestamp", "No Timestamp.\n"),
+                newNoArgOption("withFloatingToc", "Renders a Floating TOC on the right side.\n"));
     }
 
     public Set<CustomOption> get() {
@@ -49,6 +48,7 @@ final class SupportedOptions {
 
     /**
      * Creates an option with one argument that has the same name of the option itself.
+     * 
      * @param optionName name of the option and its own single argument
      * @param description option description
      */
@@ -58,6 +58,7 @@ final class SupportedOptions {
 
     /**
      * Creates an option with one argument.
+     * 
      * @param optionName name of the option
      * @param argName name of the argument to be passed to the option, used in the help message
      * @param description option description
@@ -67,18 +68,17 @@ final class SupportedOptions {
     }
 
     private CustomOption newNoArgOption(final String optionName, final String description) {
-        return CustomOption.newNoArgs(optionName, description, this::processNoArgValue);
+        return CustomOption.newNoArgs(optionName, description, (optionName1, argValues) -> processNoArgValue(optionName1));
     }
 
     /**
      * Process and stores name of the option in the {@link #givenCliOptionsMap} to indicate it was sucessfully
      * processed (since it has no arguments and no validation is required).
+     *
      * @param optionName name of the option to store the argument value
-     * @param argValues list of arguments values for the option, which will be empty and ignored,
-     *                  since the option doesn't expect any argument.
      * @return true to indicate the option was successfully processed.
      */
-    private boolean processNoArgValue(final String optionName, final List<String> argValues){
+    private boolean processNoArgValue(final String optionName) {
         givenCliOptionsMap.put(addHyphenPrefix(optionName), null);
         return true;
     }
@@ -86,36 +86,37 @@ final class SupportedOptions {
     /**
      * Process and stores the first argument value passed in the command line for a given option
      * when that option is being processed by {@link CustomOption#process(String, List)}.
+     * 
      * @param optionName name of the option to store the argument value
      * @param argValues list of arguments to get the first value to store
      * @return true if there was one argument value in the argument list, false otherwise, indicating no value was stored
      */
-    private boolean processFirstArgValue(final String optionName, final List<String> argValues){
-        if (argValues.isEmpty()){
+    private boolean processFirstArgValue(final String optionName, final List<String> argValues) {
+        if (argValues.isEmpty()) {
             return false;
         }
 
-        givenCliOptionsMap.put(addHyphenPrefix(optionName), argValues.getFirst());
+        givenCliOptionsMap.put(addHyphenPrefix(optionName), argValues.get(0));
         return true;
     }
 
-    public boolean hasOption(final String optionName){
+    public boolean hasOption(final String optionName) {
         return givenCliOptionsMap.containsKey(addHyphenPrefix(optionName));
     }
 
-    public String getOptionValue(final CustomOption option){
+    public String getOptionValue(final CustomOption option) {
         return getOptionValue(option.getName());
     }
 
-    public String getOptionValue(final String optionName){
+    public String getOptionValue(final String optionName) {
         return getOptionValue(optionName, "");
     }
 
-    public String getOptionValue(final CustomOption option, final String defaultValue){
+    public String getOptionValue(final CustomOption option, final String defaultValue) {
         return getOptionValue(option.getName(), defaultValue);
     }
 
-    public String getOptionValue(final String optionName, final String defaultValue){
+    public String getOptionValue(final String optionName, final String defaultValue) {
         return givenCliOptionsMap.getOrDefault(addHyphenPrefix(optionName), defaultValue);
     }
 

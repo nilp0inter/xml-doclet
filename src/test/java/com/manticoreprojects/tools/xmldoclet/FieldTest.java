@@ -22,7 +22,7 @@ class FieldTest extends AbstractTest {
         final var javaDocElements = newJavaDocElements("Field1.java");
         this.rootNode = javaDocElements.rootNode();
         this.packageNode = javaDocElements.packageNode();
-        final Class classNode = packageNode.getClazz().getFirst();
+        final Class classNode = packageNode.getClazz().get(0);
         this.fields = classNode.getField();
     }
 
@@ -135,7 +135,7 @@ class FieldTest extends AbstractTest {
         final var field = findByFieldName("field11", fields);
         assertEquals(1, field.getAnnotation().size());
 
-        AnnotationInstance annotation = field.getAnnotation().getFirst();
+        AnnotationInstance annotation = field.getAnnotation().get(0);
         assertEquals("java.lang.Deprecated", annotation.getQualified());
         assertEquals("Deprecated", annotation.getName());
         assertTrue(annotation.getArgument().isEmpty());
@@ -157,9 +157,9 @@ class FieldTest extends AbstractTest {
         assertEquals(annotation2.getName(), Annotation12.class.getSimpleName());
         assertEquals(1, annotation2.getArgument().size());
 
-        final AnnotationArgument argument = annotation2.getArgument().getFirst();
+        final AnnotationArgument argument = annotation2.getArgument().get(0);
         assertEquals("value", argument.getName());
-        assertEquals("mister", argument.getValue().getFirst());
+        assertEquals("mister", argument.getValue().get(0));
     }
 
     @Test
@@ -181,8 +181,8 @@ class FieldTest extends AbstractTest {
         assertEquals("java.util.ArrayList<?>", field.getType().getQualified());
         assertNotNull(field.getType().getGeneric());
         assertEquals(1, field.getType().getGeneric().size());
-        assertEquals("?", field.getType().getGeneric().getFirst().getQualified());
-        assertNotNull(field.getType().getGeneric().getFirst().getWildcard());
+        assertEquals("?", field.getType().getGeneric().get(0).getQualified());
+        assertNotNull(field.getType().getGeneric().get(0).getWildcard());
     }
 
     @Test
