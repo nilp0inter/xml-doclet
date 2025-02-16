@@ -5,7 +5,7 @@ A doclet to output javadoc as XML
 
 This library provides a doclet to output the javadoc comments from Java source code to a XML or a Restructured Text (*.rst) document.
 
-All modern JDKs 11, 17, 21 and 23 are supported.
+All modern JDKs 17, 21 and 23 are supported by XmlDoclet-2.+ and JDK 11 is supported by XMLDoc-1.4.+ only.
 
 Planned support for Markdown (*.md), Docbook XML and ASCII Doctor (*.adoc). Sponsors or Contributors are most welcome.
 
@@ -31,11 +31,20 @@ dependencies {
     xmlDoclet 'com.manticore-projects.tools:xml-doclet:+'
 }
 tasks.register('xmldoc', Javadoc) {
+    // optionally include some extra sources, e.g. generated source files
+    // include = '..'
+    
     source = sourceSets.main.allJava
+    
     // beware, that this folder will be overwritten hard by Gradle
     destinationDir = reporting.file("xmlDoclet")
     options.docletpath = configurations.xmlDoclet.files.asType(List)
+    
+    // for XmlDoclet-2.+ and JDK17+
     options.doclet = "com.manticore.tools.xmldoclet.XmlDoclet"
+    
+    // for XmlDoclet-1.+ and JDK11+
+    // options.doclet = "com.github.markusbernhardt.xmldoclet.XmlDoclet"
 
     // transform to Restructured Text and copy to Sphinx Source folder
     options.addBooleanOption("rst", true)

@@ -207,8 +207,11 @@ java {
     withSourcesJar()
     withJavadocJar()
 
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 
     modularity.inferModulePath = true
 }
@@ -385,7 +388,7 @@ tasks.register('upload') {
     doLast {
         ssh.run {
             session(remotes.webServer) {
-                def versionStable = tasks.named('versionTask').get().getVersion(false)
+                def versionStable = getVersion(false)
                 execute "mkdir -p download/${project.name}-${versionStable}"
                 for (File file: fileTree(include:['*.jar'], dir:"${project.buildDir}/libs").collect()) {
                     put from: file, into: "download/${project.name}-${versionStable}"

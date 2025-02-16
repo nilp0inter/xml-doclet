@@ -29,7 +29,8 @@ Development version: |XMLDOCLET_SNAPSHOT_VERSION_LINK|
 Features
 *******************************
 
-    * Supports ``Java 11``, ``Java 17`` and ``Java 21``
+    * Version 2.+ supports ``Java 17`` and later
+    * Version 1.+ supports ``Java 11``
     * Maven/Gradle integration
     * Output Formats
         * XML
