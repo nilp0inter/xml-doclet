@@ -1,5 +1,4 @@
-A doclet to output javadoc as XML
-=================================
+# A doclet to output javadoc as XML [![Maven Central Version](https://img.shields.io/maven-central/v/com.manticore-projects.tools/xml-doclet)](https://central.sonatype.com/search?q=xml-doclet&namespace=com.manticore-projects.tools)
 
 [Website](https://www.manticore-projects.com/XMLDoclet) | [Documentation](https://www.manticore-projects.com/XMLDoclet/usage.html) | [Example](https://www.manticore-projects.com/JSQLParser/javadoc_snapshot.html#analyticexpression)
 
