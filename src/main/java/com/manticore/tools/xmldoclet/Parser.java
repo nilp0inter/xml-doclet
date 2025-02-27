@@ -1,22 +1,9 @@
 package com.manticore.tools.xmldoclet;
 
-import com.manticore.tools.xmldoclet.xjc.Annotation;
-import com.manticore.tools.xmldoclet.xjc.AnnotationElement;
 import com.manticore.tools.xmldoclet.xjc.Class;
-import com.manticore.tools.xmldoclet.xjc.Constructor;
 import com.manticore.tools.xmldoclet.xjc.Enum;
-import com.manticore.tools.xmldoclet.xjc.EnumConstant;
-import com.manticore.tools.xmldoclet.xjc.Field;
-import com.manticore.tools.xmldoclet.xjc.Interface;
-import com.manticore.tools.xmldoclet.xjc.Method;
-import com.manticore.tools.xmldoclet.xjc.MethodParameter;
-import com.manticore.tools.xmldoclet.xjc.ObjectFactory;
 import com.manticore.tools.xmldoclet.xjc.Package;
-import com.manticore.tools.xmldoclet.xjc.Root;
-import com.manticore.tools.xmldoclet.xjc.TagInfo;
-import com.manticore.tools.xmldoclet.xjc.TypeInfo;
-import com.manticore.tools.xmldoclet.xjc.TypeParameter;
-import com.manticore.tools.xmldoclet.xjc.Wildcard;
+import com.manticore.tools.xmldoclet.xjc.*;
 import com.sun.source.doctree.DocTree;
 import com.sun.source.util.DocTrees;
 import jdk.javadoc.doclet.DocletEnvironment;
@@ -125,14 +112,19 @@ public class Parser {
      */
     private Package getPackage(final Root rootNode, final TypeElement classElement) {
         // Gets the package element of the given class
-        final var packageDoc = (PackageElement) classElement.getEnclosingElement();
+        try {
+            final var packageDoc = (PackageElement) classElement.getEnclosingElement();
 
-        return packages.computeIfAbsent(packageDoc.getQualifiedName().toString(), pkgName -> {
-            final var packageNode = parsePackage(packageDoc);
-            packages.put(pkgName, packageNode);
-            rootNode.getPackage().add(packageNode);
-            return packageNode;
-        });
+            return packages.computeIfAbsent(packageDoc.getQualifiedName().toString(), pkgName -> {
+                final var packageNode = parsePackage(packageDoc);
+                packages.put(pkgName, packageNode);
+                rootNode.getPackage().add(packageNode);
+                return packageNode;
+            });
+        } catch (Exception e) {
+            final var msg = "Error getting the package from element %s of type %s";
+            throw new RuntimeException(msg.formatted(classElement.getQualifiedName(), classElement.asType().toString()), e);
+        }
     }
 
     protected Package parsePackage(final PackageElement packageDoc) {
