@@ -204,7 +204,7 @@ signing {
 }
 
 java {
-    withSourcesJar()
+    //withSourcesJar()
     withJavadocJar()
 
     sourceCompatibility = JavaVersion.VERSION_17
@@ -238,10 +238,10 @@ xsd2java {
     extension = true
     arguments ['-verbose']
     outputDir = project.layout.buildDirectory.dir("generated/sources/java/main").get().asFile
+
 }
 
 task createEmptyZip(type: Zip) {
-    dependsOn(compileJava)
     destinationDirectory = file('build/classes/java')
     archiveFileName = 'xsd2java'
     // Use 'from' to add files to the zip
@@ -251,7 +251,7 @@ task createEmptyZip(type: Zip) {
 }
 
 task createEmptyZip1(type: Zip) {
-    dependsOn(processResources, compileJava)
+    dependsOn(processResources)
     destinationDirectory = file('build/resources')
     archiveFileName = 'xsd2java'
     from files('build/resources/main/xjc') {
@@ -261,7 +261,6 @@ task createEmptyZip1(type: Zip) {
 
 shadowJar {
     // create the expected ZIP files since we did not find a way to suppress those
-    dependsOn createEmptyZip, createEmptyZip1
     archiveBaseName = 'xml-doclet'
 }
 
@@ -278,10 +277,6 @@ javadoc {
         options.addBooleanOption('html5', true)
     }
     options.addBooleanOption("Xdoclint:none", false)
-}
-
-tasks.named('sourcesJar') {
-    dependsOn tasks.named('xsd2javaJavadoc')
 }
 
 tasks.register('xmldoc', Javadoc) {
@@ -305,6 +300,8 @@ tasks.register('xmldoc', Javadoc) {
     }
 }
 
+xsd2javaClasses.dependsOn createEmptyZip, createEmptyZip1
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
@@ -312,6 +309,7 @@ tasks.withType(JavaCompile).configureEach {
 tasks.withType(Javadoc).configureEach {
     options.encoding = 'UTF-8'
 }
+
 
 
 spotbugsMain {
@@ -365,6 +363,8 @@ checkstyle {
     configFile =rootProject.file('config/checkstyle/checkstyle.xml')
 }
 
+
+
 spotless {
     // optional: limit format enforcement to just the files changed by this feature branch
     ratchetFrom 'origin/master'
@@ -389,6 +389,7 @@ tasks.withType(Checkstyle).configureEach {
         xml.required = false
         html.required = true
     }
+    dependsOn createEmptyZip, createEmptyZip1
 }
 
 remotes {
