@@ -219,8 +219,6 @@ jar {
     }
 }
 
-
-
 xsd2java {
     // JAXB XJC: JAXB Binding Compiler
     // https://github.com/qaware/xsd2java-gradle-plugin
@@ -233,7 +231,7 @@ xsd2java {
 
     extension = true
     arguments ['-verbose']
-    outputDir = project.layout.buildDirectory.dir("generated/sources/java/main").get().asFile
+    outputDir = layout.buildDirectory.dir("generated/sources/java/main").get().asFile
 
 }
 
@@ -263,7 +261,7 @@ shadowJar {
 sourceSets {
     main {
         java {
-            srcDir project.layout.buildDirectory.dir("generated/sources/java/main").get().asFile
+            srcDir layout.buildDirectory.dir("generated/sources/java/main").get().asFile
         }
     }
 }
@@ -305,7 +303,6 @@ tasks.withType(JavaCompile).configureEach {
 tasks.withType(Javadoc).configureEach {
     options.encoding = 'UTF-8'
 }
-
 
 
 spotbugsMain {
@@ -358,8 +355,6 @@ checkstyle {
     sourceSets = [sourceSets.main, sourceSets.test]
     configFile =rootProject.file('config/checkstyle/checkstyle.xml')
 }
-
-
 
 spotless {
     // optional: limit format enforcement to just the files changed by this feature branch
