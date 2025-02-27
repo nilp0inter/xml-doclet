@@ -19,7 +19,7 @@ plugins {
     id "org.owasp.dependencycheck" version "latest.release"
     id 'org.sonatype.gradle.plugins.scan' version "latest.release"
 
-    id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "2.0.0"
+    id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "latest.release"
     id "org.hidetake.ssh" version "latest.release"
 }
 
@@ -213,7 +213,7 @@ java {
         languageVersion.set(JavaLanguageVersion.of(17))
     }
 
-    modularity.inferModulePath = true
+    //modularity.inferModulePath = true
 }
 
 jar {
@@ -223,11 +223,7 @@ jar {
     }
 }
 
-shadowJar {
-    minimize()
-    mergeServiceFiles()
-    archiveBaseName = 'xml-doclet-shadow'
-}
+
 
 xsd2java {
     // JAXB XJC: JAXB Binding Compiler
@@ -242,6 +238,31 @@ xsd2java {
     extension = true
     arguments ['-verbose']
     outputDir = project.layout.buildDirectory.dir("generated/sources/java/main").get().asFile
+}
+
+task createEmptyZip(type: Zip) {
+    dependsOn(compileJava)
+    destinationDirectory = file('build/classes/java')
+    archiveFileName = 'xsd2java'
+    // Use 'from' to add files to the zip
+    from files('build/classes/java/main/com/manticore/tools/xmldoclet/xjc') {
+        include '**/*'  // Includes all files in the directory
+    }
+}
+
+task createEmptyZip1(type: Zip) {
+    dependsOn(processResources, compileJava)
+    destinationDirectory = file('build/resources')
+    archiveFileName = 'xsd2java'
+    from files('build/resources/main/xjc') {
+        include '**/*'  // Includes all files in the directory
+    }
+}
+
+shadowJar {
+    // create the expected ZIP files since we did not find a way to suppress those
+    dependsOn createEmptyZip, createEmptyZip1
+    archiveBaseName = 'xml-doclet'
 }
 
 sourceSets {
