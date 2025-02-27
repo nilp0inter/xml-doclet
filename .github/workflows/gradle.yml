@@ -66,7 +66,7 @@ jobs:
           gpg --export-secret-keys -o /home/runner/.gnupg/secring.gpg  
 
       - name: Publish with Gradle
-        run: ./gradlew publish
+        run: ./gradlew build publish
         env:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
