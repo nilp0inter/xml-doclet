@@ -408,7 +408,7 @@ tasks.register('upload') {
             session(remotes.webServer) {
                 def versionStable = getVersion(false)
                 execute "mkdir -p download/${project.name}-${versionStable}"
-                for (File file: fileTree(include:['*.jar'], dir:"${project.buildDir}/libs").collect()) {
+                for (File file: fileTree(include:['*.jar'], dir:"${layout.buildDirectory.dir("libs").get().toString()}").collect()) {
                     put from: file, into: "download/${project.name}-${versionStable}"
                 }
 
