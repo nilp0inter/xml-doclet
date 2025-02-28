@@ -33,6 +33,7 @@ class Level1Class {
 /// that provides utilities for testing Annotation Processors and Doclets.
 @ExtendWith(ToolsExtension.class)
 class ParserTest {
+    public static final String PACKAGE_NAME = "com.manticore.tools.xmldoclet";
     private final DocletEnvironment env = Mockito.mock(DocletEnvironment.class);
     private final Elements elements = Tools.elements();
     private final Types types = Tools.types();
@@ -75,13 +76,13 @@ class ParserTest {
     @Test
     void getPackageFromTopLevelClass() {
         final var rootNode = new ObjectFactory().createRoot();
-        assertEquals("com.manticore.tools.xmldoclet", parser.getPackage(rootNode, classLevel1AsElement).getName());
+        assertEquals(PACKAGE_NAME, parser.getPackage(rootNode, classLevel1AsElement).getName());
     }
 
     @Test
     void getPackageFromTopInnerClasses() {
         final var rootNode = new ObjectFactory().createRoot();
-        assertEquals("com.manticore.tools.xmldoclet", parser.getPackage(rootNode, classLevel1AsElement).getName());
-        assertEquals("com.manticore.tools.xmldoclet", parser.getPackage(rootNode, classLevel2AsElement).getName());
+        assertEquals(PACKAGE_NAME, parser.getPackage(rootNode, classLevel1AsElement).getName());
+        assertEquals(PACKAGE_NAME, parser.getPackage(rootNode, classLevel2AsElement).getName());
     }
 }
