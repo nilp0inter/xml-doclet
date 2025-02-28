@@ -8,8 +8,6 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    uses: ./.github/workflows/build.yml
   gradle_publish:
     runs-on: ubuntu-latest
     steps:

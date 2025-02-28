@@ -195,7 +195,12 @@ publishing {
 
 
 signing {
-    required = { !version.endsWith("SNAPSHOT") && gradle.taskGraph.hasTask("publish") }
+    required = false // Default to false, update later
+
+    gradle.taskGraph.whenReady { taskGraph ->
+        required = !version.endsWith("SNAPSHOT") && taskGraph.hasTask("publish")
+    }
+
     sign publishing.publications.mavenJava
 }
 
