@@ -24,9 +24,11 @@ class Level1Class {
     /** An inner class (2nd level). */
     static class Level2Class {
         /** An inner-inner class (3rd level). */
-        static class Level3Class {}
+        static class Level3Class {
+        }
     }
 }
+
 
 /// Tests for the [Parser] class.
 /// It uses [Elementary lib](https://github.com/Pante/elementary)
