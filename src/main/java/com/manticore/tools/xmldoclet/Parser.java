@@ -111,9 +111,8 @@ public class Parser {
      * @param classElement class to get its package
      */
     private Package getPackage(final Root rootNode, final TypeElement classElement) {
-        // Gets the package element of the given class
         try {
-            final var packageDoc = (PackageElement) classElement.getEnclosingElement();
+            final var packageDoc = (PackageElement) getTopLevelClass(classElement).getEnclosingElement();
 
             return packages.computeIfAbsent(packageDoc.getQualifiedName().toString(), pkgName -> {
                 final var packageNode = parsePackage(packageDoc);
@@ -122,9 +121,17 @@ public class Parser {
                 return packageNode;
             });
         } catch (Exception e) {
-            final var msg = "Error getting the package from element %s of type %s";
-            throw new RuntimeException(msg.formatted(classElement.getQualifiedName(), classElement.asType().toString()), e);
+            final var msg = "Error getting the package from element %s. kind %s: nesting kind: %s";
+            throw new RuntimeException(msg.formatted(classElement.getQualifiedName(), classElement.getKind(), classElement.getNestingKind()), e);
         }
+    }
+
+    /**
+     * {@return the top-level class of a given inner class, or the class itself if it's not an inner class}
+     * @param classElement a class or inner class
+     */
+    static TypeElement getTopLevelClass(final TypeElement classElement) {
+        return isInnerClass(classElement) ? getTopLevelClass((TypeElement)classElement.getEnclosingElement()) : classElement;
     }
 
     protected Package parsePackage(final PackageElement packageDoc) {

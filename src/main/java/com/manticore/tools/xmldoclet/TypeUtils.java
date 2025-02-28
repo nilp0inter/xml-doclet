@@ -146,6 +146,10 @@ public class TypeUtils {
                 .collect(Collectors.toList());
     }
 
+    public static boolean isInnerClass(final TypeElement classElement) {
+        return classElement.getNestingKind() == NestingKind.MEMBER;
+    }
+
     public boolean isException(final TypeElement typeElement) {
         final TypeMirror exceptionType = elements.getTypeElement("java.lang.Exception").asType();
         return types.isSubtype(typeElement.asType(), exceptionType);
