@@ -122,16 +122,18 @@ public class Parser {
             });
         } catch (Exception e) {
             final var msg = "Error getting the package from element %s. kind %s: nesting kind: %s";
-            throw new RuntimeException(msg.formatted(classElement.getQualifiedName(), classElement.getKind(), classElement.getNestingKind()), e);
+            throw new RuntimeException(
+                    msg.formatted(classElement.getQualifiedName(), classElement.getKind(), classElement.getNestingKind()), e);
         }
     }
 
     /**
      * {@return the top-level class of a given inner class, or the class itself if it's not an inner class}
+     * 
      * @param classElement a class or inner class
      */
     static TypeElement getTopLevelClass(final TypeElement classElement) {
-        return isInnerClass(classElement) ? getTopLevelClass((TypeElement)classElement.getEnclosingElement()) : classElement;
+        return isInnerClass(classElement) ? getTopLevelClass((TypeElement) classElement.getEnclosingElement()) : classElement;
     }
 
     protected Package parsePackage(final PackageElement packageDoc) {
