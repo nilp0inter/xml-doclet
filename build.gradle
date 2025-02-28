@@ -200,7 +200,7 @@ signing {
 }
 
 java {
-    //withSourcesJar()
+    withSourcesJar()
     withJavadocJar()
 
     sourceCompatibility = JavaVersion.VERSION_17
@@ -233,9 +233,14 @@ xsd2java {
     arguments ['-verbose']
     outputDir = layout.buildDirectory.dir("generated/sources/java/main").get().asFile
 
+
+}
+tasks.named("sourcesJar") {
+    dependsOn(xsd2javaJavadoc)
 }
 
 task createEmptyZip(type: Zip) {
+    dependsOn(compileJava)
     destinationDirectory = file('build/classes/java')
     archiveFileName = 'xsd2java'
     // Use 'from' to add files to the zip
@@ -243,6 +248,10 @@ task createEmptyZip(type: Zip) {
         include '**/*'  // Includes all files in the directory
     }
 }
+
+tasks.findByName("compileTestJava").dependsOn(createEmptyZip)
+tasks.findByName("pmdMain").dependsOn(createEmptyZip)
+tasks.findByName("spotbugsMain").dependsOn(createEmptyZip)
 
 task createEmptyZip1(type: Zip) {
     dependsOn(processResources)
@@ -252,8 +261,11 @@ task createEmptyZip1(type: Zip) {
         include '**/*'  // Includes all files in the directory
     }
 }
+tasks.findByName("compileJava").dependsOn(createEmptyZip1)
 
 shadowJar {
+    dependsOn(createEmptyZip)
+    dependsOn(createEmptyZip1)
     // create the expected ZIP files since we did not find a way to suppress those
     archiveBaseName = 'xml-doclet'
 }
@@ -267,6 +279,7 @@ sourceSets {
 }
 
 javadoc {
+    dependsOn(createEmptyZip)
     if(JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption('html5', true)
     }
@@ -294,7 +307,6 @@ tasks.register('xmldoc', Javadoc) {
     }
 }
 
-xsd2javaClasses.dependsOn createEmptyZip, createEmptyZip1
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
