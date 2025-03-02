@@ -85,7 +85,7 @@ If you are using maven you can use this library by adding the following report t
             </goals>
             <configuration>
                 <doclet>com.manticore.tools.xmldoclet.XmlDoclet</doclet>
-                <additionalparam>-d ${project.build.directory} -filename ${project.artifactId}-${project.version}-javadoc.xml</additionalparam>
+                <additionalparam>-d "${project.build.directory}" -filename ${project.artifactId}-${project.version}-javadoc.xml</additionalparam>
                 <useStandardDocletOptions>false</useStandardDocletOptions>
                 <docletArtifact>
                     <groupId>com.manticore-projects.tools</groupId>
